@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patient Portal | Sneha Health</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #05152e; --navy-2: #0a2144; --navy-3: #0f2d5c;
+  --blue: #1565c0; --blue-bright: #1e88e5; --blue-light: #42a5f5;
+  --cyan: #00b4d8; --teal: #00897b;
+  --surface: #0d1f3c; --surface-2: #112547; --card: #132a52; --card-2: #163060;
+  --border: rgba(30,136,229,0.18); --border-bright: rgba(66,165,245,0.35);
+  --text: #e8f0fe; --text-2: #90a8d0; --text-3: #5a7aaa;
+  --green: #00c853; --amber: #ffab00; --red: #ff1744;
+  --radius: 14px; --radius-sm: 8px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Sora',sans-serif; background:var(--navy); color:var(--text); min-height:100vh; }
+::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-thumb { background:var(--border-bright); border-radius:4px; }
+
+/* ── AUTH SCREEN ── */
+.auth-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#020c1e,#051535,#071a3e); padding:1.5rem; }
+.auth-card { background:var(--card); border:1px solid var(--border-bright); border-radius:24px; padding:2.5rem 2rem; width:100%; max-width:440px; box-shadow:0 32px 80px rgba(0,0,0,0.6); }
+.auth-logo { width:72px; height:72px; background:linear-gradient(135deg,var(--blue),var(--cyan)); border-radius:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; box-shadow:0 8px 32px rgba(21,101,192,0.5); }
+.auth-logo svg { width:32px; height:32px; }
+.auth-card h1 { font-size:1.5rem; font-weight:800; text-align:center; margin-bottom:0.3rem; }
+.auth-sub { color:var(--text-3); font-size:0.82rem; text-align:center; margin-bottom:2rem; }
+.field-group { margin-bottom:1rem; }
+.field-group label { font-size:0.72rem; font-weight:600; color:var(--text-2); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:0.4rem; }
+.field-group input { width:100%; padding:0.75rem 1rem; background:var(--navy-3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:inherit; font-size:0.9rem; transition:border-color 0.2s; }
+.field-group input:focus { outline:none; border-color:var(--blue-bright); }
+.btn { width:100%; padding:0.85rem; border:none; border-radius:var(--radius-sm); font-family:inherit; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
+.btn-blue { background:linear-gradient(135deg,var(--blue),var(--blue-bright)); color:#fff; box-shadow:0 4px 16px rgba(21,101,192,0.4); }
+.btn-blue:hover { transform:translateY(-1px); }
+.btn-outline { background:transparent; border:1px solid var(--border-bright); color:var(--text-2); margin-top:0.5rem; }
+.btn-outline:hover { border-color:var(--blue-bright); color:var(--text); }
+.auth-toggle { text-align:center; margin-top:1.25rem; font-size:0.82rem; color:var(--text-3); }
+.auth-toggle a { color:var(--cyan); cursor:pointer; text-decoration:none; }
+.auth-toggle a:hover { text-decoration:underline; }
+.err-msg { background:rgba(255,23,68,0.12); border:1px solid rgba(255,23,68,0.3); color:#ff6b6b; border-radius:8px; padding:0.6rem 0.9rem; font-size:0.82rem; margin-bottom:1rem; display:none; }
+
+/* ── REGISTRATION FEE NOTICE ── */
+.fee-notice { text-align:center; padding:1rem; }
+.fee-badge { display:inline-block; background:rgba(255,171,0,0.12); border:1px solid rgba(255,171,0,0.3); color:var(--amber); border-radius:10px; padding:0.6rem 1.2rem; font-size:0.85rem; font-weight:600; margin-bottom:1.5rem; }
+.fee-amount { font-size:2.5rem; font-weight:800; font-family:'JetBrains Mono',monospace; color:var(--text); margin:0.5rem 0; }
+.fee-desc { font-size:0.82rem; color:var(--text-3); margin-bottom:2rem; }
+
+/* ── APP ── */
+.app { min-height:100vh; display:flex; flex-direction:column; }
+
+/* TOPBAR */
+.topbar { background:rgba(10,33,68,0.97); border-bottom:1px solid var(--border); padding:0 1.5rem; display:flex; align-items:center; gap:1rem; height:64px; position:sticky; top:0; z-index:100; backdrop-filter:blur(12px); }
+.topbar-logo { display:flex; align-items:center; gap:0.625rem; }
+.topbar-logo-icon { width:36px; height:36px; background:linear-gradient(135deg,var(--blue),var(--cyan)); border-radius:10px; display:flex; align-items:center; justify-content:center; }
+.topbar-logo-icon svg { width:18px; height:18px; }
+.brand { font-size:0.95rem; font-weight:700; }
+.brand-sub { font-size:0.65rem; color:var(--text-3); }
+.topbar-nav { display:flex; gap:0.25rem; margin-left:2rem; }
+.tn-item { padding:0.5rem 1rem; border-radius:6px; cursor:pointer; font-size:0.82rem; font-weight:500; color:var(--text-2); transition:all 0.18s; white-space:nowrap; }
+.tn-item:hover { background:rgba(66,165,245,0.08); color:var(--text); }
+.tn-item.active { background:rgba(21,101,192,0.2); color:var(--blue-light); }
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:0.75rem; }
+.user-chip { display:flex; align-items:center; gap:0.5rem; background:var(--surface-2); border-radius:8px; padding:0.4rem 0.75rem; font-size:0.8rem; }
+.user-dot { width:8px; height:8px; background:var(--green); border-radius:50%; }
+.logout-link { font-size:0.78rem; color:var(--text-3); cursor:pointer; padding:0.4rem 0.5rem; }
+.logout-link:hover { color:var(--red); }
+
+/* PAGE */
+.page { display:none; flex:1; }
+.page.active { display:block; }
+
+/* HOME */
+.hero { padding:4rem 2rem; text-align:center; max-width:680px; margin:0 auto; }
+.hero h2 { font-size:2rem; font-weight:800; margin-bottom:0.75rem; }
+.hero h2 span { background:linear-gradient(90deg,var(--blue-light),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+.hero p { color:var(--text-2); font-size:1rem; margin-bottom:2.5rem; line-height:1.7; }
+.home-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; max-width:900px; margin:0 auto; padding:0 1.5rem 3rem; }
+.home-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.75rem 1.5rem; cursor:pointer; transition:all 0.22s; text-align:center; }
+.home-card:hover { border-color:var(--blue-bright); transform:translateY(-4px); box-shadow:0 16px 48px rgba(0,0,0,0.3); }
+.home-card .hc-icon { font-size:2.25rem; margin-bottom:1rem; }
+.home-card .hc-title { font-size:1rem; font-weight:700; margin-bottom:0.4rem; }
+.home-card .hc-desc { font-size:0.78rem; color:var(--text-3); line-height:1.5; }
+
+/* CONTENT */
+.page-content { max-width:900px; margin:0 auto; padding:2rem 1.5rem; }
+.page-header { margin-bottom:2rem; }
+.page-header h2 { font-size:1.4rem; font-weight:800; }
+.page-header p { color:var(--text-3); font-size:0.85rem; margin-top:0.3rem; }
+
+/* CARDS */
+.card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:1.25rem; }
+.card-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid var(--border); }
+.card-title { font-size:0.95rem; font-weight:700; }
+.card-body { padding:0; }
+
+/* DATA ROWS */
+.data-row { display:flex; align-items:center; gap:1rem; padding:0.9rem 1.25rem; border-bottom:1px solid var(--border); cursor:pointer; transition:all 0.15s; position:relative; }
+.data-row:last-child { border-bottom:none; }
+.data-row:hover { background:rgba(66,165,245,0.06); }
+.row-main { flex:1; min-width:0; }
+.row-title { font-size:0.875rem; font-weight:600; }
+.row-sub { font-size:0.75rem; color:var(--text-3); font-family:'JetBrains Mono',monospace; margin-top:2px; }
+.row-meta { display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0; }
+
+/* BADGES */
+.badge { font-size:0.68rem; font-weight:600; padding:0.25rem 0.5rem; border-radius:4px; }
+.badge-success { background:rgba(0,200,83,0.15); color:#69db7c; }
+.badge-warn { background:rgba(255,171,0,0.15); color:var(--amber); }
+.badge-error { background:rgba(255,23,68,0.12); color:#ff6b6b; }
+.badge-info { background:rgba(66,165,245,0.12); color:var(--blue-light); }
+.empty-state { padding:3rem; text-align:center; color:var(--text-3); font-size:0.875rem; }
+.emoji { display:block; font-size:2.5rem; margin-bottom:0.75rem; }
+
+/* BOOKING STEPPER */
+.stepper { display:flex; align-items:center; gap:0; margin-bottom:2rem; }
+.step { display:flex; align-items:center; gap:0.5rem; flex:1; }
+.step-num { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:700; flex-shrink:0; transition:all 0.3s; }
+.step-num.done { background:var(--blue); color:#fff; }
+.step-num.active { background:linear-gradient(135deg,var(--blue),var(--cyan)); color:#fff; box-shadow:0 4px 12px rgba(21,101,192,0.5); }
+.step-num.pending { background:var(--navy-3); color:var(--text-3); border:1px solid var(--border); }
+.step-label { font-size:0.75rem; font-weight:600; color:var(--text-3); }
+.step.active .step-label { color:var(--text); }
+.step-line { flex:1; height:2px; background:var(--border); margin:0 0.5rem; max-width:40px; }
+.step-line.done { background:var(--blue); }
+
+.booking-step { display:none; }
+.booking-step.active { display:block; }
+
+/* DEPT/PRACTITIONER GRID */
+.dept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:0.75rem; }
+.dept-card { background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:1rem; cursor:pointer; transition:all 0.18s; text-align:center; }
+.dept-card:hover, .dept-card.selected { border-color:var(--blue-bright); background:rgba(21,101,192,0.15); }
+.dept-card .dept-icon { font-size:1.75rem; margin-bottom:0.5rem; }
+.dept-card .dept-name { font-size:0.82rem; font-weight:600; line-height:1.3; }
+
+.prac-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:0.75rem; }
+.prac-card { background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:1.25rem; cursor:pointer; transition:all 0.18s; }
+.prac-card:hover, .prac-card.selected { border-color:var(--cyan); background:rgba(0,180,216,0.1); }
+.prac-name { font-size:0.9rem; font-weight:700; }
+.prac-dept { font-size:0.75rem; color:var(--text-3); margin-top:3px; }
+.prac-avatar { width:42px; height:42px; background:linear-gradient(135deg,var(--blue),var(--cyan)); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1rem; font-weight:700; margin-bottom:0.75rem; }
+
+/* DATE PICKER */
+.date-slots { padding:1.25rem; }
+.date-row { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.25rem; }
+.date-btn { padding:0.5rem 0.9rem; background:var(--navy-3); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-family:inherit; font-size:0.78rem; font-weight:600; color:var(--text-2); transition:all 0.18s; }
+.date-btn:hover, .date-btn.selected { border-color:var(--blue-bright); color:var(--text); background:rgba(21,101,192,0.2); }
+.slot-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:0.5rem; }
+.slot-btn { padding:0.55rem 0; background:var(--navy-3); border:1px solid var(--border); border-radius:6px; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:600; color:var(--text-2); transition:all 0.18s; text-align:center; }
+.slot-btn:hover, .slot-btn.selected { border-color:var(--cyan); color:var(--cyan); background:rgba(0,180,216,0.1); }
+.slot-btn.taken { opacity:0.35; cursor:not-allowed; }
+
+/* Confirm box */
+.confirm-box { background:var(--navy-3); border:1px solid var(--border-bright); border-radius:var(--radius); padding:1.5rem; margin-bottom:1.25rem; }
+.confirm-row { display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid var(--border); }
+.confirm-row:last-child { border-bottom:none; }
+.confirm-label { font-size:0.78rem; color:var(--text-3); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; }
+.confirm-value { font-size:0.875rem; font-weight:600; }
+
+.step-footer { display:flex; gap:0.75rem; margin-top:1.5rem; }
+.step-footer button { padding:0.75rem 1.5rem; border-radius:8px; font-family:inherit; font-weight:600; font-size:0.875rem; cursor:pointer; border:none; transition:all 0.18s; }
+.btn-next { background:linear-gradient(135deg,var(--blue),var(--blue-bright)); color:#fff; flex:1; }
+.btn-back { background:transparent; border:1px solid var(--border); color:var(--text-2); }
+
+/* Loading */
+.loading { display:flex; align-items:center; justify-content:center; padding:2.5rem; gap:0.75rem; color:var(--text-3); font-size:0.875rem; }
+.spinner { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--blue-bright); border-radius:50%; animation:spin 0.7s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+
+/* Success */
+.success-screen { text-align:center; padding:3rem 1.5rem; }
+.success-icon { width:80px; height:80px; background:rgba(0,200,83,0.15); border:2px solid var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:2rem; }
+.success-screen h3 { font-size:1.4rem; font-weight:800; margin-bottom:0.5rem; }
+.success-screen p { color:var(--text-2); font-size:0.9rem; }
+
+@media (max-width:700px) {
+  .topbar-nav { display:none; }
+  .home-cards { grid-template-columns:1fr 1fr; }
+  .dept-grid { grid-template-columns:repeat(2,1fr); }
+  .prac-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- AUTH -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+      </svg>
+    </div>
+    <h1>Patient Portal</h1>
+    <p class="auth-sub">Sneha Health · Rena Rehabilitation Centre</p>
+
+    <!-- LOGIN FORM -->
+    <div id="auth-login">
+      <div class="err-msg" id="login-err">Invalid email or password.</div>
+      <div class="field-group"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"></div>
+      <div class="field-group"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
+      <button class="btn btn-blue" onclick="doLogin()">Sign In</button>
+      <div class="auth-toggle">Don't have an account? <a onclick="showRegister()">Register now →</a></div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div id="auth-register" style="display:none;">
+      <div class="err-msg" id="reg-err">Registration failed.</div>
+      <div class="field-group"><label>Full Name</label><input type="text" id="reg-name" placeholder="Your full name"></div>
+      <div class="field-group"><label>Email</label><input type="email" id="reg-email" placeholder="you@example.com"></div>
+      <div class="field-group"><label>Password</label><input type="password" id="reg-pass" placeholder="Min. 8 characters"></div>
+      <div class="field-group"><label>Mobile</label><input type="tel" id="reg-mobile" placeholder="+91 9XXXXXXXXX"></div>
+      <button class="btn btn-blue" onclick="doRegister()">Create Account</button>
+      <div class="auth-toggle">Already have an account? <a onclick="showLogin()">Sign in →</a></div>
+    </div>
+
+    <!-- FEE NOTICE -->
+    <div id="auth-fee" style="display:none;">
+      <div class="fee-notice">
+        <div class="fee-badge">⚠️ Registration Fee Required</div>
+        <div class="fee-amount" id="fee-amount">₹0</div>
+        <div class="fee-desc">A one-time registration fee is required to activate your patient account and book appointments.</div>
+        <button class="btn btn-blue" onclick="payRegistrationFee()">Pay Registration Fee</button>
+        <button class="btn btn-outline" onclick="doLogout()">Use a different account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" style="display:none;" class="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-logo">
+      <div class="topbar-logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      </div>
+      <div>
+        <div class="brand">Sneha Health</div>
+        <div class="brand-sub">Patient Portal</div>
+      </div>
+    </div>
+    <div class="topbar-nav">
+      <div class="tn-item active" onclick="showPage('home')">Home</div>
+      <div class="tn-item" onclick="showPage('book')">Book Appointment</div>
+      <div class="tn-item" onclick="showPage('appointments')">My Appointments</div>
+      <div class="tn-item" onclick="showPage('billing')">Billing</div>
+    </div>
+    <div class="topbar-right">
+      <div class="user-chip"><div class="user-dot"></div><span id="user-display">Patient</span></div>
+      <span class="logout-link" onclick="doLogout()">Sign out</span>
+    </div>
+  </div>
+
+  <!-- HOME -->
+  <div id="page-home" class="page active">
+    <div class="hero">
+      <h2>Welcome back, <span id="hero-name">Patient</span></h2>
+      <p>Manage your healthcare journey with ease. Book appointments, view your medical records, and track your billing — all in one place.</p>
+    </div>
+    <div class="home-cards">
+      <div class="home-card" onclick="showPage('book')">
+        <div class="hc-icon">📅</div>
+        <div class="hc-title">Book Appointment</div>
+        <div class="hc-desc">Schedule with a specialist from our team</div>
+      </div>
+      <div class="home-card" onclick="showPage('appointments')">
+        <div class="hc-icon">🗓️</div>
+        <div class="hc-title">My Appointments</div>
+        <div class="hc-desc">View upcoming and past appointments</div>
+      </div>
+      <div class="home-card" onclick="showPage('billing')">
+        <div class="hc-icon">🧾</div>
+        <div class="hc-title">Billing & Payments</div>
+        <div class="hc-desc">View invoices and payment history</div>
+      </div>
+      <div class="home-card" onclick="window.open(window.location.origin+'/app/patient/'+state.patient?.name,'_blank')">
+        <div class="hc-icon">📋</div>
+        <div class="hc-title">Medical Profile</div>
+        <div class="hc-desc">View your complete health profile</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOOK APPOINTMENT -->
+  <div id="page-book" class="page">
+    <div class="page-content">
+      <div class="page-header">
+        <h2>Book Appointment</h2>
+        <p>Follow the steps below to schedule your visit</p>
+      </div>
+
+      <div class="stepper">
+        <div class="step" id="step-ind-1">
+          <div class="step-num active" id="sn-1">1</div>
+          <div class="step-label">Department</div>
+        </div>
+        <div class="step-line" id="sl-1"></div>
+        <div class="step" id="step-ind-2">
+          <div class="step-num pending" id="sn-2">2</div>
+          <div class="step-label">Practitioner</div>
+        </div>
+        <div class="step-line" id="sl-2"></div>
+        <div class="step" id="step-ind-3">
+          <div class="step-num pending" id="sn-3">3</div>
+          <div class="step-label">Date & Time</div>
+        </div>
+        <div class="step-line" id="sl-3"></div>
+        <div class="step" id="step-ind-4">
+          <div class="step-num pending" id="sn-4">4</div>
+          <div class="step-label">Confirm</div>
+        </div>
+      </div>
+
+      <!-- Step 1: Department -->
+      <div id="book-step-1" class="booking-step active">
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Select Department</h3></div>
+          <div style="padding:1.25rem;">
+            <div class="dept-grid" id="dept-grid">
+              <div class="loading"><div class="spinner"></div> Loading departments…</div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn-next" onclick="goStep(2)">Next: Choose Practitioner →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: Practitioner -->
+      <div id="book-step-2" class="booking-step">
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Select Practitioner</h3><span id="selected-dept-badge" style="font-size:0.78rem;color:var(--cyan)"></span></div>
+          <div style="padding:1.25rem;">
+            <div class="prac-grid" id="prac-grid">
+              <div class="loading"><div class="spinner"></div> Loading practitioners…</div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn-back" onclick="goStep(1)">← Back</button>
+          <button class="btn-next" onclick="goStep(3)">Next: Choose Date →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: Date & Time -->
+      <div id="book-step-3" class="booking-step">
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Choose Date & Time</h3></div>
+          <div class="date-slots">
+            <div style="font-size:0.78rem;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.6rem;">Select Date</div>
+            <div class="date-row" id="date-row"></div>
+            <div style="font-size:0.78rem;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.6rem;margin-top:1rem;">Available Slots</div>
+            <div class="slot-grid" id="slot-grid"><div style="color:var(--text-3);font-size:0.85rem;">Select a date above</div></div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn-back" onclick="goStep(2)">← Back</button>
+          <button class="btn-next" onclick="goStep(4)">Next: Confirm →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: Confirm -->
+      <div id="book-step-4" class="booking-step">
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Confirm Appointment</h3></div>
+          <div style="padding:1.25rem;">
+            <div class="confirm-box">
+              <div class="confirm-row"><span class="confirm-label">Patient</span><span class="confirm-value" id="confirm-patient">—</span></div>
+              <div class="confirm-row"><span class="confirm-label">Department</span><span class="confirm-value" id="confirm-dept">—</span></div>
+              <div class="confirm-row"><span class="confirm-label">Practitioner</span><span class="confirm-value" id="confirm-prac">—</span></div>
+              <div class="confirm-row"><span class="confirm-label">Date</span><span class="confirm-value" id="confirm-date">—</span></div>
+              <div class="confirm-row"><span class="confirm-label">Time</span><span class="confirm-value" id="confirm-time">—</span></div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <button class="btn-back" onclick="goStep(3)">← Back</button>
+          <button class="btn-next" onclick="confirmBooking()">✅ Book Appointment</button>
+        </div>
+      </div>
+
+      <!-- Success -->
+      <div id="book-success" style="display:none;">
+        <div class="card">
+          <div class="success-screen">
+            <div class="success-icon">✅</div>
+            <h3>Appointment Booked!</h3>
+            <p style="margin-bottom:1.5rem;" id="success-detail">Your appointment has been scheduled successfully.</p>
+            <button class="btn btn-blue" style="width:auto;padding:0.75rem 2rem;" onclick="resetBooking()">Book Another</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY APPOINTMENTS -->
+  <div id="page-appointments" class="page">
+    <div class="page-content">
+      <div class="page-header"><h2>My Appointments</h2><p>Your upcoming and past appointments</p></div>
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">Upcoming</h3></div>
+        <div class="card-body" id="list-upcoming"><div class="loading"><div class="spinner"></div>Loading…</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">Past Appointments</h3></div>
+        <div class="card-body" id="list-past"><div class="loading"><div class="spinner"></div>Loading…</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BILLING -->
+  <div id="page-billing" class="page">
+    <div class="page-content">
+      <div class="page-header"><h2>Billing & Payments</h2><p>Your invoices and payment history</p></div>
+      <div class="card">
+        <div class="card-header"><h3 class="card-title">Invoices</h3></div>
+        <div class="card-body" id="list-invoices"><div class="loading"><div class="spinner"></div>Loading…</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BASE = window.location.origin;
+let state = { user: null, patient: null, registrationPaid: false };
+let booking = { dept: null, deptName: null, prac: null, pracName: null, date: null, slot: null };
+let currentStep = 1;
+
+// ─── HELPERS ───
+function $(id) { return document.getElementById(id); }
+function fmt(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
+function badgeClass(s='') {
+  const v = s.toLowerCase();
+  if (['completed','paid','active'].some(x=>v.includes(x))) return 'badge-success';
+  if (['cancelled','rejected'].some(x=>v.includes(x))) return 'badge-error';
+  if (['pending','open','draft','scheduled','waiting'].some(x=>v.includes(x))) return 'badge-warn';
+  return 'badge-info';
+}
+function empty(msg) { return `<div class="empty-state"><span class="emoji">📭</span>${msg||'No records found.'}</div>`; }
+
+async function api(resource, params={}) {
+  const url = new URL(`${BASE}/api/resource/${encodeURIComponent(resource)}`);
+  if (params.filters) url.searchParams.set('filters', JSON.stringify(params.filters));
+  if (params.fields) url.searchParams.set('fields', JSON.stringify(params.fields));
+  if (params.limit) url.searchParams.set('limit', params.limit);
+  if (params.order_by) url.searchParams.set('order_by', params.order_by);
+  try { const r = await fetch(url,{credentials:'include'}); if (r.ok) return (await r.json())?.data||[]; return null; } catch { return null; }
+}
+
+async function callMethod(method, data={}) {
+  try {
+    const r = await fetch(`${BASE}/api/method/${method}`,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token':await getCSRF()},body:JSON.stringify(data)});
+    return (await r.json());
+  } catch { return null; }
+}
+
+async function getCSRF() {
+  try { const r = await fetch(`${BASE}/api/method/frappe.auth.get_logged_user`,{credentials:'include'}); return r.headers.get('X-Frappe-CSRF-Token')||''; } catch { return ''; }
+}
+
+// ─── AUTH ───
+async function initSession() {
+  try {
+    const r = await fetch('/api/method/frappe.auth.get_logged_user');
+    const user = (await r.json())?.message;
+    if (!user || user==='Guest') return;
+    state.user = user;
+    await loadPatient();
+  } catch {}
+}
+
+async function loadPatient() {
+  // Try server-side portal status first
+  const res = await callMethod('frappe.client.get_list', {
+    doctype: 'Patient',
+    filters: JSON.stringify([['user_id','=',state.user]]),
+    fields: JSON.stringify(['name','patient_name','mobile','blood_group','sex']),
+    limit: 1
+  });
+  let patient = res?.message?.[0];
+
+  if (!patient) {
+    // Fallback: search by email
+    const p2 = await api('Patient',{filters:[['user_id','=',state.user]],fields:['name','patient_name','mobile','blood_group','sex'],limit:1});
+    patient = p2?.[0];
+  }
+
+  if (!patient) {
+    // Check if user has linked patient any other way
+    const p3 = await api('Patient',{filters:[['email','=',state.user]],fields:['name','patient_name'],limit:1});
+    patient = p3?.[0];
+  }
+
+  if (patient) {
+    state.patient = patient;
+    await checkRegistrationFee();
+  } else {
+    // New patient - show app directly (they may have just registered in ERPNext)
+    showApp();
+  }
+}
+
+async function checkRegistrationFee() {
+  try {
+    const res = await callMethod('portal_patient_status', { patient: state.patient?.name });
+    if (res?.message?.status === 'Fee Pending') {
+      const fee = res.message.fee || 0;
+      $('fee-amount').textContent = '₹'+Number(fee).toLocaleString('en-IN');
+      $('auth-login').style.display = 'none';
+      $('auth-register').style.display = 'none';
+      $('auth-fee').style.display = 'block';
+      state._regFee = fee;
+      return;
+    }
+  } catch {}
+  // Either paid or no fee required
+  state.registrationPaid = true;
+  showApp();
+}
+
+async function payRegistrationFee() {
+  try {
+    const res = await callMethod('create_registration_invoice', { patient: state.patient?.name });
+    if (res?.message?.invoice) {
+      window.location.href = `${BASE}/app/sales-invoice/${res.message.invoice}`;
+    } else {
+      state.registrationPaid = true;
+      showApp();
+    }
+  } catch { showApp(); }
+}
+
+function showApp() {
+  $('auth-screen').style.display = 'none';
+  $('app').style.display = 'flex';
+  const name = state.patient?.patient_name || state.user?.split('@')[0] || 'Patient';
+  $('user-display').textContent = name;
+  $('hero-name').textContent = name.split(' ')[0];
+  loadDepts();
+}
+
+async function doLogin() {
+  const email = $('login-email').value.trim();
+  const pass = $('login-pass').value;
+  $('login-err').style.display = 'none';
+  if (!email||!pass) return;
+  try {
+    const r = await fetch('/api/method/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usr:email,pwd:pass}),credentials:'include'});
+    const d = await r.json();
+    if (d.message==='Logged In') { state.user = email; await loadPatient(); }
+    else { $('login-err').style.display = 'block'; }
+  } catch { $('login-err').style.display = 'block'; }
+}
+
+async function doRegister() {
+  const name = $('reg-name').value.trim();
+  const email = $('reg-email').value.trim();
+  const pass = $('reg-pass').value;
+  const mobile = $('reg-mobile').value.trim();
+  $('reg-err').style.display = 'none';
+  if (!name||!email||!pass) { $('reg-err').textContent='Please fill all required fields.'; $('reg-err').style.display='block'; return; }
+  try {
+    // Create user account
+    const r = await fetch('/api/method/frappe.core.doctype.user.user.create_user_settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,first_name:name.split(' ')[0],last_name:name.split(' ').slice(1).join(' ')||''}),credentials:'include'});
+    // Fallback: just try to login if user already exists
+    const lr = await fetch('/api/method/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usr:email,pwd:pass}),credentials:'include'});
+    const ld = await lr.json();
+    if (ld.message==='Logged In') { state.user=email; await loadPatient(); }
+    else { $('reg-err').textContent='Please contact the hospital to activate your account.'; $('reg-err').style.display='block'; }
+  } catch(e) { $('reg-err').textContent='Registration failed. Please try again.'; $('reg-err').style.display='block'; }
+}
+
+async function doLogout() { await fetch('/api/method/logout',{method:'POST',credentials:'include'}); location.reload(); }
+
+function showLogin() { $('auth-login').style.display='block'; $('auth-register').style.display='none'; }
+function showRegister() { $('auth-login').style.display='none'; $('auth-register').style.display='block'; }
+
+// ─── NAVIGATION ───
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tn-item').forEach(t=>t.classList.remove('active'));
+  $(`page-${page}`)?.classList.add('active');
+  document.querySelectorAll('.tn-item').forEach(t=>{ if (t.textContent.toLowerCase().includes(page==='book'?'book':page==='appointments'?'appointment':page)) t.classList.add('active'); });
+
+  if (page==='appointments') loadAppointments();
+  if (page==='billing') loadBilling();
+  if (page==='home') { const tn=document.querySelectorAll('.tn-item'); tn[0]?.classList.add('active'); }
+}
+
+// ─── BOOKING ───
+let departments = [];
+let practitioners = [];
+
+async function loadDepts() {
+  const data = await callMethod('portal_departments') || await api('Medical Department',{fields:['name','department_name'],limit:30});
+  const depts = data?.message || data || [];
+  departments = depts;
+  const icons = {'Physiotherapy':'🏃','Rehabilitation':'♿','Neurology':'🧠','Cardiology':'❤️','Orthopedics':'🦴','Pediatrics':'👶','General Medicine':'🏥','Psychiatry':'🧘','ENT':'👂','Ophthalmology':'👁️','Dermatology':'🩺','Dental':'🦷'};
+  $('dept-grid').innerHTML = depts.length ? depts.map(d=>`
+    <div class="dept-card" id="dept-${d.name}" onclick="selectDept('${d.name}','${(d.department_name||d.name).replace(/'/g,"&apos;")}')">
+      <div class="dept-icon">${icons[d.department_name]||icons[d.name]||'🏥'}</div>
+      <div class="dept-name">${d.department_name||d.name}</div>
+    </div>`).join('') : '<div style="color:var(--text-3);padding:1rem;">No departments found.</div>';
+}
+
+function selectDept(id, name) {
+  booking.dept = id; booking.deptName = name;
+  document.querySelectorAll('.dept-card').forEach(c=>c.classList.remove('selected'));
+  $(`dept-${id}`)?.classList.add('selected');
+}
+
+async function loadPracs(deptId) {
+  $('prac-grid').innerHTML = '<div class="loading"><div class="spinner"></div>Loading…</div>';
+  $('selected-dept-badge').textContent = booking.deptName;
+  const data = await callMethod('portal_practitioners',{department:deptId}) || await api('Healthcare Practitioner',{filters:[['department','=',deptId]],fields:['name','practitioner_name','department','designation'],limit:20});
+  practitioners = data?.message || data || [];
+  $('prac-grid').innerHTML = practitioners.length ? practitioners.map(p=>`
+    <div class="prac-card" id="prac-${p.name}" onclick="selectPrac('${p.name}','${(p.practitioner_name||p.name).replace(/'/g,"&apos;")}')">
+      <div class="prac-avatar">${(p.practitioner_name||p.name)[0].toUpperCase()}</div>
+      <div class="prac-name">${p.practitioner_name||p.name}</div>
+      <div class="prac-dept">${p.department||''} · ${p.designation||'Practitioner'}</div>
+    </div>`).join('') : '<div style="color:var(--text-3);padding:1rem;">No practitioners in this department.</div>';
+}
+
+function selectPrac(id, name) {
+  booking.prac = id; booking.pracName = name;
+  document.querySelectorAll('.prac-card').forEach(c=>c.classList.remove('selected'));
+  $(`prac-${id}`)?.classList.add('selected');
+}
+
+function buildDateButtons() {
+  const dates = [];
+  const today = new Date();
+  for (let i=0; i<14; i++) {
+    const d = new Date(today); d.setDate(today.getDate()+i);
+    if (d.getDay()!==0) dates.push(d); // skip Sundays
+  }
+  $('date-row').innerHTML = dates.map(d=>{
+    const iso = d.toISOString().split('T')[0];
+    const label = d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+    return `<button class="date-btn" onclick="selectDate('${iso}',this)">${label}</button>`;
+  }).join('');
+}
+
+function selectDate(iso, btn) {
+  booking.date = iso; booking.slot = null;
+  document.querySelectorAll('.date-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  loadSlots(iso);
+}
+
+async function loadSlots(date) {
+  $('slot-grid').innerHTML = '<div class="loading"><div class="spinner"></div>Loading slots…</div>';
+  try {
+    const res = await callMethod('portal_get_slots',{practitioner:booking.prac, date});
+    const slots = res?.message?.slots || generateDefaultSlots();
+    $('slot-grid').innerHTML = slots.map(s=>`<button class="slot-btn${s.taken?' taken':''}" onclick="${s.taken?'':'selectSlot(\"'+s.time+'\",this)'}">${s.time}</button>`).join('');
+  } catch {
+    const slots = generateDefaultSlots();
+    $('slot-grid').innerHTML = slots.map(s=>`<button class="slot-btn" onclick="selectSlot('${s.time}',this)">${s.time}</button>`).join('');
+  }
+}
+
+function generateDefaultSlots() {
+  const slots = [];
+  for (let h=9; h<=17; h++) {
+    ['00','30'].forEach(m=>{ if (h<17||m==='00') slots.push({time:`${String(h).padStart(2,'0')}:${m}`,taken:false}); });
+  }
+  return slots;
+}
+
+function selectSlot(time, btn) {
+  booking.slot = time;
+  document.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function goStep(n) {
+  if (n===2 && !booking.dept) { alert('Please select a department.'); return; }
+  if (n===3 && !booking.prac) { alert('Please select a practitioner.'); return; }
+  if (n===4) {
+    if (!booking.date) { alert('Please select a date.'); return; }
+    if (!booking.slot) { alert('Please select a time slot.'); return; }
+    // Fill confirm
+    $('confirm-patient').textContent = state.patient?.patient_name || state.user;
+    $('confirm-dept').textContent = booking.deptName;
+    $('confirm-prac').textContent = booking.pracName;
+    $('confirm-date').textContent = fmt(booking.date);
+    $('confirm-time').textContent = booking.slot;
+  }
+  // Update stepper
+  for (let i=1; i<=4; i++) {
+    const sn = $(`sn-${i}`);
+    if (i<n) { sn.className='step-num done'; sn.textContent='✓'; }
+    else if (i===n) { sn.className='step-num active'; sn.textContent=i; }
+    else { sn.className='step-num pending'; sn.textContent=i; }
+    if (i<4) $(`sl-${i}`).className='step-line'+(i<n?' done':'');
+  }
+
+  document.querySelectorAll('.booking-step').forEach(s=>s.classList.remove('active'));
+  $(`book-step-${n}`)?.classList.add('active');
+  currentStep = n;
+
+  if (n===2) loadPracs(booking.dept);
+  if (n===3) buildDateButtons();
+}
+
+async function confirmBooking() {
+  try {
+    const payload = {
+      patient: state.patient?.name,
+      practitioner: booking.prac,
+      appointment_date: booking.date,
+      appointment_time: booking.slot,
+      department: booking.dept
+    };
+    const res = await callMethod('portal_book_appointment', payload);
+    const apptName = res?.message?.appointment || res?.message?.name;
+    if (apptName) {
+      $('success-detail').textContent = `Appointment ID: ${apptName} · ${fmt(booking.date)} at ${booking.slot} with ${booking.pracName}`;
+    } else {
+      // Fallback: direct API create
+      const r2 = await fetch(`${BASE}/api/resource/Patient Appointment`,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload, doctype:'Patient Appointment'})});
+      const d2 = await r2.json();
+      if (d2.data?.name) $('success-detail').textContent = `Appointment ID: ${d2.data.name}`;
+    }
+    document.querySelectorAll('.booking-step').forEach(s=>s.classList.remove('active'));
+    $('book-success').style.display='block';
+  } catch(e) { alert('Booking failed: '+e.message); }
+}
+
+function resetBooking() {
+  booking = {dept:null,deptName:null,prac:null,pracName:null,date:null,slot:null};
+  $('book-success').style.display='none';
+  goStep(1);
+  loadDepts();
+}
+
+// ─── APPOINTMENTS ───
+async function loadAppointments() {
+  if (!state.patient) { $('list-upcoming').innerHTML=empty('Patient profile not found.'); $('list-past').innerHTML=empty(); return; }
+  const today = new Date().toISOString().split('T')[0];
+  const [upcoming, past] = await Promise.all([
+    api('Patient Appointment',{filters:[['patient','=',state.patient.name],['appointment_date','>=',today]],fields:['name','appointment_date','appointment_time','practitioner','status','department'],order_by:'appointment_date asc',limit:20}),
+    api('Patient Appointment',{filters:[['patient','=',state.patient.name],['appointment_date','<',today]],fields:['name','appointment_date','appointment_time','practitioner','status','department'],order_by:'appointment_date desc',limit:20})
+  ]);
+
+  $('list-upcoming').innerHTML = upcoming?.length ? upcoming.map(a=>`
+    <div class="data-row">
+      <div class="row-main"><div class="row-title">${a.practitioner||'—'} · ${a.department||'—'}</div><div class="row-sub">${fmt(a.appointment_date)} at ${a.appointment_time||'—'}</div></div>
+      <div class="row-meta"><span class="badge ${badgeClass(a.status)}">${a.status||'—'}</span></div>
+    </div>`).join('') : empty('No upcoming appointments.');
+
+  $('list-past').innerHTML = past?.length ? past.map(a=>`
+    <div class="data-row">
+      <div class="row-main"><div class="row-title">${a.practitioner||'—'} · ${a.department||'—'}</div><div class="row-sub">${fmt(a.appointment_date)}</div></div>
+      <div class="row-meta"><span class="badge ${badgeClass(a.status)}">${a.status||'—'}</span></div>
+    </div>`).join('') : empty('No past appointments.');
+}
+
+// ─── BILLING ───
+async function loadBilling() {
+  const filters = state.patient ? [['patient','=',state.patient.name]] : [];
+  const data = await api('Sales Invoice',{filters,fields:['name','posting_date','grand_total','outstanding_amount','status'],order_by:'posting_date desc',limit:30});
+  $('list-invoices').innerHTML = data?.length ? data.map(inv=>`
+    <div class="data-row" onclick="window.open('${BASE}/app/sales-invoice/${inv.name}','_blank')">
+      <div class="row-main"><div class="row-title">${inv.name}</div><div class="row-sub">Date: ${fmt(inv.posting_date)} · Outstanding: ₹${Number(inv.outstanding_amount||0).toLocaleString('en-IN')}</div></div>
+      <div class="row-meta"><span class="badge ${badgeClass(inv.status)}">${inv.status||'—'}</span><span style="font-weight:700;color:var(--blue-light);font-family:'JetBrains Mono',monospace">₹${Number(inv.grand_total||0).toLocaleString('en-IN')}</span></div>
+    </div>`).join('') : empty('No invoices found.');
+}
+
+// ─── INIT ───
+$('login-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+$('reg-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doRegister(); });
+initSession();
+</script>
+</body>
+</html>
