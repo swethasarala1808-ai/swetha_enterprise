@@ -1,0 +1,226 @@
+/* ============================================
+   SWETHA ENTERPRISE - CONSUMER LOBBY STYLES
+   Styles for App Grid and Hero Elements
+   ============================================ */
+
+.se-lobby-wrapper {
+  background: #f8fafc;
+}
+
+/* Search Container (Amazon Style) */
+.se-search-container {
+  max-width: 800px;
+  margin: -40px auto 40px;
+  position: relative;
+  z-index: 10;
+}
+
+.se-search-box {
+  background: #fff;
+  border-radius: 100px;
+  padding: 12px 24px 12px 64px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  font-size: 1.1rem;
+  width: 100%;
+}
+
+.se-search-icon {
+  position: absolute;
+  left: 24px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  color: #94a3b8;
+}
+
+/* Section Headlines */
+.se-section-head {
+  margin: 60px 0 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.se-section-head h2 {
+  font-family: 'League Spartan', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.se-view-all {
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+}
+
+/* Module Cards Integration */
+.se-module-card {
+  position: relative;
+}
+
+.se-badge-new {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 900;
+  padding: 2px 8px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+/* Quick Glance Stats (Swiggy Style) */
+.se-glance-stats {
+  display: flex;
+  gap: 16px;
+  margin-top: 40px;
+}
+
+.se-glance-box {
+  background: #fff;
+  padding: 16px 24px;
+  border-radius: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+.se-glance-box .val {
+  font-family: 'League Spartan', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.se-glance-box .lab {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+}
+
+/* Healthcare Portal Extensions */
+.se-hc-container {
+  padding: 2rem;
+  animation: slideUp 0.4s ease-out;
+}
+
+.se-hc-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+.se-hc-card {
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.hc-badge {
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.hc-badge-success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.hc-badge-error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.hc-badge-info {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.hc-data-row {
+  padding: 12px 16px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  border: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.hc-data-row:hover {
+  background: #f8fafc;
+  transform: translateX(4px);
+  border-color: #6366f1;
+}
+
+/* Modal for Clinical Details */
+.se-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  padding: 24px;
+}
+
+.se-modal.active {
+  display: flex;
+}
+
+.se-modal-content {
+  background: white;
+  width: 100%;
+  max-width: 700px;
+  max-height: 90vh;
+  border-radius: 32px;
+  padding: 40px;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.se-modal-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: #f1f5f9;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-weight: 800;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

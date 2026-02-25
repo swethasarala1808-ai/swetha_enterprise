@@ -1,0 +1,2 @@
+# Frappe is required to run this app
+frappe
