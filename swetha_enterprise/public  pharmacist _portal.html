@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pharmacist Portal | Sneha Health</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #05152e; --navy-2: #0a2144; --navy-3: #0f2d5c;
+  --blue: #1565c0; --blue-bright: #1e88e5; --blue-light: #42a5f5;
+  --cyan: #00b4d8; --cyan-light: #48cae4; --teal: #00897b;
+  --surface: #0d1f3c; --surface-2: #112547; --card: #132a52; --card-2: #163060;
+  --border: rgba(30,136,229,0.18); --border-bright: rgba(66,165,245,0.35);
+  --text: #e8f0fe; --text-2: #90a8d0; --text-3: #5a7aaa;
+  --green: #00c853; --amber: #ffab00; --red: #ff1744; --purple: #7c4dff;
+  --sidebar-w: 260px; --radius: 14px; --radius-sm: 8px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Sora',sans-serif; background:var(--navy); color:var(--text); min-height:100vh; overflow-x:hidden; }
+::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-thumb { background:var(--border-bright); border-radius:4px; }
+
+.overlay { position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#020c1e,#051535,#071a3e); display:flex; align-items:center; justify-content:center; }
+.overlay-card { background:var(--card); border:1px solid var(--border-bright); border-radius:24px; padding:2.5rem 2rem; width:100%; max-width:420px; box-shadow:0 32px 80px rgba(0,0,0,0.6); text-align:center; }
+.overlay-logo { width:64px; height:64px; background:linear-gradient(135deg,var(--purple),var(--blue-bright)); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; box-shadow:0 8px 32px rgba(124,77,255,0.5); }
+.overlay-logo svg { width:28px; height:28px; }
+.overlay-card h2 { font-size:1.4rem; font-weight:700; margin-bottom:0.5rem; }
+.overlay-card p { color:var(--text-2); font-size:0.875rem; }
+.login-form { margin-top:1.75rem; text-align:left; }
+.login-form label { font-size:0.75rem; font-weight:600; color:var(--text-2); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:0.4rem; }
+.login-form input { width:100%; padding:0.75rem 1rem; background:var(--navy-3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:inherit; font-size:0.9rem; margin-bottom:1rem; transition:border-color 0.2s; }
+.login-form input:focus { outline:none; border-color:var(--purple); }
+.btn-primary { width:100%; padding:0.85rem; background:linear-gradient(135deg,var(--purple),var(--blue-bright)); color:#fff; border:none; border-radius:var(--radius-sm); font-family:inherit; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
+.btn-primary:hover { transform:translateY(-1px); }
+.diag { margin-top:1.5rem; background:rgba(0,0,0,0.3); border-radius:8px; padding:0.5rem 0.75rem; max-height:80px; overflow-y:auto; font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-3); text-align:left; }
+.hidden { display:none !important; }
+
+/* APP */
+.app-shell { display:flex; min-height:100vh; }
+.sidebar { width:var(--sidebar-w); background:linear-gradient(180deg,var(--navy-2),var(--navy)); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; height:100vh; z-index:100; overflow-y:auto; }
+.sidebar-header { padding:1.5rem 1.25rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:0.75rem; }
+.logo-icon { width:40px; height:40px; background:linear-gradient(135deg,var(--purple),var(--blue-bright)); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 12px rgba(124,77,255,0.4); }
+.logo-icon svg { width:20px; height:20px; }
+.logo-text { font-size:1rem; font-weight:700; }
+.logo-sub { font-size:0.7rem; color:var(--text-3); }
+.sidebar-nav { flex:1; padding:1rem 0.75rem; }
+.nav-group-label { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--text-3); padding:0.75rem 0.5rem 0.4rem; }
+.nav-item { display:flex; align-items:center; gap:0.625rem; padding:0.625rem 0.75rem; border-radius:var(--radius-sm); cursor:pointer; transition:all 0.18s; font-size:0.85rem; font-weight:500; color:var(--text-2); margin-bottom:2px; }
+.nav-item:hover { background:rgba(124,77,255,0.08); color:var(--text); }
+.nav-item.active { background:linear-gradient(90deg,rgba(124,77,255,0.2),rgba(30,136,229,0.1)); color:#b39ddb; border-left:2.5px solid var(--purple); }
+.nav-icon { width:18px; height:18px; flex-shrink:0; opacity:0.8; }
+.sidebar-footer { padding:1rem; border-top:1px solid var(--border); }
+.user-chip { display:flex; align-items:center; gap:0.6rem; padding:0.6rem; background:var(--surface-2); border-radius:10px; }
+.user-avatar { width:32px; height:32px; background:linear-gradient(135deg,var(--purple),var(--blue-bright)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; flex-shrink:0; }
+.user-name { font-size:0.8rem; font-weight:600; }
+.user-role { font-size:0.68rem; color:var(--text-3); }
+.logout-btn { margin-top:0.5rem; width:100%; padding:0.5rem; background:transparent; border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-2); font-family:inherit; font-size:0.78rem; cursor:pointer; transition:all 0.2s; }
+.logout-btn:hover { border-color:var(--red); color:var(--red); }
+
+/* MAIN */
+.main { margin-left:var(--sidebar-w); flex:1; }
+.topbar { padding:1rem 2rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:1rem; background:rgba(5,21,46,0.95); backdrop-filter:blur(12px); position:sticky; top:0; z-index:50; }
+.topbar-title { font-size:1.1rem; font-weight:700; }
+.topbar-sub { font-size:0.78rem; color:var(--text-3); margin-top:1px; }
+.topbar-actions { margin-left:auto; display:flex; gap:0.5rem; }
+.btn-sm { padding:0.45rem 0.9rem; font-size:0.78rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; font-family:inherit; transition:all 0.18s; }
+.btn-sm.primary { background:linear-gradient(135deg,var(--purple),var(--blue-bright)); color:#fff; }
+.btn-sm.primary:hover { transform:translateY(-1px); }
+.btn-sm.outline { background:transparent; border:1px solid var(--border-bright); color:var(--text-2); }
+.btn-sm.outline:hover { border-color:var(--purple); color:#b39ddb; }
+.btn-sm.danger { background:rgba(255,23,68,0.15); color:#ff6b6b; border:1px solid rgba(255,23,68,0.3); }
+.content-body { padding:1.5rem 2rem; max-width:1400px; }
+
+/* SECTIONS */
+.section { display:none; animation:fadeUp 0.28s ease; }
+.section.active { display:block; }
+@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
+
+/* STATS */
+.stats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; margin-bottom:1.5rem; }
+.stat-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem; border-top:3px solid transparent; }
+.stat-card.purple { border-top-color:var(--purple); }
+.stat-card.blue { border-top-color:var(--blue-bright); }
+.stat-card.green { border-top-color:var(--green); }
+.stat-card.amber { border-top-color:var(--amber); }
+.stat-card.cyan { border-top-color:var(--cyan); }
+.stat-label { font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-3); }
+.stat-value { font-size:2rem; font-weight:700; margin:0.35rem 0 0; font-family:'JetBrains Mono',monospace; }
+
+/* CARDS */
+.card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:1.25rem; }
+.card-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid var(--border); }
+.card-title { font-size:0.95rem; font-weight:700; }
+.card-body { padding:0; }
+.count-badge { background:var(--navy-3); color:#b39ddb; font-size:0.7rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:10px; }
+
+/* DATA ROWS */
+.data-row { display:flex; align-items:center; gap:1rem; padding:0.8rem 1.25rem; border-bottom:1px solid var(--border); cursor:pointer; transition:all 0.15s; position:relative; }
+.data-row:last-child { border-bottom:none; }
+.data-row:hover { background:rgba(124,77,255,0.06); padding-left:1.5rem; }
+.data-row:hover::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--purple); border-radius:0 2px 2px 0; }
+.row-main { flex:1; min-width:0; }
+.row-title { font-size:0.875rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.row-sub { font-size:0.75rem; color:var(--text-3); font-family:'JetBrains Mono',monospace; margin-top:2px; }
+.row-meta { display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0; }
+
+/* BADGES */
+.badge { font-size:0.68rem; font-weight:600; padding:0.25rem 0.5rem; border-radius:4px; }
+.badge-success { background:rgba(0,200,83,0.15); color:#69db7c; }
+.badge-warn { background:rgba(255,171,0,0.15); color:var(--amber); }
+.badge-error { background:rgba(255,23,68,0.12); color:#ff6b6b; }
+.badge-info { background:rgba(66,165,245,0.12); color:var(--blue-light); }
+.badge-cyan { background:rgba(0,180,216,0.15); color:var(--cyan); }
+.empty-state { padding:2.5rem; text-align:center; color:var(--text-3); font-size:0.875rem; }
+.emoji { display:block; font-size:2rem; margin-bottom:0.75rem; }
+
+/* POS LAYOUT */
+.pos-layout { display:grid; grid-template-columns:1fr 360px; gap:1.25rem; align-items:start; }
+.pos-items-panel { display:flex; flex-direction:column; gap:1rem; }
+.pos-cart-panel { position:sticky; top:80px; }
+
+/* Item search */
+.item-search-bar { padding:1.25rem 1.25rem 0; }
+.item-search-bar input { width:100%; padding:0.75rem 1rem; background:var(--navy-3); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:inherit; font-size:0.9rem; }
+.item-search-bar input:focus { outline:none; border-color:var(--purple); }
+.item-search-results { padding:0 1.25rem 1.25rem; }
+.item-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); gap:0.75rem; margin-top:0.75rem; }
+.item-card { background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:1rem; cursor:pointer; transition:all 0.18s; }
+.item-card:hover { border-color:var(--purple); background:rgba(124,77,255,0.1); transform:translateY(-2px); }
+.item-card .ic-name { font-size:0.82rem; font-weight:600; color:var(--text); line-height:1.3; }
+.item-card .ic-price { font-size:0.9rem; font-weight:700; color:#b39ddb; font-family:'JetBrains Mono',monospace; margin-top:0.4rem; }
+.item-card .ic-stock { font-size:0.68rem; color:var(--text-3); margin-top:2px; }
+
+/* Cart */
+.cart-header { padding:1rem 1.25rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+.cart-body { max-height:320px; overflow-y:auto; }
+.cart-item { display:flex; align-items:center; gap:0.75rem; padding:0.75rem 1.25rem; border-bottom:1px solid var(--border); }
+.cart-item:last-child { border-bottom:none; }
+.ci-name { flex:1; font-size:0.82rem; font-weight:600; }
+.ci-qty { display:flex; align-items:center; gap:0.4rem; }
+.ci-qty button { width:24px; height:24px; background:var(--navy-3); border:1px solid var(--border); border-radius:4px; color:var(--text); font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.ci-qty button:hover { border-color:var(--purple); }
+.ci-qty span { font-family:'JetBrains Mono',monospace; font-size:0.82rem; width:20px; text-align:center; }
+.ci-price { font-size:0.82rem; font-weight:700; color:#b39ddb; font-family:'JetBrains Mono',monospace; min-width:60px; text-align:right; }
+.ci-remove { color:var(--text-3); cursor:pointer; font-size:0.9rem; padding:4px; }
+.ci-remove:hover { color:var(--red); }
+
+.cart-totals { padding:1rem 1.25rem; border-top:1px solid var(--border); }
+.total-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:0.4rem; font-size:0.82rem; color:var(--text-2); }
+.total-row.grand { font-size:1rem; font-weight:700; color:var(--text); border-top:1px solid var(--border); padding-top:0.6rem; margin-top:0.3rem; }
+.total-row .amount { font-family:'JetBrains Mono',monospace; }
+
+.cart-footer { padding:1rem 1.25rem; border-top:1px solid var(--border); display:flex; flex-direction:column; gap:0.5rem; }
+.cart-patient { display:flex; flex-direction:column; gap:0.3rem; margin-bottom:0.5rem; }
+.cart-patient label { font-size:0.7rem; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.08em; }
+.cart-patient input { padding:0.55rem 0.8rem; background:var(--navy-3); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:inherit; font-size:0.82rem; }
+.cart-patient input:focus { outline:none; border-color:var(--purple); }
+
+/* Profile */
+.profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; padding:1.25rem; }
+.profile-field .pf-label { font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-3); }
+.profile-field .pf-value { font-size:0.875rem; color:var(--text); font-family:'JetBrains Mono',monospace; margin-top:0.25rem; }
+
+/* Checkout modal */
+.modal-backdrop { position:fixed; inset:0; background:rgba(2,12,30,0.85); z-index:1000; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px); }
+.modal-box { background:var(--card); border:1px solid var(--border-bright); border-radius:var(--radius); width:100%; max-width:440px; padding:2rem; }
+.modal-title { font-size:1.1rem; font-weight:700; margin-bottom:1.25rem; }
+.modal-field { margin-bottom:1rem; }
+.modal-field label { font-size:0.72rem; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:0.3rem; }
+.modal-field input, .modal-field select { width:100%; padding:0.65rem 0.9rem; background:var(--navy-3); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:inherit; font-size:0.88rem; }
+.modal-field input:focus, .modal-field select:focus { outline:none; border-color:var(--purple); }
+.modal-actions { display:flex; gap:0.75rem; margin-top:1.5rem; }
+.modal-actions button { flex:1; padding:0.75rem; border-radius:8px; font-family:inherit; font-weight:600; font-size:0.875rem; cursor:pointer; border:none; }
+.modal-actions .confirm { background:linear-gradient(135deg,var(--purple),var(--blue-bright)); color:#fff; }
+.modal-actions .cancel { background:transparent; border:1px solid var(--border); color:var(--text-2); }
+
+@media (max-width:1100px) { .pos-layout { grid-template-columns:1fr; } .pos-cart-panel { position:static; } }
+@media (max-width:900px) { .sidebar { transform:translateX(-100%); transition:transform 0.3s; } .sidebar.open { transform:none; } .main { margin-left:0; } }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="overlay" id="overlay">
+  <div class="overlay-card">
+    <div class="overlay-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/>
+      </svg>
+    </div>
+    <h2>Pharmacist Portal</h2>
+    <p>Sneha Health / Rena Rehabilitation Centre</p>
+    <div class="login-form">
+      <label>Email</label>
+      <input type="email" id="inp-email" placeholder="pharmacist@snehahealth.in" autocomplete="username">
+      <label>Password</label>
+      <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password">
+      <button class="btn-primary" onclick="doLogin()">Sign In</button>
+    </div>
+    <div class="diag" id="diag-log"></div>
+  </div>
+</div>
+
+<!-- Checkout Modal -->
+<div class="modal-backdrop hidden" id="checkout-modal">
+  <div class="modal-box">
+    <div class="modal-title">💳 Checkout</div>
+    <div class="modal-field">
+      <label>Patient Name</label>
+      <input type="text" id="modal-patient" placeholder="Walk-in Patient">
+    </div>
+    <div class="modal-field">
+      <label>Payment Mode</label>
+      <select id="modal-payment">
+        <option value="Cash">Cash</option>
+        <option value="Card">Card</option>
+        <option value="UPI">UPI</option>
+        <option value="Insurance">Insurance</option>
+        <option value="Credit">Credit (Bill to Account)</option>
+      </select>
+    </div>
+    <div class="modal-field">
+      <label>Discount (%)</label>
+      <input type="number" id="modal-discount" placeholder="0" min="0" max="100" value="0">
+    </div>
+    <div style="background:var(--navy-3);border-radius:8px;padding:1rem;font-size:0.875rem;">
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;"><span style="color:var(--text-2)">Subtotal</span><span id="modal-subtotal" style="font-family:'JetBrains Mono',monospace">₹0</span></div>
+      <div style="display:flex;justify-content:space-between;margin-bottom:0.4rem;"><span style="color:var(--text-2)">Discount</span><span id="modal-disc-amt" style="font-family:'JetBrains Mono',monospace;color:var(--green)">-₹0</span></div>
+      <div style="display:flex;justify-content:space-between;font-weight:700;font-size:1rem;border-top:1px solid var(--border);padding-top:0.5rem;margin-top:0.3rem;"><span>Total</span><span id="modal-total" style="font-family:'JetBrains Mono',monospace;color:#b39ddb">₹0</span></div>
+    </div>
+    <div class="modal-actions">
+      <button class="cancel" onclick="closeCheckout()">Cancel</button>
+      <button class="confirm" onclick="confirmCheckout()">✅ Confirm Sale</button>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app-shell hidden" id="app-shell">
+
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
+          <path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9m0 0h18"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">Sneha Health</div>
+        <div class="logo-sub">Pharmacist Portal</div>
+      </div>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-group-label">Overview</div>
+      <div class="nav-item active" onclick="nav('dashboard')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" onclick="nav('profile')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+        My Profile
+      </div>
+
+      <div class="nav-group-label">Dispensing</div>
+      <div class="nav-item" onclick="nav('pos')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
+        POS / Billing
+      </div>
+      <div class="nav-item" onclick="nav('medication')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+        Medication Requests
+      </div>
+      <div class="nav-item" onclick="nav('inpatient-med')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Inpatient Medication
+      </div>
+      <div class="nav-item" onclick="nav('sales-history')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Sales History
+      </div>
+
+      <div class="nav-group-label">Inventory</div>
+      <div class="nav-item" onclick="nav('items')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Items / Medicines
+      </div>
+      <div class="nav-item" onclick="nav('stock-entries')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/></svg>
+        Stock Entries
+      </div>
+      <div class="nav-item" onclick="nav('warehouses')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        Warehouses
+      </div>
+
+      <div class="nav-group-label">HR</div>
+      <div class="nav-item" onclick="nav('attendance')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        Attendance
+      </div>
+      <div class="nav-item" onclick="nav('leave')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Leave
+      </div>
+      <div class="nav-item" onclick="nav('payroll')">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Payroll
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <div class="user-avatar" id="user-avatar">P</div>
+        <div><div class="user-name" id="user-name">Loading…</div><div class="user-role">Pharmacist</div></div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
+    </div>
+  </nav>
+
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-sub" id="topbar-sub">Welcome back</div>
+      </div>
+      <div class="topbar-actions">
+        <button class="btn-sm primary" onclick="nav('pos')">🛒 POS</button>
+        <button class="btn-sm outline" onclick="openERP('/app/stock-entry/new')">+ Stock Entry</button>
+      </div>
+    </div>
+
+    <div class="content-body">
+
+      <!-- DASHBOARD -->
+      <section id="section-dashboard" class="section active">
+        <div class="stats-grid">
+          <div class="stat-card purple"><div class="stat-label">Today's Sales</div><div class="stat-value" id="stat-sales">—</div></div>
+          <div class="stat-card blue"><div class="stat-label">Pending Med Req</div><div class="stat-value" id="stat-medreq">—</div></div>
+          <div class="stat-card green"><div class="stat-label">Items in Stock</div><div class="stat-value" id="stat-items">—</div></div>
+          <div class="stat-card amber"><div class="stat-label">Low Stock Alerts</div><div class="stat-value" id="stat-lowstock">—</div></div>
+          <div class="stat-card cyan"><div class="stat-label">Attendance</div><div class="stat-value" id="stat-att">—</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Pending Medication Requests</h3><button class="btn-sm primary" onclick="nav('medication')">View All</button></div>
+          <div class="card-body" id="dash-medreq"><div class="empty-state">Loading…</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Recent Sales</h3><button class="btn-sm outline" onclick="nav('sales-history')">View All</button></div>
+          <div class="card-body" id="dash-sales"><div class="empty-state">Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- PROFILE -->
+      <section id="section-profile" class="section">
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Employee Profile</h3></div>
+          <div id="profile-container"><div class="empty-state">Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- POS -->
+      <section id="section-pos" class="section">
+        <div class="pos-layout">
+          <div class="pos-items-panel">
+            <div class="card">
+              <div class="card-header"><h3 class="card-title">🔍 Search Items</h3></div>
+              <div class="item-search-bar">
+                <input type="text" id="item-search" placeholder="Search medicine / item name…" oninput="searchItems()">
+              </div>
+              <div class="item-search-results">
+                <div class="item-grid" id="item-grid"><div style="padding:1.25rem;color:var(--text-3);font-size:0.85rem;">Type to search…</div></div>
+              </div>
+            </div>
+          </div>
+          <div class="pos-cart-panel">
+            <div class="card">
+              <div class="cart-header">
+                <div style="display:flex;align-items:center;gap:0.5rem;">
+                  <h3 class="card-title">🛒 Cart</h3>
+                  <span class="count-badge" id="cart-count">0</span>
+                </div>
+                <button class="btn-sm danger" onclick="clearCart()">Clear</button>
+              </div>
+              <div class="cart-body" id="cart-body"><div style="padding:2rem;text-align:center;color:var(--text-3);font-size:0.85rem;">Cart is empty</div></div>
+              <div class="cart-totals">
+                <div class="total-row"><span>Subtotal</span><span class="amount" id="cart-subtotal">₹0.00</span></div>
+                <div class="total-row grand"><span>Total</span><span class="amount" id="cart-total">₹0.00</span></div>
+              </div>
+              <div class="cart-footer">
+                <div class="cart-patient">
+                  <label>Patient (optional)</label>
+                  <input type="text" id="cart-patient" placeholder="Patient name or ID…">
+                </div>
+                <button class="btn-sm primary" style="width:100%;padding:0.75rem;font-size:0.9rem;" onclick="openCheckout()">💳 Checkout</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MEDICATION REQUESTS -->
+      <section id="section-medication" class="section">
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex;align-items:center;gap:0.75rem;"><h3 class="card-title">Medication Requests</h3><span class="count-badge" id="count-medication">0</span></div>
+            <button class="btn-sm outline" onclick="openERP('/app/medication-request')">Open in ERP</button>
+          </div>
+          <div class="card-body" id="list-medication"><div class="empty-state">Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- INPATIENT MED -->
+      <section id="section-inpatient-med" class="section">
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex;align-items:center;gap:0.75rem;"><h3 class="card-title">Inpatient Medication Orders</h3><span class="count-badge" id="count-inpatient-med">0</span></div>
+            <button class="btn-sm outline" onclick="openERP('/app/inpatient-medication-entry/new')">+ New Entry</button>
+          </div>
+          <div class="card-body" id="list-inpatient-med"><div class="empty-state">Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- SALES HISTORY -->
+      <section id="section-sales-history" class="section">
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex;align-items:center;gap:0.75rem;"><h3 class="card-title">Sales History (Invoices)</h3><span class="count-badge" id="count-sales-history">0</span></div>
+            <button class="btn-sm primary" onclick="openERP('/app/sales-invoice/new')">+ New Invoice</button>
+          </div>
+          <div class="card-body" id="list-sales-history"><div class="empty-state">Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- ITEMS -->
+      <section id="section-items" class="section">
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex;align-items:center;gap:0.75rem;"><h3 class="card-title">Items / Medicines</h3><span class="count-badge" id="count-items">0</span></div>
+            <button class="btn-sm primary" onclick="openERP('/app/item/new')">+ New Item</button>
+          </div>
+          <div class="card-body" id="list-items"><div class="empty-state">Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- STOCK ENTRIES -->
+      <section id="section-stock-entries" class="section">
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex;align-items:center;gap:0.75rem;"><h3 class="card-title">Stock Entries</h3><span class="count-badge" id="count-stock-entries">0</span></div>
+            <button class="btn-sm primary" onclick="openERP('/app/stock-entry/new')">+ New Entry</button>
+          </div>
+          <div class="card-body" id="list-stock-entries"><div class="empty-state">Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- WAREHOUSES -->
+      <section id="section-warehouses" class="section">
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Warehouses</h3></div>
+          <div class="card-body" id="list-warehouses"><div class="empty-state">Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- ATTENDANCE -->
+      <section id="section-attendance" class="section">
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Attendance Record</h3><button class="btn-sm primary" onclick="openERP('/app/attendance/new')">+ Mark</button></div>
+          <div class="card-body" id="list-attendance"><div class="empty-state">Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- LEAVE -->
+      <section id="section-leave" class="section">
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Leave Applications</h3><button class="btn-sm primary" onclick="openERP('/app/leave-application/new')">+ Apply</button></div>
+          <div class="card-body" id="list-leave"><div class="empty-state">Loading…</div></div>
+        </div>
+      </section>
+
+      <!-- PAYROLL -->
+      <section id="section-payroll" class="section">
+        <div class="card">
+          <div class="card-header"><h3 class="card-title">Salary Slips</h3></div>
+          <div class="card-body" id="list-payroll"><div class="empty-state">Loading…</div></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<script>
+const BASE = window.location.origin;
+let state = { user: null, employee: null, activeSection: 'dashboard' };
+let cart = [];
+let itemSearchTimer = null;
+
+function log(msg, type='info') {
+  const el = document.getElementById('diag-log');
+  if (!el) return;
+  const d = document.createElement('div');
+  d.style.color = type==='error'?'#ff6b6b':type==='success'?'#69db7c':'#748ffc';
+  d.textContent = (type==='error'?'✗':'✓')+' '+msg;
+  el.appendChild(d); el.scrollTop = el.scrollHeight;
+}
+
+function badgeClass(s) {
+  if (!s) return 'badge-info';
+  const v = s.toLowerCase();
+  if (['completed','paid','active','submitted','delivered'].some(x=>v.includes(x))) return 'badge-success';
+  if (['cancelled','rejected'].some(x=>v.includes(x))) return 'badge-error';
+  if (['pending','draft','waiting','open'].some(x=>v.includes(x))) return 'badge-warn';
+  return 'badge-info';
+}
+
+function fmt(str) {
+  if (!str) return '—';
+  if (str.match(/^\d{4}-\d{2}-\d{2}/)) return new Date(str).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  return str;
+}
+
+function openERP(path) { window.open(BASE+path,'_blank'); }
+function empty(msg='No records found.') { return `<div class="empty-state"><span class="emoji">📭</span>${msg}</div>`; }
+
+async function api(resource, params={}) {
+  const url = new URL(`${BASE}/api/resource/${encodeURIComponent(resource)}`);
+  if (params.filters) url.searchParams.set('filters', JSON.stringify(params.filters));
+  if (params.fields) url.searchParams.set('fields', JSON.stringify(params.fields));
+  if (params.limit) url.searchParams.set('limit', params.limit);
+  if (params.order_by) url.searchParams.set('order_by', params.order_by);
+  try { const r = await fetch(url,{credentials:'include'}); if (r.ok) return (await r.json())?.data||[]; return null; } catch { return null; }
+}
+
+async function initSession() {
+  log('Initializing session…');
+  try {
+    const r = await fetch('/api/method/frappe.auth.get_logged_user');
+    const user = (await r.json())?.message;
+    if (!user||user==='Guest') { return; }
+    state.user = user;
+    log(`Session: ${user}`,'success');
+    await runDiscovery();
+  } catch { }
+}
+
+async function runDiscovery() {
+  const emp = await api('Employee',{filters:[['user_id','=',state.user]],fields:['name','employee_name','designation','department','cell_number','personal_email']});
+  if (emp?.length) { state.employee = emp[0]; log(`Employee: ${emp[0].name}`,'success'); }
+  showApp();
+  loadDashboard();
+}
+
+function showApp() {
+  document.getElementById('overlay').classList.add('hidden');
+  document.getElementById('app-shell').classList.remove('hidden');
+  const name = state.employee?.employee_name || state.user;
+  document.getElementById('user-name').textContent = name;
+  document.getElementById('user-avatar').textContent = (name[0]||'P').toUpperCase();
+  document.getElementById('topbar-sub').textContent = `Welcome back, ${name.split(' ')[0]}`;
+}
+
+async function doLogin() {
+  const email = document.getElementById('inp-email').value;
+  const pass = document.getElementById('inp-pass').value;
+  if (!email||!pass) return;
+  try {
+    const r = await fetch('/api/method/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usr:email,pwd:pass}),credentials:'include'});
+    const d = await r.json();
+    if (d.message==='Logged In') { state.user=email; log('Logged in','success'); await runDiscovery(); }
+    else log('Invalid credentials','error');
+  } catch(e) { log('Login failed','error'); }
+}
+
+async function doLogout() { await fetch('/api/method/logout',{method:'POST',credentials:'include'}); location.reload(); }
+
+const navTitles = {
+  dashboard:'Dashboard', profile:'My Profile', pos:'POS / Billing',
+  medication:'Medication Requests', 'inpatient-med':'Inpatient Medication',
+  'sales-history':'Sales History', items:'Items / Medicines',
+  'stock-entries':'Stock Entries', warehouses:'Warehouses',
+  attendance:'Attendance', leave:'Leave Applications', payroll:'Payroll'
+};
+
+function nav(section) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  const el = document.getElementById(`section-${section}`);
+  if (el) el.classList.add('active');
+  event?.currentTarget?.classList.add('active');
+  state.activeSection = section;
+  document.getElementById('topbar-title').textContent = navTitles[section]||section;
+  loadSection(section);
+}
+
+function loadSection(s) {
+  const map = {
+    dashboard: loadDashboard, profile: loadProfile, pos: ()=>{},
+    medication: loadMedication, 'inpatient-med': loadInpatientMed,
+    'sales-history': loadSalesHistory, items: loadItems,
+    'stock-entries': loadStockEntries, warehouses: loadWarehouses,
+    attendance: loadAttendance, leave: loadLeave, payroll: loadPayroll
+  };
+  if (map[s]) map[s]();
+}
+
+async function loadDashboard() {
+  const today = new Date().toISOString().split('T')[0];
+  const [medreq, items, sales, att] = await Promise.all([
+    api('Medication Request',{filters:[['status','in',['Draft','Pending']]],fields:['name'],limit:500}),
+    api('Item',{fields:['name'],limit:500}),
+    api('Sales Invoice',{filters:[['posting_date','=',today]],fields:['name','grand_total'],limit:500}),
+    api('Attendance',{filters:state.employee?[['employee','=',state.employee.name],['attendance_date','=',today]]:null,fields:['status'],limit:1}),
+  ]);
+
+  const todaySales = sales?.reduce((s,i)=>s+Number(i.grand_total||0),0)||0;
+  document.getElementById('stat-sales').textContent = '₹'+todaySales.toLocaleString('en-IN');
+  document.getElementById('stat-medreq').textContent = medreq?.length||0;
+  document.getElementById('stat-items').textContent = items?.length||0;
+  document.getElementById('stat-lowstock').textContent = '—';
+  document.getElementById('stat-att').textContent = att?.[0]?.status||'—';
+
+  const pendingMed = await api('Medication Request',{filters:[['status','in',['Draft','Pending']]],fields:['name','patient','medication','quantity','creation'],order_by:'creation desc',limit:8});
+  document.getElementById('dash-medreq').innerHTML = pendingMed?.length ? pendingMed.map(m=>`
+    <div class="data-row" onclick="openERP('/app/medication-request/${m.name}')">
+      <div class="row-main"><div class="row-title">${m.patient||m.name}</div><div class="row-sub">${m.medication||'—'} · Qty: ${m.quantity||'—'}</div></div>
+      <div class="row-meta"><span class="badge badge-warn">${m.status||'Pending'}</span><span style="font-size:0.72rem;color:var(--text-3)">${fmt(m.creation)}</span></div>
+    </div>`).join('') : empty('No pending medication requests.');
+
+  const recentSales = await api('Sales Invoice',{filters:[['posting_date','>=',new Date(Date.now()-7*86400000).toISOString().split('T')[0]]],fields:['name','customer','posting_date','grand_total','status'],order_by:'posting_date desc',limit:8});
+  document.getElementById('dash-sales').innerHTML = recentSales?.length ? recentSales.map(s=>`
+    <div class="data-row" onclick="openERP('/app/sales-invoice/${s.name}')">
+      <div class="row-main"><div class="row-title">${s.customer||s.name}</div><div class="row-sub">${s.name} · ${fmt(s.posting_date)}</div></div>
+      <div class="row-meta"><span class="badge ${badgeClass(s.status)}">${s.status||'—'}</span><span style="font-weight:700;font-size:0.85rem;color:#b39ddb;font-family:'JetBrains Mono',monospace">₹${Number(s.grand_total||0).toLocaleString('en-IN')}</span></div>
+    </div>`).join('') : empty('No recent sales.');
+}
+
+async function loadProfile() {
+  if (!state.employee) { document.getElementById('profile-container').innerHTML=empty('Employee record not linked.'); return; }
+  const e = state.employee;
+  document.getElementById('profile-container').innerHTML = `
+    <div class="profile-grid">
+      <div class="profile-field"><div class="pf-label">Employee ID</div><div class="pf-value">${e.name}</div></div>
+      <div class="profile-field"><div class="pf-label">Full Name</div><div class="pf-value">${e.employee_name||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Designation</div><div class="pf-value">${e.designation||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Department</div><div class="pf-value">${e.department||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Mobile</div><div class="pf-value">${e.cell_number||'—'}</div></div>
+      <div class="profile-field"><div class="pf-label">Email</div><div class="pf-value">${state.user||'—'}</div></div>
+    </div>`;
+}
+
+// POS
+function searchItems() {
+  clearTimeout(itemSearchTimer);
+  itemSearchTimer = setTimeout(async () => {
+    const q = document.getElementById('item-search').value.trim();
+    if (q.length < 2) { document.getElementById('item-grid').innerHTML='<div style="padding:1rem;color:var(--text-3);font-size:0.85rem;">Type to search…</div>'; return; }
+    const res = await api('Item',{filters:[['item_name','like','%'+q+'%'],['disabled','=',0]],fields:['name','item_name','item_code','standard_rate'],limit:20});
+    if (!res?.length) { document.getElementById('item-grid').innerHTML='<div style="padding:1rem;color:var(--text-3);">No items found.</div>'; return; }
+    document.getElementById('item-grid').innerHTML = res.map(item=>`
+      <div class="item-card" onclick="addToCart('${item.name}','${(item.item_name||item.name).replace(/'/g,'&apos;')}',${item.standard_rate||0})">
+        <div class="ic-name">${item.item_name||item.name}</div>
+        <div class="ic-price">₹${Number(item.standard_rate||0).toLocaleString('en-IN')}</div>
+        <div class="ic-stock">${item.item_code||item.name}</div>
+      </div>`).join('');
+  }, 300);
+}
+
+function addToCart(id, name, price) {
+  const existing = cart.find(c=>c.id===id);
+  if (existing) existing.qty++;
+  else cart.push({id, name, price: Number(price), qty:1});
+  renderCart();
+}
+
+function removeFromCart(id) {
+  cart = cart.filter(c=>c.id!==id);
+  renderCart();
+}
+
+function changeQty(id, delta) {
+  const item = cart.find(c=>c.id===id);
+  if (!item) return;
+  item.qty = Math.max(1, item.qty + delta);
+  renderCart();
+}
+
+function clearCart() {
+  cart = [];
+  renderCart();
+}
+
+function renderCart() {
+  const count = cart.reduce((s,c)=>s+c.qty,0);
+  document.getElementById('cart-count').textContent = count;
+  if (!cart.length) {
+    document.getElementById('cart-body').innerHTML='<div style="padding:2rem;text-align:center;color:var(--text-3);font-size:0.85rem;">Cart is empty</div>';
+    document.getElementById('cart-subtotal').textContent = '₹0.00';
+    document.getElementById('cart-total').textContent = '₹0.00';
+    return;
+  }
+  const subtotal = cart.reduce((s,c)=>s+(c.price*c.qty),0);
+  document.getElementById('cart-body').innerHTML = cart.map(c=>`
+    <div class="cart-item">
+      <div class="ci-name">${c.name}</div>
+      <div class="ci-qty">
+        <button onclick="changeQty('${c.id}',-1)">−</button>
+        <span>${c.qty}</span>
+        <button onclick="changeQty('${c.id}',1)">+</button>
+      </div>
+      <div class="ci-price">₹${(c.price*c.qty).toLocaleString('en-IN')}</div>
+      <div class="ci-remove" onclick="removeFromCart('${c.id}')">✕</div>
+    </div>`).join('');
+  document.getElementById('cart-subtotal').textContent = '₹'+subtotal.toFixed(2);
+  document.getElementById('cart-total').textContent = '₹'+subtotal.toFixed(2);
+}
+
+function openCheckout() {
+  if (!cart.length) { alert('Cart is empty.'); return; }
+  const subtotal = cart.reduce((s,c)=>s+(c.price*c.qty),0);
+  document.getElementById('modal-patient').value = document.getElementById('cart-patient').value || '';
+  document.getElementById('modal-subtotal').textContent = '₹'+subtotal.toFixed(2);
+  document.getElementById('modal-disc-amt').textContent = '-₹0.00';
+  document.getElementById('modal-total').textContent = '₹'+subtotal.toFixed(2);
+  document.getElementById('modal-discount').oninput = function() {
+    const disc = Math.min(100,Math.max(0,Number(this.value)||0));
+    const discAmt = subtotal * disc/100;
+    document.getElementById('modal-disc-amt').textContent = '-₹'+discAmt.toFixed(2);
+    document.getElementById('modal-total').textContent = '₹'+(subtotal-discAmt).toFixed(2);
+  };
+  document.getElementById('checkout-modal').classList.remove('hidden');
+}
+
+function closeCheckout() { document.getElementById('checkout-modal').classList.add('hidden'); }
+
+async function confirmCheckout() {
+  const customer = document.getElementById('modal-patient').value.trim() || 'Walk-in';
+  const payMode = document.getElementById('modal-payment').value;
+  const disc = Number(document.getElementById('modal-discount').value)||0;
+  const subtotal = cart.reduce((s,c)=>s+(c.price*c.qty),0);
+  const discAmt = subtotal*disc/100;
+  const total = subtotal - discAmt;
+
+  const body = {
+    doctype: 'Sales Invoice',
+    customer: customer,
+    posting_date: new Date().toISOString().split('T')[0],
+    due_date: new Date().toISOString().split('T')[0],
+    additional_discount_percentage: disc,
+    items: cart.map(c=>({ item_code: c.id, qty: c.qty, rate: c.price })),
+    payments: [{ mode_of_payment: payMode, amount: total }]
+  };
+
+  try {
+    const r = await fetch(`${BASE}/api/resource/Sales Invoice`,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d = await r.json();
+    if (d.data?.name) {
+      closeCheckout();
+      alert(`✅ Sale recorded: ${d.data.name}\nTotal: ₹${total.toFixed(2)}`);
+      cart = [];
+      renderCart();
+      openERP('/app/sales-invoice/'+d.data.name);
+    } else { alert('Error: '+(d.exc_type||JSON.stringify(d.exc||d))); }
+  } catch(e) { alert('Error: '+e.message); }
+}
+
+async function loadMedication() {
+  const data = await api('Medication Request',{fields:['name','patient','medication','quantity','status','creation'],order_by:'creation desc',limit:50});
+  document.getElementById('count-medication').textContent = data?.length||0;
+  document.getElementById('list-medication').innerHTML = data?.length ? data.map(m=>`
+    <div class="data-row" onclick="openERP('/app/medication-request/${m.name}')">
+      <div class="row-main"><div class="row-title">${m.patient||m.name}</div><div class="row-sub">${m.medication||'—'} · Qty: ${m.quantity||'—'}</div></div>
+      <div class="row-meta"><span class="badge ${badgeClass(m.status)}">${m.status||'—'}</span><span style="font-size:0.72rem;color:var(--text-3)">${fmt(m.creation)}</span></div>
+    </div>`).join('') : empty();
+}
+
+async function loadInpatientMed() {
+  const data = await api('Inpatient Medication Entry',{fields:['name','patient','posting_date','status'],order_by:'posting_date desc',limit:30});
+  document.getElementById('count-inpatient-med').textContent = data?.length||0;
+  document.getElementById('list-inpatient-med').innerHTML = data?.length ? data.map(r=>`
+    <div class="data-row" onclick="openERP('/app/inpatient-medication-entry/${r.name}')">
+      <div class="row-main"><div class="row-title">${r.patient||r.name}</div><div class="row-sub">${fmt(r.posting_date)}</div></div>
+      <div class="row-meta"><span class="badge ${badgeClass(r.status)}">${r.status||'—'}</span></div>
+    </div>`).join('') : empty();
+}
+
+async function loadSalesHistory() {
+  const data = await api('Sales Invoice',{fields:['name','customer','posting_date','grand_total','status'],order_by:'posting_date desc',limit:50});
+  document.getElementById('count-sales-history').textContent = data?.length||0;
+  document.getElementById('list-sales-history').innerHTML = data?.length ? data.map(s=>`
+    <div class="data-row" onclick="openERP('/app/sales-invoice/${s.name}')">
+      <div class="row-main"><div class="row-title">${s.customer||s.name}</div><div class="row-sub">${s.name} · ${fmt(s.posting_date)}</div></div>
+      <div class="row-meta"><span class="badge ${badgeClass(s.status)}">${s.status||'—'}</span><span style="font-weight:700;color:#b39ddb;font-family:'JetBrains Mono',monospace">₹${Number(s.grand_total||0).toLocaleString('en-IN')}</span></div>
+    </div>`).join('') : empty();
+}
+
+async function loadItems() {
+  const data = await api('Item',{filters:[['disabled','=',0]],fields:['name','item_name','item_code','standard_rate','item_group'],order_by:'item_name asc',limit:100});
+  document.getElementById('count-items').textContent = data?.length||0;
+  document.getElementById('list-items').innerHTML = data?.length ? data.map(i=>`
+    <div class="data-row" onclick="openERP('/app/item/${i.name}')">
+      <div class="row-main"><div class="row-title">${i.item_name||i.name}</div><div class="row-sub">${i.item_code||i.name} · ${i.item_group||'—'}</div></div>
+      <div class="row-meta"><span style="font-weight:700;color:#b39ddb;font-family:'JetBrains Mono',monospace">₹${Number(i.standard_rate||0).toLocaleString('en-IN')}</span></div>
+    </div>`).join('') : empty();
+}
+
+async function loadStockEntries() {
+  const data = await api('Stock Entry',{fields:['name','stock_entry_type','posting_date','total_amount','docstatus'],order_by:'posting_date desc',limit:30});
+  document.getElementById('count-stock-entries').textContent = data?.length||0;
+  document.getElementById('list-stock-entries').innerHTML = data?.length ? data.map(s=>`
+    <div class="data-row" onclick="openERP('/app/stock-entry/${s.name}')">
+      <div class="row-main"><div class="row-title">${s.stock_entry_type||s.name}</div><div class="row-sub">${s.name} · ${fmt(s.posting_date)}</div></div>
+      <div class="row-meta"><span class="badge ${s.docstatus==1?'badge-success':s.docstatus==2?'badge-error':'badge-warn'}">${s.docstatus==1?'Submitted':s.docstatus==2?'Cancelled':'Draft'}</span><span style="font-weight:700;color:#b39ddb;font-family:'JetBrains Mono',monospace">₹${Number(s.total_amount||0).toLocaleString('en-IN')}</span></div>
+    </div>`).join('') : empty();
+}
+
+async function loadWarehouses() {
+  const data = await api('Warehouse',{fields:['name','warehouse_name','warehouse_type','is_group'],limit:30});
+  document.getElementById('list-warehouses').innerHTML = data?.length ? data.map(w=>`
+    <div class="data-row" onclick="openERP('/app/warehouse/${w.name}')">
+      <div class="row-main"><div class="row-title">${w.warehouse_name||w.name}</div><div class="row-sub">${w.warehouse_type||'—'}</div></div>
+      <div class="row-meta"><span class="badge badge-info">${w.is_group?'Group':'Leaf'}</span></div>
+    </div>`).join('') : empty();
+}
+
+async function loadAttendance() {
+  const filters = state.employee?[['employee','=',state.employee.name]]:[];
+  const data = await api('Attendance',{filters,fields:['name','attendance_date','status','in_time','out_time'],order_by:'attendance_date desc',limit:30});
+  document.getElementById('list-attendance').innerHTML = data?.length ? data.map(a=>`
+    <div class="data-row" onclick="openERP('/app/attendance/${a.name}')">
+      <div class="row-main"><div class="row-title">${fmt(a.attendance_date)}</div><div class="row-sub">${a.in_time||'—'} → ${a.out_time||'—'}</div></div>
+      <div class="row-meta"><span class="badge ${badgeClass(a.status)}">${a.status||'—'}</span></div>
+    </div>`).join('') : empty();
+}
+
+async function loadLeave() {
+  const filters = state.employee?[['employee','=',state.employee.name]]:[];
+  const data = await api('Leave Application',{filters,fields:['name','leave_type','from_date','to_date','status'],order_by:'from_date desc',limit:20});
+  document.getElementById('list-leave').innerHTML = data?.length ? data.map(l=>`
+    <div class="data-row" onclick="openERP('/app/leave-application/${l.name}')">
+      <div class="row-main"><div class="row-title">${l.leave_type||l.name}</div><div class="row-sub">${fmt(l.from_date)} → ${fmt(l.to_date)}</div></div>
+      <div class="row-meta"><span class="badge ${badgeClass(l.status)}">${l.status||'—'}</span></div>
+    </div>`).join('') : empty();
+}
+
+async function loadPayroll() {
+  const filters = state.employee?[['employee','=',state.employee.name]]:[];
+  const data = await api('Salary Slip',{filters,fields:['name','posting_date','net_pay','status'],order_by:'posting_date desc',limit:12});
+  document.getElementById('list-payroll').innerHTML = data?.length ? data.map(s=>`
+    <div class="data-row" onclick="openERP('/app/salary-slip/${s.name}')">
+      <div class="row-main"><div class="row-title">${fmt(s.posting_date)}</div><div class="row-sub">Net Pay</div></div>
+      <div class="row-meta"><span class="badge ${badgeClass(s.status)}">${s.status||'—'}</span><span style="font-weight:700;color:#b39ddb;font-family:'JetBrains Mono',monospace">₹${Number(s.net_pay||0).toLocaleString('en-IN')}</span></div>
+    </div>`).join('') : empty();
+}
+
+document.addEventListener('keydown', e => { if (e.key==='Enter' && document.getElementById('inp-pass')===document.activeElement) doLogin(); });
+document.getElementById('checkout-modal').addEventListener('click', e => { if (e.target===document.getElementById('checkout-modal')) closeCheckout(); });
+initSession();
+</script>
+</body>
+</html>
