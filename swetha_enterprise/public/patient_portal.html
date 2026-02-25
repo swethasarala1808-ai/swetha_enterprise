@@ -579,8 +579,15 @@ async function doRegister() {
   } catch(e) { $('reg-err').textContent='Registration failed. Please try again.'; $('reg-err').style.display='block'; }
 }
 
-async function doLogout() { await fetch('/api/method/logout',{method:'POST',credentials:'include'}); location.reload(); }
-
+// Example from patient_portal.html
+async function doLogout() {
+  await fetch('/api/method/logout', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'X-Frappe-CSRF-Token': await getCSRF() }
+  });
+  location.reload();
+}
 function showLogin() { $('auth-login').style.display='block'; $('auth-register').style.display='none'; }
 function showRegister() { $('auth-login').style.display='none'; $('auth-register').style.display='block'; }
 
