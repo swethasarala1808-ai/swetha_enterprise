@@ -459,12 +459,7 @@ async function callMethod(method, data={}) {
 }
 
 async function getCSRF() {
-  try {
-    const r = await fetch(`/api/method/frappe.auth.get_logged_user`, { credentials: 'include' });
-    return r.headers.get('X-Frappe-CSRF-Token') || '';
-  } catch {
-    return '';
-  }
+  try { const r = await fetch(`${BASE}/api/method/frappe.auth.get_logged_user`,{credentials:'include'}); return r.headers.get('X-Frappe-CSRF-Token')||''; } catch { return ''; }
 }
 
 // ─── AUTH ───
@@ -579,15 +574,8 @@ async function doRegister() {
   } catch(e) { $('reg-err').textContent='Registration failed. Please try again.'; $('reg-err').style.display='block'; }
 }
 
-// Example from patient_portal.html
-async function doLogout() {
-  await fetch('/api/method/logout', {
-    method: 'POST',
-    credentials: 'include',
-    headers: { 'X-Frappe-CSRF-Token': await getCSRF() }
-  });
-  location.reload();
-}
+function doLogout() { window.location.href = '/?cmd=logout'; }
+
 function showLogin() { $('auth-login').style.display='block'; $('auth-register').style.display='none'; }
 function showRegister() { $('auth-login').style.display='none'; $('auth-register').style.display='block'; }
 
