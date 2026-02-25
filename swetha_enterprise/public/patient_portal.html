@@ -578,8 +578,13 @@ async function doRegister() {
     else { $('reg-err').textContent='Please contact the hospital to activate your account.'; $('reg-err').style.display='block'; }
   } catch(e) { $('reg-err').textContent='Registration failed. Please try again.'; $('reg-err').style.display='block'; }
 }
-
-function doLogout() { fetch('/?cmd=logout',{credentials:'include'}).finally(()=>{ window.location.href='/login'; }); }
+function doLogout() {
+  window.location.href = '/?cmd=logout';
+}
+document.getElementById('btn-logout').onclick = () => {
+  localStorage.removeItem('dr_prac_id');
+  window.location.href = '/?cmd=logout';
+};
 
 function showLogin() { $('auth-login').style.display='block'; $('auth-register').style.display='none'; }
 function showRegister() { $('auth-login').style.display='none'; $('auth-register').style.display='block'; }
