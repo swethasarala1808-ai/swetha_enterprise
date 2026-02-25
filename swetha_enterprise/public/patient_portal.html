@@ -459,7 +459,12 @@ async function callMethod(method, data={}) {
 }
 
 async function getCSRF() {
-  try { const r = await fetch(`${BASE}/api/method/frappe.auth.get_logged_user`,{credentials:'include'}); return r.headers.get('X-Frappe-CSRF-Token')||''; } catch { return ''; }
+  try {
+    const r = await fetch(`/api/method/frappe.auth.get_logged_user`, { credentials: 'include' });
+    return r.headers.get('X-Frappe-CSRF-Token') || '';
+  } catch {
+    return '';
+  }
 }
 
 // ─── AUTH ───
