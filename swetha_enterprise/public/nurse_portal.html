@@ -3,791 +3,692 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nurse Portal | Sneha Health</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Nurse Portal — Rena Rehabilitation Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy: #05152e;
-  --navy-2: #0a2144;
-  --navy-3: #0f2d5c;
-  --blue: #1565c0;
-  --blue-bright: #1e88e5;
-  --blue-light: #42a5f5;
-  --cyan: #00b4d8;
-  --cyan-light: #48cae4;
-  --teal: #00897b;
-  --surface: #0d1f3c;
-  --surface-2: #112547;
-  --card: #132a52;
-  --card-2: #163060;
-  --border: rgba(30,136,229,0.18);
-  --border-bright: rgba(66,165,245,0.35);
-  --text: #e8f0fe;
-  --text-2: #90a8d0;
-  --text-3: #5a7aaa;
-  --green: #00c853;
-  --amber: #ffab00;
-  --red: #ff1744;
-  --purple: #7c4dff;
-  --sidebar-w: 260px;
-  --radius: 14px;
-  --radius-sm: 8px;
+  --navy-900:#050d1a; --navy-800:#0a1628; --navy-700:#0d1f3c;
+  --blue-500:#1a56db; --blue-400:#3b82f6; --blue-300:#60a5fa; --blue-200:#93c5fd;
+  --accent:#0ea5e9; --accent-glow:rgba(14,165,233,.3);
+  --success:#10b981; --warning:#f59e0b; --danger:#ef4444; --purple:#8b5cf6;
+  --text-primary:#f0f6ff; --text-secondary:#94b8d8; --text-muted:#5a7fa8;
+  --card-bg:rgba(13,31,60,.7); --card-border:rgba(59,130,246,.15); --sidebar-w:255px;
 }
-* { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Sora',sans-serif; background:var(--navy); color:var(--text); min-height:100vh; overflow-x:hidden; }
-::-webkit-scrollbar { width:4px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:var(--border-bright); border-radius:4px; }
-
-/* ── OVERLAY ── */
-.overlay { position:fixed; inset:0; z-index:9999; background:linear-gradient(135deg,#020c1e,#051535,#071a3e); display:flex; align-items:center; justify-content:center; }
-.overlay-card { background:var(--card); border:1px solid var(--border-bright); border-radius:24px; padding:2.5rem 2rem; width:100%; max-width:420px; box-shadow:0 32px 80px rgba(0,0,0,0.6); text-align:center; }
-.overlay-logo { width:64px; height:64px; background:linear-gradient(135deg,var(--teal),var(--cyan)); border-radius:18px; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; box-shadow:0 8px 32px rgba(0,137,123,0.5); }
-.overlay-logo svg { width:28px; height:28px; }
-.overlay-card h2 { font-size:1.4rem; font-weight:700; margin-bottom:0.5rem; }
-.overlay-card p { color:var(--text-2); font-size:0.875rem; }
-.login-form { margin-top:1.75rem; text-align:left; }
-.login-form label { font-size:0.75rem; font-weight:600; color:var(--text-2); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:0.4rem; }
-.login-form input { width:100%; padding:0.75rem 1rem; background:var(--navy-3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:inherit; font-size:0.9rem; margin-bottom:1rem; transition:border-color 0.2s; }
-.login-form input:focus { outline:none; border-color:var(--teal); }
-.btn-primary { width:100%; padding:0.85rem; background:linear-gradient(135deg,var(--teal),var(--cyan)); color:#fff; border:none; border-radius:var(--radius-sm); font-family:inherit; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.2s; box-shadow:0 4px 16px rgba(0,137,123,0.4); }
-.btn-primary:hover { transform:translateY(-1px); box-shadow:0 8px 24px rgba(0,137,123,0.5); }
-.diag { margin-top:1.5rem; background:rgba(0,0,0,0.3); border-radius:8px; padding:0.5rem 0.75rem; max-height:80px; overflow-y:auto; font-family:'JetBrains Mono',monospace; font-size:0.7rem; color:var(--text-3); text-align:left; }
-.picker-list { max-height:180px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-sm); margin-top:1rem; }
-.picker-item { padding:0.75rem 1rem; cursor:pointer; border-bottom:1px solid var(--border); font-size:0.85rem; transition:background 0.15s; }
-.picker-item:hover { background:var(--navy-3); color:var(--cyan); }
-.picker-item .pid { font-size:0.72rem; color:var(--text-3); font-family:monospace; }
-.hidden { display:none !important; }
-
-/* ── APP ── */
-.app-shell { display:flex; min-height:100vh; }
-.sidebar { width:var(--sidebar-w); background:linear-gradient(180deg,var(--navy-2),var(--navy)); border-right:1px solid var(--border); display:flex; flex-direction:column; position:fixed; height:100vh; z-index:100; overflow-y:auto; }
-.sidebar-header { padding:1.5rem 1.25rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:0.75rem; }
-.logo-icon { width:40px; height:40px; background:linear-gradient(135deg,var(--teal),var(--cyan)); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 12px rgba(0,137,123,0.4); }
-.logo-icon svg { width:20px; height:20px; }
-.logo-text { font-size:1rem; font-weight:700; }
-.logo-sub { font-size:0.7rem; color:var(--text-3); }
-.sidebar-nav { flex:1; padding:1rem 0.75rem; }
-.nav-group-label { font-size:0.65rem; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--text-3); padding:0.75rem 0.5rem 0.4rem; }
-.nav-item { display:flex; align-items:center; gap:0.625rem; padding:0.625rem 0.75rem; border-radius:var(--radius-sm); cursor:pointer; transition:all 0.18s; font-size:0.85rem; font-weight:500; color:var(--text-2); margin-bottom:2px; }
-.nav-item:hover { background:rgba(0,180,216,0.08); color:var(--text); }
-.nav-item.active { background:linear-gradient(90deg,rgba(0,137,123,0.22),rgba(0,180,216,0.12)); color:var(--cyan); border-left:2.5px solid var(--teal); }
-.nav-icon { width:18px; height:18px; flex-shrink:0; opacity:0.8; }
-.sidebar-footer { padding:1rem; border-top:1px solid var(--border); }
-.user-chip { display:flex; align-items:center; gap:0.6rem; padding:0.6rem; background:var(--surface-2); border-radius:10px; }
-.user-avatar { width:32px; height:32px; background:linear-gradient(135deg,var(--teal),var(--cyan)); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-weight:700; flex-shrink:0; }
-.user-name { font-size:0.8rem; font-weight:600; color:var(--text); line-height:1.2; }
-.user-role { font-size:0.68rem; color:var(--text-3); }
-.logout-btn { margin-top:0.5rem; width:100%; padding:0.5rem; background:transparent; border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text-2); font-family:inherit; font-size:0.78rem; cursor:pointer; transition:all 0.2s; }
-.logout-btn:hover { border-color:var(--red); color:var(--red); }
-
-/* ── MAIN ── */
-.main { margin-left:var(--sidebar-w); flex:1; display:flex; flex-direction:column; }
-.topbar { padding:1rem 2rem; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:1rem; background:rgba(5,21,46,0.95); backdrop-filter:blur(12px); position:sticky; top:0; z-index:50; }
-.topbar-title { font-size:1.1rem; font-weight:700; }
-.topbar-sub { font-size:0.78rem; color:var(--text-3); margin-top:1px; }
-.topbar-actions { margin-left:auto; display:flex; gap:0.5rem; }
-.btn-sm { padding:0.45rem 0.9rem; font-size:0.78rem; font-weight:600; border-radius:6px; border:none; cursor:pointer; font-family:inherit; transition:all 0.18s; }
-.btn-sm.primary { background:linear-gradient(135deg,var(--teal),var(--cyan)); color:#fff; }
-.btn-sm.primary:hover { transform:translateY(-1px); }
-.btn-sm.outline { background:transparent; border:1px solid var(--border-bright); color:var(--text-2); }
-.btn-sm.outline:hover { border-color:var(--cyan); color:var(--cyan); }
-.content-body { padding:1.5rem 2rem; max-width:1200px; }
-
-/* ── SECTIONS ── */
-.section { display:none; animation:fadeUp 0.28s ease; }
-.section.active { display:block; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:none; } }
-
-/* ── STATS ── */
-.stats-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:1rem; margin-bottom:1.5rem; }
-.stat-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.25rem; border-top:3px solid transparent; }
-.stat-card.teal { border-top-color:var(--teal); }
-.stat-card.cyan { border-top-color:var(--cyan); }
-.stat-card.green { border-top-color:var(--green); }
-.stat-card.amber { border-top-color:var(--amber); }
-.stat-card.purple { border-top-color:var(--purple); }
-.stat-label { font-size:0.7rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-3); }
-.stat-value { font-size:2rem; font-weight:700; margin:0.35rem 0 0; font-family:'JetBrains Mono',monospace; }
-
-/* ── CARDS ── */
-.card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:1.25rem; }
-.card-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid var(--border); }
-.card-title { font-size:0.95rem; font-weight:700; }
-.card-body { padding:0; }
-.section-actions { display:flex; gap:0.5rem; }
-
-/* ── DATA ROWS ── */
-.data-row { display:flex; align-items:center; gap:1rem; padding:0.8rem 1.25rem; border-bottom:1px solid var(--border); cursor:pointer; transition:all 0.15s; position:relative; }
-.data-row:last-child { border-bottom:none; }
-.data-row:hover { background:rgba(0,180,216,0.06); padding-left:1.5rem; }
-.data-row:hover::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--teal); border-radius:0 2px 2px 0; }
-.row-main { flex:1; min-width:0; }
-.row-title { font-size:0.875rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-.row-sub { font-size:0.75rem; color:var(--text-3); font-family:'JetBrains Mono',monospace; margin-top:2px; }
-.row-meta { display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0; }
-
-/* ── BADGES ── */
-.badge { font-size:0.68rem; font-weight:600; padding:0.25rem 0.5rem; border-radius:4px; }
-.badge-success { background:rgba(0,200,83,0.15); color:#69db7c; }
-.badge-warn { background:rgba(255,171,0,0.15); color:var(--amber); }
-.badge-error { background:rgba(255,23,68,0.12); color:#ff6b6b; }
-.badge-info { background:rgba(66,165,245,0.12); color:var(--blue-light); }
-.badge-cyan { background:rgba(0,180,216,0.15); color:var(--cyan); }
-.badge-teal { background:rgba(0,137,123,0.15); color:#4db6ac; }
-.count-badge { background:var(--navy-3); color:var(--cyan); font-size:0.7rem; font-weight:700; padding:0.15rem 0.5rem; border-radius:10px; }
-.empty-state { padding:2.5rem; text-align:center; color:var(--text-3); font-size:0.875rem; }
-.emoji { display:block; font-size:2rem; margin-bottom:0.75rem; }
-
-/* ── VITALS QUICK ENTRY ── */
-.vitals-form { padding:1.25rem; display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:0.75rem; }
-.vitals-form .field-group { display:flex; flex-direction:column; gap:0.3rem; }
-.vitals-form label { font-size:0.72rem; font-weight:600; color:var(--text-2); text-transform:uppercase; letter-spacing:0.06em; }
-.vitals-form input, .vitals-form select { padding:0.6rem 0.8rem; background:var(--navy-3); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:'JetBrains Mono',monospace; font-size:0.85rem; width:100%; }
-.vitals-form input:focus, .vitals-form select:focus { outline:none; border-color:var(--teal); }
-.vitals-form-footer { padding:0 1.25rem 1.25rem; display:flex; gap:0.5rem; }
-.vitals-patient-search { padding:1.25rem 1.25rem 0; display:flex; gap:0.5rem; }
-.vitals-patient-search input { flex:1; padding:0.65rem 0.9rem; background:var(--navy-3); border:1px solid var(--border); border-radius:6px; color:var(--text); font-family:inherit; font-size:0.875rem; }
-.vitals-patient-search input:focus { outline:none; border-color:var(--teal); }
-
-/* ── PROFILE ── */
-.profile-grid { display:grid; grid-template-columns:1fr 1fr; gap:0.75rem; padding:1.25rem; }
-.profile-field { display:flex; flex-direction:column; gap:0.25rem; }
-.profile-field .pf-label { font-size:0.68rem; font-weight:600; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-3); }
-.profile-field .pf-value { font-size:0.875rem; color:var(--text); font-family:'JetBrains Mono',monospace; }
-
-/* ── QUICK ACTIONS ── */
-.quick-actions { display:flex; gap:0.75rem; flex-wrap:wrap; margin-bottom:1.5rem; }
-.qa-btn { padding:0.75rem 1.25rem; background:var(--card); border:1px solid var(--border); border-radius:10px; cursor:pointer; font-family:inherit; font-size:0.82rem; font-weight:600; color:var(--text-2); display:flex; align-items:center; gap:0.5rem; transition:all 0.18s; }
-.qa-btn:hover { border-color:var(--teal); color:var(--cyan); background:rgba(0,137,123,0.08); transform:translateY(-1px); }
-.qa-btn .qa-icon { font-size:1.1rem; }
-
-@media (max-width:900px) {
-  .sidebar { transform:translateX(-100%); transition:transform 0.3s; }
-  .sidebar.open { transform:none; }
-  .main { margin-left:0; }
-  .stats-grid { grid-template-columns:repeat(2,1fr); }
-  .profile-grid { grid-template-columns:1fr; }
-  .vitals-form { grid-template-columns:1fr 1fr; }
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:var(--navy-900);color:var(--text-primary);min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% 10%,rgba(26,86,219,.12) 0%,transparent 60%),radial-gradient(ellipse 60% 40% at 80% 80%,rgba(14,165,233,.08) 0%,transparent 50%);pointer-events:none;z-index:0}
+.sidebar{position:fixed;top:0;left:0;width:var(--sidebar-w);height:100vh;background:linear-gradient(180deg,var(--navy-800) 0%,var(--navy-900) 100%);border-right:1px solid var(--card-border);display:flex;flex-direction:column;z-index:100;overflow-y:auto}
+.brand{padding:22px 18px 16px;border-bottom:1px solid var(--card-border)}
+.brand-logo{width:40px;height:40px;background:linear-gradient(135deg,#7c3aed,var(--purple));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:9px;box-shadow:0 4px 16px rgba(139,92,246,.3)}
+.brand-name{font-family:'Sora',sans-serif;font-size:13px;font-weight:600;line-height:1.3}
+.brand-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
+.nurse-info{padding:13px 15px;margin:10px 8px;background:rgba(139,92,246,.1);border:1px solid rgba(139,92,246,.2);border-radius:10px}
+.nurse-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#4c1d95,var(--purple));display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:7px}
+.nurse-name{font-family:'Sora',sans-serif;font-size:13px;font-weight:600}
+.nurse-role{font-size:11px;color:var(--purple);margin-top:2px;display:flex;align-items:center;gap:4px}
+.nav-section{padding:7px 12px 3px;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 15px 8px 18px;margin:1px 7px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text-secondary);transition:all .18s ease}
+.nav-item:hover{background:rgba(59,130,246,.1);color:var(--text-primary)}
+.nav-item.active{background:rgba(139,92,246,.15);color:#c4b5fd;border-left:2px solid var(--purple)}
+.nav-item .icon{font-size:15px;width:19px;text-align:center}
+.nav-badge{margin-left:auto;background:var(--purple);color:white;font-size:10px;font-weight:600;padding:1px 6px;border-radius:10px;font-family:'DM Mono',monospace}
+.sidebar-footer{margin-top:auto;padding:10px 7px;border-top:1px solid var(--card-border)}
+.main{margin-left:var(--sidebar-w);min-height:100vh;position:relative;z-index:1}
+.topbar{position:sticky;top:0;background:rgba(5,13,26,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--card-border);padding:0 26px;height:58px;display:flex;align-items:center;justify-content:space-between;z-index:90}
+.page-title{font-family:'Sora',sans-serif;font-size:16px;font-weight:600}
+.content{padding:22px 26px}
+.section{display:none}
+.section.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .18s;font-family:'DM Sans',sans-serif}
+.btn-primary{background:var(--blue-500);color:white}
+.btn-primary:hover{background:var(--blue-400);transform:translateY(-1px)}
+.btn-purple{background:rgba(139,92,246,.2);color:#c4b5fd;border:1px solid rgba(139,92,246,.3)}
+.btn-purple:hover{background:rgba(139,92,246,.35)}
+.btn-ghost{background:transparent;color:var(--text-secondary);border:1px solid var(--card-border)}
+.btn-ghost:hover{background:rgba(59,130,246,.1);color:var(--text-primary)}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:13px;padding:18px;position:relative;overflow:hidden;backdrop-filter:blur(10px);transition:transform .2s,box-shadow .2s}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(139,92,246,.15)}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--purple),var(--accent));opacity:.6}
+.stat-icon{font-size:22px;margin-bottom:10px}
+.stat-value{font-family:'Sora',sans-serif;font-size:26px;font-weight:700;line-height:1}
+.stat-label{font-size:12px;color:var(--text-muted);margin-top:4px}
+.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:13px;backdrop-filter:blur(10px);overflow:hidden;margin-bottom:14px}
+.card-header{padding:14px 18px;border-bottom:1px solid var(--card-border);display:flex;align-items:center;justify-content:space-between}
+.card-title{font-family:'Sora',sans-serif;font-size:14px;font-weight:600}
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{padding:9px 15px;text-align:left;font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);background:rgba(26,86,219,.06);border-bottom:1px solid var(--card-border)}
+.data-table td{padding:11px 15px;font-size:13px;color:var(--text-secondary);border-bottom:1px solid rgba(59,130,246,.06)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(59,130,246,.04)}
+.data-table .primary{color:var(--text-primary);font-weight:500}
+.pill{display:inline-block;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.pill-green{background:rgba(16,185,129,.15);color:var(--success)}
+.pill-blue{background:rgba(59,130,246,.15);color:var(--blue-300)}
+.pill-yellow{background:rgba(245,158,11,.15);color:var(--warning)}
+.pill-red{background:rgba(239,68,68,.15);color:var(--danger)}
+.pill-purple{background:rgba(139,92,246,.15);color:#c4b5fd}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(5,13,26,.87);backdrop-filter:blur(5px);z-index:200;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--navy-700);border:1px solid var(--card-border);border-radius:16px;width:560px;max-width:95vw;max-height:88vh;overflow-y:auto}
+.modal-header{padding:18px 22px;border-bottom:1px solid var(--card-border);display:flex;align-items:center;justify-content:space-between}
+.modal-title{font-family:'Sora',sans-serif;font-size:15px;font-weight:600}
+.modal-close{background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;padding:2px 7px;border-radius:6px}
+.modal-close:hover{background:rgba(239,68,68,.15);color:var(--danger)}
+.modal-body{padding:22px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group.full{grid-column:1/-1}
+.form-label{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+.form-input,.form-select,.form-textarea{background:rgba(26,86,219,.06);border:1px solid var(--card-border);border-radius:8px;padding:8px 11px;color:var(--text-primary);font-size:13px;font-family:'DM Sans',sans-serif;outline:none;width:100%;transition:border-color .15s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--purple);background:rgba(139,92,246,.08)}
+.form-select option{background:var(--navy-700)}
+.form-textarea{resize:vertical;min-height:70px}
+.loading{display:flex;align-items:center;justify-content:center;padding:36px;color:var(--text-muted);font-size:13px;gap:8px}
+.spinner{width:15px;height:15px;border:2px solid var(--card-border);border-top-color:var(--purple);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:38px 20px;color:var(--text-muted)}
+.empty-state .icon{font-size:34px;margin-bottom:10px;opacity:.5}
+.empty-state p{font-size:13px}
+.alert{padding:9px 13px;border-radius:8px;font-size:12px;margin-bottom:11px;display:flex;align-items:center;gap:8px}
+.alert-info{background:rgba(14,165,233,.12);border:1px solid rgba(14,165,233,.25);color:var(--accent)}
+.alert-success{background:rgba(16,185,129,.12);border:1px solid rgba(16,185,129,.25);color:var(--success)}
+.alert-error{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.25);color:var(--danger)}
+.vitals-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.vital-card{background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:10px;padding:14px;text-align:center}
+.vital-icon{font-size:22px;margin-bottom:5px}
+.vital-value{font-family:'Sora',sans-serif;font-size:20px;font-weight:700;color:var(--text-primary)}
+.vital-label{font-size:11px;color:var(--text-muted);margin-top:3px}
+.vital-unit{font-size:11px;color:var(--purple)}
+.link-box{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:10px;padding:13px;margin-bottom:14px;display:flex;align-items:center;gap:11px}
+.hr-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:18px}
+.hr-card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:11px;padding:15px;cursor:pointer;transition:all .2s}
+.hr-card:hover{transform:translateY(-2px);border-color:var(--purple)}
+.hr-card .hr-icon{font-size:22px;margin-bottom:7px}
+.hr-card .hr-title{font-family:'Sora',sans-serif;font-size:13px;font-weight:600}
+.hr-card .hr-sub{font-size:12px;color:var(--text-muted);margin-top:2px}
+::-webkit-scrollbar{width:6px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:#1e3a5f;border-radius:3px}
 </style>
 </head>
 <body>
 
-<!-- LOGIN OVERLAY -->
-<div class="overlay" id="overlay">
-  <div class="overlay-card">
-    <div class="overlay-logo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-      </svg>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo">🩺</div>
+    <div class="brand-name">Rena Rehabilitation</div>
+    <div class="brand-sub">Nurse Portal</div>
+  </div>
+
+  <div class="nurse-info">
+    <div class="nurse-avatar">👩‍⚕️</div>
+    <div class="nurse-name" id="nurseName">Loading...</div>
+    <div class="nurse-role"><span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;"></span> Nurse</div>
+  </div>
+
+  <div class="nav-section">Clinical</div>
+  <div class="nav-item active" onclick="showSection('dashboard')"><span class="icon">📊</span> Dashboard</div>
+  <div class="nav-item" onclick="showSection('patients')"><span class="icon">👥</span> My Patients <span class="nav-badge" id="ptBadge">0</span></div>
+  <div class="nav-item" onclick="showSection('vitals')"><span class="icon">💓</span> Vital Signs</div>
+  <div class="nav-item" onclick="showSection('tasks')"><span class="icon">✅</span> Nursing Tasks</div>
+  <div class="nav-item" onclick="showSection('inpatient')"><span class="icon">🛏</span> Inpatient Care</div>
+  <div class="nav-item" onclick="showSection('medications')"><span class="icon">💊</span> Medication Requests</div>
+
+  <div class="nav-section">Account</div>
+  <div class="nav-item" onclick="showSection('profile')"><span class="icon">👤</span> My Profile</div>
+
+  <div class="nav-section">HR</div>
+  <div class="nav-item" onclick="showSection('hr')"><span class="icon">📁</span> HR Portal</div>
+
+  <div class="sidebar-footer">
+    <div class="nav-item" onclick="logout()" style="color:var(--danger)"><span class="icon">🚪</span> Logout</div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="page-title" id="pageTitle">Dashboard</div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <button class="btn btn-ghost" onclick="refreshCurrentSection()">↻ Refresh</button>
+      <button class="btn btn-purple" onclick="openVitalModal()">+ Record Vitals</button>
     </div>
-    <h2>Nurse Portal</h2>
-    <p>Sneha Health / Rena Rehabilitation Centre</p>
-    <div id="login-ui">
-      <div class="login-form">
-        <label>Email</label>
-        <input type="email" id="inp-email" placeholder="nurse@snehahealth.in" autocomplete="username">
-        <label>Password</label>
-        <input type="password" id="inp-pass" placeholder="••••••••" autocomplete="current-password">
-        <button class="btn-primary" onclick="doLogin()">Sign In</button>
+  </div>
+
+  <div class="content">
+
+    <!-- NURSE LINK -->
+    <div id="nurseLinkBox" style="display:none;" class="link-box">
+      <div style="font-size:20px;">⚠️</div>
+      <div style="flex:1">
+        <div style="font-weight:600;font-size:13px;">Link Your Employee Record</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">Select your employee to enable HR features.</div>
+      </div>
+      <select class="form-select" id="empSelect" style="width:200px" onchange="linkEmployee(this.value)">
+        <option value="">— Select Employee —</option>
+      </select>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="s_dashboard" class="section active">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-value" id="statPt">—</div><div class="stat-label">Patients Today</div></div>
+        <div class="stat-card"><div class="stat-icon">💓</div><div class="stat-value" id="statVitals">—</div><div class="stat-label">Vitals Recorded</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statTasks">—</div><div class="stat-label">Tasks Pending</div></div>
+        <div class="stat-card"><div class="stat-icon">💊</div><div class="stat-value" id="statMeds">—</div><div class="stat-label">Med Requests</div></div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="card">
+          <div class="card-header"><span class="card-title">📅 Today's Patients</span></div>
+          <div id="dashPatients"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">✅ Pending Nursing Tasks</span></div>
+          <div id="dashTasks"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
       </div>
     </div>
-    <div id="picker-ui" class="hidden">
-      <p style="margin-top:1rem;font-size:0.85rem;color:var(--amber);">Could not auto-detect your employee record. Please select:</p>
-      <div class="picker-list" id="picker-list"></div>
+
+    <!-- PATIENTS -->
+    <div id="s_patients" class="section">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">👥 Patient List</span>
+          <input type="text" class="form-input" placeholder="Search..." oninput="filterPt(this.value)" style="width:200px;">
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Patient</th><th>Ward/Bed</th><th>Admission</th><th>Condition</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="ptTbody"><tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+        </table>
+      </div>
     </div>
-    <div class="diag" id="diag-log"></div>
+
+    <!-- VITAL SIGNS -->
+    <div id="s_vitals" class="section">
+      <div class="vitals-grid">
+        <div class="vital-card"><div class="vital-icon">❤️</div><div class="vital-value" id="avgBP">—</div><div class="vital-unit">mmHg</div><div class="vital-label">Avg Blood Pressure</div></div>
+        <div class="vital-card"><div class="vital-icon">🫀</div><div class="vital-value" id="avgPulse">—</div><div class="vital-unit">bpm</div><div class="vital-label">Avg Heart Rate</div></div>
+        <div class="vital-card"><div class="vital-icon">🌡️</div><div class="vital-value" id="avgTemp">—</div><div class="vital-unit">°F</div><div class="vital-label">Avg Temperature</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">💓 Vital Signs Records</span>
+          <button class="btn btn-purple" onclick="openVitalModal()">+ Record</button>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Patient</th><th>Date/Time</th><th>BP</th><th>Pulse</th><th>Temp</th><th>SpO2</th><th>Status</th></tr></thead>
+          <tbody id="vitalsTbody"><tr><td colspan="7"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- NURSING TASKS -->
+    <div id="s_tasks" class="section">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">✅ Nursing Tasks</span>
+          <button class="btn btn-purple">+ New Task</button>
+        </div>
+        <table class="data-table">
+          <thead><tr><th>Task</th><th>Patient</th><th>Date</th><th>Priority</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="tasksTbody"><tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- INPATIENT -->
+    <div id="s_inpatient" class="section">
+      <div class="card">
+        <div class="card-header"><span class="card-title">🛏 Inpatient Records</span></div>
+        <table class="data-table">
+          <thead><tr><th>Patient</th><th>Ward</th><th>Bed</th><th>Admission</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="inpatientTbody"><tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MEDICATIONS -->
+    <div id="s_medications" class="section">
+      <div class="card">
+        <div class="card-header"><span class="card-title">💊 Medication Requests</span></div>
+        <table class="data-table">
+          <thead><tr><th>ID</th><th>Patient</th><th>Medication</th><th>Dosage</th><th>Status</th><th>Date</th></tr></thead>
+          <tbody id="medTbody"><tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HR -->
+    <div id="s_hr" class="section">
+      <div class="hr-cards">
+        <div class="hr-card" onclick="loadAttendance()"><div class="hr-icon">🕐</div><div class="hr-title">Attendance</div><div class="hr-sub">Check-in records</div></div>
+        <div class="hr-card" onclick="loadLeave()"><div class="hr-icon">🌴</div><div class="hr-title">Leave</div><div class="hr-sub">Leave applications</div></div>
+        <div class="hr-card" onclick="loadPayroll()"><div class="hr-icon">💰</div><div class="hr-title">Payroll</div><div class="hr-sub">Salary slips</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title" id="hrTitle">Select a section</span></div>
+        <div id="hrBody"><div class="empty-state"><div class="icon">📁</div><p>Select a section above</p></div></div>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="s_profile" class="section">
+      <div class="card">
+        <div class="card-header"><span class="card-title">👤 My Profile</span></div>
+        <div id="profileBody"><div class="loading"><div class="spinner"></div></div></div>
+      </div>
+      <div class="card" style="margin-top:14px;">
+        <div class="card-header"><span class="card-title">🔗 Employee Link</span></div>
+        <div style="padding:16px;">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">Link your employee profile for HR features:</p>
+          <select id="profileEmpSelect" style="background:rgba(139,92,246,.08);border:1px solid rgba(139,92,246,.2);border-radius:8px;padding:8px 12px;color:var(--text-primary);font-size:13px;font-family:inherit;outline:none;max-width:320px;" onchange="linkEmployee(this.value)">
+            <option value="">— Select Employee —</option>
+          </select>
+          <div id="profileEmpStatus" style="margin-top:8px;font-size:12px;color:var(--success);"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- VITAL SIGNS MODAL -->
+<div class="modal-overlay" id="vitalModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Record Vital Signs</div>
+      <button class="modal-close" onclick="closeModal('vitalModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="vitalAlert"></div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label class="form-label">Patient *</label>
+          <input class="form-input" id="vPatient" placeholder="Patient name/ID">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Blood Pressure (mmHg)</label>
+          <input class="form-input" id="vBP" placeholder="e.g. 120/80">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Pulse (bpm)</label>
+          <input class="form-input" id="vPulse" type="number" placeholder="e.g. 72">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Temperature (°F)</label>
+          <input class="form-input" id="vTemp" type="number" step="0.1" placeholder="e.g. 98.6">
+        </div>
+        <div class="form-group">
+          <label class="form-label">SpO2 (%)</label>
+          <input class="form-input" id="vSpO2" type="number" placeholder="e.g. 98">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Respiratory Rate</label>
+          <input class="form-input" id="vResp" type="number" placeholder="breaths/min">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Weight (kg)</label>
+          <input class="form-input" id="vWeight" type="number" step="0.1">
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Notes</label>
+          <textarea class="form-textarea" id="vNotes"></textarea>
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px;">
+        <button class="btn btn-ghost" onclick="closeModal('vitalModal')">Cancel</button>
+        <button class="btn btn-purple" onclick="saveVitals()">Save Vitals</button>
+      </div>
+    </div>
   </div>
 </div>
 
-<!-- APP -->
-<div class="app-shell hidden" id="app-shell">
-
-  <!-- SIDEBAR -->
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round">
-          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-        </svg>
-      </div>
-      <div>
-        <div class="logo-text">Sneha Health</div>
-        <div class="logo-sub">Nurse Portal</div>
-      </div>
-    </div>
-
-    <div class="sidebar-nav">
-      <div class="nav-group-label">Overview</div>
-      <div class="nav-item active" onclick="nav('dashboard')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-        Dashboard
-      </div>
-      <div class="nav-item" onclick="nav('profile')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-        My Profile
-      </div>
-
-      <div class="nav-group-label">Clinical</div>
-      <div class="nav-item" onclick="nav('vitals')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        Vital Signs
-      </div>
-      <div class="nav-item" onclick="nav('patients')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        Patients
-      </div>
-      <div class="nav-item" onclick="nav('inpatient')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-        Inpatient Care
-      </div>
-      <div class="nav-item" onclick="nav('nursing-tasks')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        Nursing Tasks
-      </div>
-      <div class="nav-item" onclick="nav('medication')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
-        Medication Requests
-      </div>
-      <div class="nav-item" onclick="nav('service-req')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
-        Service Requests
-      </div>
-
-      <div class="nav-group-label">HR</div>
-      <div class="nav-item" onclick="nav('attendance')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Attendance
-      </div>
-      <div class="nav-item" onclick="nav('leave')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        Leave
-      </div>
-      <div class="nav-item" onclick="nav('payroll')">
-        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-        Payroll
-      </div>
-    </div>
-
-    <div class="sidebar-footer">
-      <div class="user-chip">
-        <div class="user-avatar" id="user-avatar">N</div>
-        <div>
-          <div class="user-name" id="user-name">Loading…</div>
-          <div class="user-role">Nurse</div>
-        </div>
-      </div>
-      <button class="logout-btn" onclick="doLogout()">Sign Out</button>
-    </div>
-  </nav>
-
-  <!-- MAIN -->
-  <main class="main">
-    <div class="topbar">
-      <div>
-        <div class="topbar-title" id="topbar-title">Dashboard</div>
-        <div class="topbar-sub" id="topbar-sub">Welcome back</div>
-      </div>
-      <div class="topbar-actions">
-        <button class="btn-sm primary" onclick="nav('vitals')">📊 Record Vitals</button>
-        <button class="btn-sm outline" onclick="openERP('/app/patient-encounter/new')">+ Encounter</button>
-      </div>
-    </div>
-
-    <div class="content-body">
-
-      <!-- DASHBOARD -->
-      <section id="section-dashboard" class="section active">
-        <div class="quick-actions">
-          <div class="qa-btn" onclick="nav('vitals')"><span class="qa-icon">📊</span> Record Vitals</div>
-          <div class="qa-btn" onclick="nav('nursing-tasks')"><span class="qa-icon">✅</span> Nursing Tasks</div>
-          <div class="qa-btn" onclick="openERP('/app/inpatient-record/new')"><span class="qa-icon">🛏️</span> New Inpatient</div>
-          <div class="qa-btn" onclick="openERP('/app/attendance/new')"><span class="qa-icon">🕐</span> Mark Attendance</div>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card teal"><div class="stat-label">Today's Vitals</div><div class="stat-value" id="stat-vitals">—</div></div>
-          <div class="stat-card cyan"><div class="stat-label">Active Inpatients</div><div class="stat-value" id="stat-inpatients">—</div></div>
-          <div class="stat-card green"><div class="stat-label">Pending Tasks</div><div class="stat-value" id="stat-tasks">—</div></div>
-          <div class="stat-card amber"><div class="stat-label">Medication Req.</div><div class="stat-value" id="stat-medreq">—</div></div>
-          <div class="stat-card purple"><div class="stat-label">Attendance</div><div class="stat-value" id="stat-att">—</div></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">Recent Vital Signs</h3><button class="btn-sm primary" onclick="nav('vitals')">View All</button></div>
-          <div class="card-body" id="dash-vitals"><div class="empty-state">Loading…</div></div>
-        </div>
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">Today's Nursing Tasks</h3><button class="btn-sm outline" onclick="nav('nursing-tasks')">View All</button></div>
-          <div class="card-body" id="dash-tasks"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-      <!-- PROFILE -->
-      <section id="section-profile" class="section">
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">Employee Profile</h3></div>
-          <div id="profile-container"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-      <!-- VITAL SIGNS -->
-      <section id="section-vitals" class="section">
-        <div class="card" style="margin-bottom:1.25rem;">
-          <div class="card-header"><h3 class="card-title">Record Vital Signs</h3></div>
-          <div class="vitals-patient-search">
-            <input type="text" id="vitals-patient-inp" placeholder="Search patient name or ID…" oninput="searchPatientForVitals()">
-          </div>
-          <div id="vitals-patient-result" style="padding:0 1.25rem;"></div>
-          <div class="vitals-form" id="vitals-form" style="margin-top:0.5rem;">
-            <div class="field-group"><label>Temperature (°F)</label><input type="number" id="v-temp" placeholder="98.6" step="0.1"></div>
-            <div class="field-group"><label>Pulse (bpm)</label><input type="number" id="v-pulse" placeholder="72"></div>
-            <div class="field-group"><label>Systolic BP</label><input type="number" id="v-bp-sys" placeholder="120"></div>
-            <div class="field-group"><label>Diastolic BP</label><input type="number" id="v-bp-dia" placeholder="80"></div>
-            <div class="field-group"><label>SpO2 (%)</label><input type="number" id="v-spo2" placeholder="98" min="0" max="100"></div>
-            <div class="field-group"><label>Respiratory Rate</label><input type="number" id="v-rr" placeholder="16"></div>
-            <div class="field-group"><label>Weight (kg)</label><input type="number" id="v-weight" placeholder="65" step="0.1"></div>
-            <div class="field-group"><label>Height (cm)</label><input type="number" id="v-height" placeholder="165"></div>
-          </div>
-          <div class="vitals-form-footer">
-            <button class="btn-sm primary" onclick="saveVitals()">💾 Save Vitals</button>
-            <button class="btn-sm outline" onclick="clearVitalsForm()">Clear</button>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:0.75rem;"><h3 class="card-title">Vitals History</h3><span class="count-badge" id="count-vitals">0</span></div>
-            <button class="btn-sm outline" onclick="openERP('/app/vital-signs/new')">Open in ERP</button>
-          </div>
-          <div class="card-body" id="list-vitals"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-      <!-- PATIENTS -->
-      <section id="section-patients" class="section">
-        <div class="card">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:0.75rem;"><h3 class="card-title">Patient List</h3><span class="count-badge" id="count-patients">0</span></div>
-            <button class="btn-sm primary" onclick="openERP('/app/patient/new')">+ New Patient</button>
-          </div>
-          <div class="card-body" id="list-patients"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-      <!-- INPATIENT -->
-      <section id="section-inpatient" class="section">
-        <div class="card">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:0.75rem;"><h3 class="card-title">Inpatient Records</h3><span class="count-badge" id="count-inpatient">0</span></div>
-            <button class="btn-sm primary" onclick="openERP('/app/inpatient-record/new')">+ Admit Patient</button>
-          </div>
-          <div class="card-body" id="list-inpatient"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-      <!-- NURSING TASKS -->
-      <section id="section-nursing-tasks" class="section">
-        <div class="card">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:0.75rem;"><h3 class="card-title">Nursing Tasks</h3><span class="count-badge" id="count-nursing-tasks">0</span></div>
-            <button class="btn-sm primary" onclick="openERP('/app/nursing-task/new')">+ New Task</button>
-          </div>
-          <div class="card-body" id="list-nursing-tasks"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-      <!-- MEDICATION REQUESTS -->
-      <section id="section-medication" class="section">
-        <div class="card">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:0.75rem;"><h3 class="card-title">Medication Requests</h3><span class="count-badge" id="count-medication">0</span></div>
-            <button class="btn-sm outline" onclick="openERP('/app/medication-request/new')">+ New</button>
-          </div>
-          <div class="card-body" id="list-medication"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-      <!-- SERVICE REQUESTS -->
-      <section id="section-service-req" class="section">
-        <div class="card">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:0.75rem;"><h3 class="card-title">Service Requests</h3><span class="count-badge" id="count-service-req">0</span></div>
-            <button class="btn-sm outline" onclick="openERP('/app/service-request/new')">+ New</button>
-          </div>
-          <div class="card-body" id="list-service-req"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-      <!-- ATTENDANCE -->
-      <section id="section-attendance" class="section">
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">Attendance Record</h3><button class="btn-sm primary" onclick="openERP('/app/attendance/new')">+ Mark</button></div>
-          <div class="card-body" id="list-attendance"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-      <!-- LEAVE -->
-      <section id="section-leave" class="section">
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">Leave Applications</h3><button class="btn-sm primary" onclick="openERP('/app/leave-application/new')">+ Apply</button></div>
-          <div class="card-body" id="list-leave"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-      <!-- PAYROLL -->
-      <section id="section-payroll" class="section">
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">Salary Slips</h3></div>
-          <div class="card-body" id="list-payroll"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-    </div>
-  </main>
-</div>
-
 <script>
-const BASE = window.location.origin;
-let state = { user: null, employee: null, activeSection: 'dashboard' };
-let vitalsPatient = null;
-let vitalsPatientSearchTimer = null;
+const BASE='';
+let currentUser=null, employeeName=null, allPt=[];
 
-function log(msg, type='info') {
-  const el = document.getElementById('diag-log');
-  if (!el) return;
-  const d = document.createElement('div');
-  d.style.color = type==='error'?'#ff6b6b':type==='success'?'#69db7c':'#748ffc';
-  d.textContent = (type==='error'?'✗':'✓')+' '+msg;
-  el.appendChild(d); el.scrollTop = el.scrollHeight;
+async function api(method,args={}){
+  const r=await fetch(`${BASE}/api/method/${method}`,{method:'POST',headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token':getCsrf()},body:JSON.stringify(args)});
+  const d=await r.json(); if(d.exc) throw new Error(d.exc); return d.message??d;
+}
+async function getList(dt,fields=['name'],filters=[],limit=50,order='modified desc'){
+  const p=new URLSearchParams({doctype:dt,fields:JSON.stringify(fields),filters:JSON.stringify(filters),limit_page_length:limit,order_by:order});
+  const r=await fetch(`${BASE}/api/resource/${encodeURIComponent(dt)}?${p}`,{headers:{'X-Frappe-CSRF-Token':getCsrf()}});
+  return (await r.json()).data||[];
+}
+async function getDoc(dt,name){
+  const r=await fetch(`${BASE}/api/resource/${encodeURIComponent(dt)}/${encodeURIComponent(name)}`,{headers:{'X-Frappe-CSRF-Token':getCsrf()}});
+  return (await r.json()).data||null;
+}
+function getCsrf(){
+  if(typeof frappe!=='undefined'&&frappe.csrf_token) return frappe.csrf_token;
+  return (document.cookie.match(/csrftoken=([^;]+)/)||[])[1]||'';
 }
 
-function badgeClass(s) {
-  if (!s) return 'badge-info';
-  const v = s.toLowerCase();
-  if (['completed','present','approved','active','closed','submitted','paid','normal'].some(x=>v.includes(x))) return 'badge-success';
-  if (['cancelled','rejected','absent'].some(x=>v.includes(x))) return 'badge-error';
-  if (['pending','open','draft','waiting','scheduled'].some(x=>v.includes(x))) return 'badge-warn';
-  return 'badge-info';
-}
+async function init(){
+  try{
+    const user=await api('frappe.auth.get_logged_user');
+    currentUser=typeof user==='string'?user:user?.message;
+    if(!currentUser||currentUser==='Guest'){window.location.replace('/login');return;}
+    document.getElementById('nurseName').textContent=currentUser||'Nurse';
+  }catch(e){window.location.replace('/login');return;}
 
-function fmt(str) {
-  if (!str) return '—';
-  if (str.match(/^\d{4}-\d{2}-\d{2}/)) return new Date(str).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
-  return str;
-}
-
-function openERP(path) { window.open(BASE+path,'_blank'); }
-function empty(msg='No records found.') { return `<div class="empty-state"><span class="emoji">📭</span>${msg}</div>`; }
-
-async function api(resource, params={}) {
-  const url = new URL(`${BASE}/api/resource/${encodeURIComponent(resource)}`);
-  if (params.filters) url.searchParams.set('filters', JSON.stringify(params.filters));
-  if (params.fields) url.searchParams.set('fields', JSON.stringify(params.fields));
-  if (params.limit) url.searchParams.set('limit', params.limit);
-  if (params.order_by) url.searchParams.set('order_by', params.order_by);
-  try { const r = await fetch(url,{credentials:'include'}); if (r.ok) return (await r.json())?.data||[]; return null; } catch { return null; }
-}
-
-async function postApi(method, args={}) {
-  try {
-    const r = await fetch(`${BASE}/api/method/${method}`, {
-      method:'POST', credentials:'include',
-      headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token': await getCsrfToken()},
-      body: JSON.stringify(args)
-    });
-    return await r.json();
-  } catch { return null; }
-}
-
-async function getCsrfToken() {
-  try { const r = await fetch(`${BASE}/api/method/frappe.auth.get_logged_user`,{credentials:'include'}); return r.headers.get('X-Frappe-CSRF-Token')||''; } catch { return ''; }
-}
-
-async function initSession() {
-  log('Initializing session…');
-  try {
-    const r = await fetch('/api/method/frappe.auth.get_logged_user');
-    const user = (await r.json())?.message;
-    if (!user || user==='Guest') { showLoginUI(); return; }
-    state.user = user;
-    log(`Session: ${user}`,'success');
-    await runDiscovery();
-  } catch { showLoginUI(); }
-}
-
-async function runDiscovery() {
-  const emp = await api('Employee',{ filters:[['user_id','=',state.user]], fields:['name','employee_name','designation','department','cell_number','personal_email'] });
-  if (emp?.length) { state.employee = emp[0]; log(`Employee: ${emp[0].name}`,'success'); }
-  showApp();
+  // Try to auto-link employee by user_id
+  try{
+    const emp=await getList('Employee',['name','employee_name'],[['user_id','=',currentUser]],1);
+    if(emp.length){
+      employeeName=emp[0].name;
+      localStorage.setItem('rrc_nurse_emp',employeeName);
+      document.getElementById('nurseLinkBox').style.display='none';
+    } else {
+      const savedEmp=localStorage.getItem('rrc_nurse_emp');
+      if(savedEmp) employeeName=savedEmp;
+      else offerEmpLink();
+    }
+  }catch(e){
+    const savedEmp=localStorage.getItem('rrc_nurse_emp');
+    if(savedEmp) employeeName=savedEmp;
+    else offerEmpLink();
+  }
   loadDashboard();
 }
 
-function showLoginUI() {
-  document.getElementById('login-ui').classList.remove('hidden');
+async function offerEmpLink(){
+  try{
+    const list=await getList('Employee',['name','employee_name'],[],100);
+    if(!list.length) return;
+    const sel=document.getElementById('empSelect');
+    list.forEach(e=>{const o=document.createElement('option');o.value=e.name;o.textContent=`${e.employee_name} (${e.name})`;sel.appendChild(o);});
+    document.getElementById('nurseLinkBox').style.display='flex';
+  }catch(e){}
 }
+function linkEmployee_old_removed(val){}
 
-function showApp() {
-  document.getElementById('overlay').classList.add('hidden');
-  document.getElementById('app-shell').classList.remove('hidden');
-  const name = state.employee?.employee_name || state.user;
-  document.getElementById('user-name').textContent = name;
-  document.getElementById('user-avatar').textContent = (name[0]||'N').toUpperCase();
-  document.getElementById('topbar-sub').textContent = `Welcome back, ${name.split(' ')[0]}`;
-}
-
-async function doLogin() {
-  const email = document.getElementById('inp-email').value;
-  const pass = document.getElementById('inp-pass').value;
-  if (!email||!pass) return;
-  log('Signing in…');
-  try {
-    const r = await fetch('/api/method/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usr:email,pwd:pass}),credentials:'include'});
-    const d = await r.json();
-    if (d.message==='Logged In') { state.user=email; log('Logged in','success'); await runDiscovery(); }
-    else { log('Invalid credentials','error'); }
-  } catch(e) { log('Login failed: '+e.message,'error'); }
-}
-
-async function doLogout() {
-  await fetch('/api/method/logout',{method:'POST',credentials:'include'});
-  location.reload();
-}
-
-const navTitles = {
-  dashboard:'Dashboard', profile:'My Profile', vitals:'Vital Signs', patients:'Patients',
-  inpatient:'Inpatient Care', 'nursing-tasks':'Nursing Tasks', medication:'Medication Requests',
-  'service-req':'Service Requests', attendance:'Attendance', leave:'Leave Applications', payroll:'Payroll'
-};
-
-function nav(section) {
+function showSection(id){
   document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s_'+id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  const el = document.getElementById(`section-${section}`);
-  if (el) el.classList.add('active');
   event?.currentTarget?.classList.add('active');
-  state.activeSection = section;
-  document.getElementById('topbar-title').textContent = navTitles[section]||section;
-  loadSection(section);
+  const titles={dashboard:'Dashboard',patients:'My Patients',vitals:'Vital Signs',tasks:'Nursing Tasks',inpatient:'Inpatient Care',medications:'Medication Requests',hr:'HR Portal',profile:'My Profile'};
+  document.getElementById('pageTitle').textContent=titles[id]||id;
+  const loaders={patients:loadPatients,vitals:loadVitals,tasks:loadTasks,inpatient:loadInpatient,medications:loadMedications,profile:loadProfile};
+  if(loaders[id]) loaders[id]();
 }
 
-function loadSection(section) {
-  switch(section) {
-    case 'dashboard': loadDashboard(); break;
-    case 'profile': loadProfile(); break;
-    case 'vitals': loadVitals(); break;
-    case 'patients': loadPatients(); break;
-    case 'inpatient': loadInpatient(); break;
-    case 'nursing-tasks': loadNursingTasks(); break;
-    case 'medication': loadMedication(); break;
-    case 'service-req': loadServiceReq(); break;
-    case 'attendance': loadAttendance(); break;
-    case 'leave': loadLeave(); break;
-    case 'payroll': loadPayroll(); break;
-  }
-}
-
-async function loadDashboard() {
-  const today = new Date().toISOString().split('T')[0];
-
-  // Stats
-  const [vitals, inpatients, medreq, att] = await Promise.all([
-    api('Vital Signs',{filters:[['signs_date','=',today]],fields:['name'],limit:500}),
-    api('Inpatient Record',{filters:[['status','in',['Admission Scheduled','Admitted']]],fields:['name'],limit:500}),
-    api('Medication Request',{filters:[['status','in',['Draft','Pending']]],fields:['name'],limit:500}),
-    api('Attendance',{filters:state.employee?[['employee','=',state.employee.name],['attendance_date','=',today]]:null,fields:['status'],limit:1}),
-  ]);
-
-  document.getElementById('stat-vitals').textContent = vitals?.length||0;
-  document.getElementById('stat-inpatients').textContent = inpatients?.length||0;
-  document.getElementById('stat-tasks').textContent = '—';
-  document.getElementById('stat-medreq').textContent = medreq?.length||0;
-  document.getElementById('stat-att').textContent = att?.[0]?.status||'—';
-
-  // Recent vitals
-  const rv = await api('Vital Signs',{fields:['name','patient','signs_date','temperature','pulse','bp_systolic','bp_diastolic','spo2'],order_by:'signs_date desc',limit:8});
-  document.getElementById('dash-vitals').innerHTML = renderVitalRows(rv);
-
-  // Nursing tasks (try common doctypes)
-  for (const dt of ['Nursing Task','Patient Task']) {
-    const tasks = await api(dt,{fields:['name','patient','status','creation'],order_by:'creation desc',limit:6});
-    if (tasks?.length) {
-      document.getElementById('dash-tasks').innerHTML = tasks.map(t=>`
-        <div class="data-row" onclick="openERP('/app/${dt.toLowerCase().replace(' ','-')}/${t.name}')">
-          <div class="row-main"><div class="row-title">${t.name}</div><div class="row-sub">${t.patient||'—'}</div></div>
-          <div class="row-meta"><span class="badge ${badgeClass(t.status)}">${t.status||'—'}</span><span style="font-size:0.72rem;color:var(--text-3);font-family:monospace">${fmt(t.creation)}</span></div>
-        </div>`).join('');
-      document.getElementById('stat-tasks').textContent = tasks.length;
-      break;
+async function loadProfile(){
+  const el=document.getElementById('profileBody');
+  el.innerHTML=`<div class="loading"><div class="spinner"></div></div>`;
+  try{
+    const rows=[
+      ['👤 Logged in as', currentUser||'—'],
+      ['🆔 Employee ID', employeeName||'Not linked'],
+    ];
+    if(employeeName){
+      try{
+        const emp=await getDoc('Employee',employeeName);
+        if(emp){
+          rows.push(['📛 Name',emp.employee_name||'—']);
+          rows.push(['🏥 Department',emp.department||'—']);
+          rows.push(['📞 Phone',emp.cell_number||emp.personal_email||'—']);
+          rows.push(['📅 Date of Joining',emp.date_of_joining||'—']);
+        }
+      }catch(e){}
     }
-  }
+    el.innerHTML=`<table class="data-table"><tbody>${rows.map(r=>`<tr>
+      <td style="font-size:12px;color:var(--text-muted);width:160px;">${r[0]}</td>
+      <td style="font-size:13px;font-weight:500;">${r[1]}</td>
+    </tr>`).join('')}</tbody></table>`;
+    // Populate emp select
+    try{
+      const list=await getList('Employee',['name','employee_name'],[],100);
+      const sel=document.getElementById('profileEmpSelect');
+      sel.innerHTML='<option value="">— Select Employee —</option>';
+      list.forEach(e=>{const o=document.createElement('option');o.value=e.name;o.textContent=`${e.employee_name||e.name} (${e.name})`;sel.appendChild(o);});
+      if(employeeName) sel.value=employeeName;
+    }catch(e){}
+  }catch(e){el.innerHTML=`<div class="alert alert-error">⚠ ${e.message}</div>`;}
 }
 
-function renderVitalRows(vitals) {
-  if (!vitals?.length) return empty('No vitals recorded today.');
-  return vitals.map(v=>`
-    <div class="data-row" onclick="openERP('/app/vital-signs/${v.name}')">
-      <div class="row-main">
-        <div class="row-title">${v.patient||'Unknown Patient'}</div>
-        <div class="row-sub" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;">
-          ${v.temperature?'🌡️'+v.temperature+'°F':''}${v.pulse?' ❤️'+v.pulse+'bpm':''}${v.bp_systolic?' 🩸'+v.bp_systolic+'/'+(v.bp_diastolic||'?'):''}${v.spo2?' O₂'+v.spo2+'%':''}
-        </div>
-      </div>
-      <div class="row-meta"><span style="font-size:0.72rem;color:var(--text-3);font-family:monospace">${fmt(v.signs_date)}</span></div>
-    </div>`).join('');
+function linkEmployee(val){
+  if(!val) return;
+  employeeName=val; localStorage.setItem('rrc_nurse_emp',val);
+  document.getElementById('nurseLinkBox').style.display='none';
+  if(document.getElementById('profileEmpStatus')) document.getElementById('profileEmpStatus').textContent='✓ Employee linked: '+val;
+}
+function refreshCurrentSection(){const a=document.querySelector('.section.active');if(a){const id=a.id.replace('s_','');const m={dashboard:loadDashboard,patients:loadPatients,vitals:loadVitals,tasks:loadTasks,inpatient:loadInpatient,medications:loadMedications};if(m[id])m[id]();}}
+
+async function loadDashboard(){
+  loadDashPt(); loadDashTasks();
+  try{
+    const [pt,vitals,tasks,meds]=await Promise.all([
+      getList('Patient',['name'],[],500),
+      getList('Vital Signs',['name'],[],200),
+      getList('Patient Activity',['name','status'],[['status','!=','Completed']],200),
+      getList('Medication Request',['name','status'],[['status','=','Pending']],200)
+    ]);
+    document.getElementById('statPt').textContent=pt.length;
+    document.getElementById('statVitals').textContent=vitals.length;
+    document.getElementById('statTasks').textContent=tasks.length;
+    document.getElementById('statMeds').textContent=meds.length;
+    document.getElementById('ptBadge').textContent=pt.length;
+  }catch(e){}
 }
 
-async function loadProfile() {
-  if (!state.employee) { document.getElementById('profile-container').innerHTML = empty('Employee record not linked.'); return; }
-  const e = state.employee;
-  document.getElementById('profile-container').innerHTML = `
-    <div class="profile-grid">
-      <div class="profile-field"><div class="pf-label">Employee ID</div><div class="pf-value">${e.name}</div></div>
-      <div class="profile-field"><div class="pf-label">Full Name</div><div class="pf-value">${e.employee_name||'—'}</div></div>
-      <div class="profile-field"><div class="pf-label">Designation</div><div class="pf-value">${e.designation||'—'}</div></div>
-      <div class="profile-field"><div class="pf-label">Department</div><div class="pf-value">${e.department||'—'}</div></div>
-      <div class="profile-field"><div class="pf-label">Mobile</div><div class="pf-value">${e.cell_number||'—'}</div></div>
-      <div class="profile-field"><div class="pf-label">Email</div><div class="pf-value">${e.personal_email||state.user||'—'}</div></div>
-    </div>`;
+async function loadDashPt(){
+  const el=document.getElementById('dashPatients');
+  try{
+    const today=new Date().toISOString().split('T')[0];
+    const appts=await getList('Patient Appointment',['name','patient_name','appointment_time','status'],[['appointment_date','=',today]],10);
+    if(!appts.length){el.innerHTML=emptyState('No patients today');return;}
+    el.innerHTML=`<table class="data-table"><tbody>${appts.map(a=>`<tr>
+      <td class="primary">${a.patient_name}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;">${a.appointment_time||'—'}</td>
+      <td><span class="pill ${pillCls(a.status)}">${a.status}</span></td>
+    </tr>`).join('')}</tbody></table>`;
+  }catch(e){el.innerHTML=`<div class="alert alert-error">⚠ ${e.message}</div>`;}
 }
 
-async function loadVitals() {
-  const data = await api('Vital Signs',{fields:['name','patient','signs_date','temperature','pulse','bp_systolic','bp_diastolic','spo2','respiratory_rate'],order_by:'signs_date desc',limit:50});
-  document.getElementById('count-vitals').textContent = data?.length||0;
-  document.getElementById('list-vitals').innerHTML = data?.length ? renderVitalRows(data) : empty();
+async function loadDashTasks(){
+  const el=document.getElementById('dashTasks');
+  try{
+    const tasks=await getList('Patient Activity',['name','activity_type','patient','status'],[['status','!=','Completed']],10);
+    if(!tasks.length){el.innerHTML=emptyState('No pending tasks');return;}
+    el.innerHTML=`<table class="data-table"><tbody>${tasks.map(t=>`<tr>
+      <td class="primary">${t.activity_type||t.name}</td>
+      <td>${t.patient||'—'}</td>
+      <td><span class="pill ${pillCls(t.status)}">${t.status||'Pending'}</span></td>
+    </tr>`).join('')}</tbody></table>`;
+  }catch(e){el.innerHTML=emptyState('No nursing task data available');}
 }
 
-async function loadPatients() {
-  const data = await api('Patient',{fields:['name','patient_name','sex','blood_group','mobile'],order_by:'patient_name asc',limit:100});
-  document.getElementById('count-patients').textContent = data?.length||0;
-  document.getElementById('list-patients').innerHTML = data?.length ? data.map(p=>`
-    <div class="data-row" onclick="openERP('/app/patient/${p.name}')">
-      <div class="row-main"><div class="row-title">${p.patient_name||p.name}</div><div class="row-sub">${p.name} · ${p.sex||'—'} · ${p.blood_group||'—'}</div></div>
-      <div class="row-meta"><span style="font-size:0.78rem;color:var(--text-3)">${p.mobile||'—'}</span></div>
-    </div>`).join('') : empty();
+async function loadPatients(){
+  const tbody=document.getElementById('ptTbody');
+  try{
+    const list=await getList('Patient',['name','patient_name','sex','mobile','status'],[],200);
+    allPt=list;
+    renderPt(list);
+  }catch(e){tbody.innerHTML=errRow(6,e.message);}
+}
+function renderPt(list){
+  const tbody=document.getElementById('ptTbody');
+  if(!list.length){tbody.innerHTML=emptyRow(6,'No patients found');return;}
+  tbody.innerHTML=list.map(p=>`<tr>
+    <td class="primary">${p.patient_name}</td>
+    <td>—</td><td>—</td><td>${p.sex||'—'}</td>
+    <td><span class="pill ${pillCls(p.status)}">${p.status||'Active'}</span></td>
+    <td><button class="btn btn-ghost" style="font-size:12px;padding:4px 9px;" onclick="openVitalForPatient('${p.name}','${escJs(p.patient_name)}')">Record Vitals</button></td>
+  </tr>`).join('');
+}
+function filterPt(q){if(!q){renderPt(allPt);return;}renderPt(allPt.filter(p=>(p.patient_name||'').toLowerCase().includes(q.toLowerCase())));}
+
+async function loadVitals(){
+  const tbody=document.getElementById('vitalsTbody');
+  try{
+    const list=await getList('Vital Signs',['name','patient','signs_date','bp_systolic','bp_diastolic','pulse','temperature','oxygen_saturation'],[],100,'signs_date desc');
+    if(!list.length){tbody.innerHTML=emptyRow(7,'No vitals recorded');return;}
+    // Compute averages
+    const pulses=list.map(v=>parseFloat(v.pulse)||0).filter(Boolean);
+    const temps=list.map(v=>parseFloat(v.temperature)||0).filter(Boolean);
+    if(pulses.length) document.getElementById('avgPulse').textContent=(pulses.reduce((a,b)=>a+b,0)/pulses.length).toFixed(0);
+    if(temps.length) document.getElementById('avgTemp').textContent=(temps.reduce((a,b)=>a+b,0)/temps.length).toFixed(1);
+    tbody.innerHTML=list.map(v=>`<tr>
+      <td class="primary">${v.patient||'—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;">${(v.signs_date||'').substring(0,16)}</td>
+      <td style="font-family:'DM Mono',monospace;">${v.bp_systolic&&v.bp_diastolic?v.bp_systolic+'/'+v.bp_diastolic:'—'}</td>
+      <td>${v.pulse||'—'}</td>
+      <td>${v.temperature||'—'}</td>
+      <td>${v.oxygen_saturation||'—'}</td>
+      <td><span class="pill pill-blue">Recorded</span></td>
+    </tr>`).join('');
+  }catch(e){tbody.innerHTML=errRow(7,e.message);}
 }
 
-async function loadInpatient() {
-  const data = await api('Inpatient Record',{fields:['name','patient_name','patient','status','admitted_datetime','expected_discharge'],order_by:'admitted_datetime desc',limit:50});
-  document.getElementById('count-inpatient').textContent = data?.length||0;
-  document.getElementById('list-inpatient').innerHTML = data?.length ? data.map(r=>`
-    <div class="data-row" onclick="openERP('/app/inpatient-record/${r.name}')">
-      <div class="row-main"><div class="row-title">${r.patient_name||r.patient||r.name}</div><div class="row-sub">Admitted: ${fmt(r.admitted_datetime)} · Discharge: ${fmt(r.expected_discharge)}</div></div>
-      <div class="row-meta"><span class="badge ${badgeClass(r.status)}">${r.status||'—'}</span></div>
-    </div>`).join('') : empty();
+async function loadTasks(){
+  const tbody=document.getElementById('tasksTbody');
+  try{
+    const list=await getList('Patient Activity',['name','activity_type','patient','due_date','status'],[],100,'due_date asc');
+    if(!list.length){tbody.innerHTML=emptyRow(6,'No nursing tasks');return;}
+    tbody.innerHTML=list.map(t=>`<tr>
+      <td class="primary">${t.activity_type||'Task'}</td>
+      <td>${t.patient||'—'}</td>
+      <td>${t.due_date||'—'}</td>
+      <td><span class="pill pill-yellow">Normal</span></td>
+      <td><span class="pill ${pillCls(t.status)}">${t.status||'Pending'}</span></td>
+      <td><button class="btn btn-ghost" style="font-size:12px;padding:4px 9px;">Complete</button></td>
+    </tr>`).join('');
+  }catch(e){tbody.innerHTML=emptyRow(6,'Nursing task data unavailable');}
 }
 
-async function loadNursingTasks() {
-  let html = empty('No nursing tasks found.');
-  for (const dt of ['Nursing Task','Patient Task','Clinical Note']) {
-    const data = await api(dt,{fields:['name','patient','status','creation'],order_by:'creation desc',limit:50});
-    if (data?.length) {
-      html = data.map(t=>`
-        <div class="data-row" onclick="openERP('/app/${dt.toLowerCase().replace(/ /g,'-')}/${t.name}')">
-          <div class="row-main"><div class="row-title">${t.name}</div><div class="row-sub">${t.patient||'—'}</div></div>
-          <div class="row-meta"><span class="badge ${badgeClass(t.status)}">${t.status||'—'}</span><span style="font-size:0.72rem;color:var(--text-3)">${fmt(t.creation)}</span></div>
-        </div>`).join('');
-      document.getElementById('count-nursing-tasks').textContent = data.length;
-      break;
-    }
-  }
-  document.getElementById('list-nursing-tasks').innerHTML = html;
+async function loadInpatient(){
+  const tbody=document.getElementById('inpatientTbody');
+  try{
+    const list=await getList('Inpatient Record',['name','patient','patient_name','admitted_datetime','status','bed'],[],100);
+    if(!list.length){tbody.innerHTML=emptyRow(6,'No inpatient records');return;}
+    tbody.innerHTML=list.map(r=>`<tr>
+      <td class="primary">${r.patient_name||r.patient}</td>
+      <td>—</td>
+      <td>${r.bed||'—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;">${(r.admitted_datetime||'').substring(0,10)}</td>
+      <td><span class="pill ${pillCls(r.status)}">${r.status||'Active'}</span></td>
+      <td><a href="/healthcare/inpatient-record/${r.name}" target="_blank" class="btn btn-ghost" style="font-size:12px;padding:4px 9px;">View</a></td>
+    </tr>`).join('');
+  }catch(e){tbody.innerHTML=errRow(6,e.message);}
 }
 
-async function loadMedication() {
-  const data = await api('Medication Request',{fields:['name','patient','status','medication','quantity','creation'],order_by:'creation desc',limit:50});
-  document.getElementById('count-medication').textContent = data?.length||0;
-  document.getElementById('list-medication').innerHTML = data?.length ? data.map(m=>`
-    <div class="data-row" onclick="openERP('/app/medication-request/${m.name}')">
-      <div class="row-main"><div class="row-title">${m.patient||m.name}</div><div class="row-sub">${m.medication||'—'} · Qty: ${m.quantity||'—'}</div></div>
-      <div class="row-meta"><span class="badge ${badgeClass(m.status)}">${m.status||'—'}</span><span style="font-size:0.72rem;color:var(--text-3)">${fmt(m.creation)}</span></div>
-    </div>`).join('') : empty();
+async function loadMedications(){
+  const tbody=document.getElementById('medTbody');
+  try{
+    const list=await getList('Medication Request',['name','patient','medication','dosage','status','modified'],[],100);
+    if(!list.length){tbody.innerHTML=emptyRow(6,'No medication requests');return;}
+    tbody.innerHTML=list.map(m=>`<tr>
+      <td class="primary" style="font-family:'DM Mono',monospace;font-size:12px;">${m.name}</td>
+      <td>${m.patient||'—'}</td>
+      <td>${m.medication||'—'}</td>
+      <td>${m.dosage||'—'}</td>
+      <td><span class="pill ${pillCls(m.status)}">${m.status||'Pending'}</span></td>
+      <td style="font-size:12px;">${(m.modified||'').substring(0,10)}</td>
+    </tr>`).join('');
+  }catch(e){tbody.innerHTML=errRow(6,e.message);}
 }
 
-async function loadServiceReq() {
-  const data = await api('Service Request',{fields:['name','patient','status','template_dt','ordered_by','creation'],order_by:'creation desc',limit:50});
-  document.getElementById('count-service-req').textContent = data?.length||0;
-  document.getElementById('list-service-req').innerHTML = data?.length ? data.map(r=>`
-    <div class="data-row" onclick="openERP('/app/service-request/${r.name}')">
-      <div class="row-main"><div class="row-title">${r.patient||r.name}</div><div class="row-sub">${r.template_dt||'—'} · By: ${r.ordered_by||'—'}</div></div>
-      <div class="row-meta"><span class="badge ${badgeClass(r.status)}">${r.status||'—'}</span><span style="font-size:0.72rem;color:var(--text-3)">${fmt(r.creation)}</span></div>
-    </div>`).join('') : empty();
+// HR
+async function loadAttendance(){
+  document.getElementById('hrTitle').textContent='🕐 Attendance Records';
+  document.getElementById('hrBody').innerHTML=`<div class="loading"><div class="spinner"></div></div>`;
+  try{
+    const filters=employeeName?[['employee','=',employeeName]]:[];
+    const list=await getList('Attendance',['name','attendance_date','status','in_time','out_time'],filters,30,'attendance_date desc');
+    if(!list.length){document.getElementById('hrBody').innerHTML=emptyState('No attendance records');return;}
+    document.getElementById('hrBody').innerHTML=`<table class="data-table"><thead><tr><th>Date</th><th>Status</th><th>In</th><th>Out</th></tr></thead><tbody>${list.map(a=>`<tr>
+      <td>${a.attendance_date}</td>
+      <td><span class="pill ${pillCls(a.status)}">${a.status}</span></td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;">${a.in_time||'—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;">${a.out_time||'—'}</td>
+    </tr>`).join('')}</tbody></table>`;
+  }catch(e){document.getElementById('hrBody').innerHTML=`<div class="alert alert-error">⚠ ${e.message}</div>`;}
 }
 
-async function loadAttendance() {
-  const filters = state.employee?[['employee','=',state.employee.name]]:[];
-  const data = await api('Attendance',{filters,fields:['name','attendance_date','status','in_time','out_time'],order_by:'attendance_date desc',limit:30});
-  document.getElementById('list-attendance').innerHTML = data?.length ? data.map(a=>`
-    <div class="data-row" onclick="openERP('/app/attendance/${a.name}')">
-      <div class="row-main"><div class="row-title">${fmt(a.attendance_date)}</div><div class="row-sub">${a.in_time||'—'} → ${a.out_time||'—'}</div></div>
-      <div class="row-meta"><span class="badge ${badgeClass(a.status)}">${a.status||'—'}</span></div>
-    </div>`).join('') : empty();
+async function loadLeave(){
+  document.getElementById('hrTitle').textContent='🌴 Leave Applications';
+  document.getElementById('hrBody').innerHTML=`<div class="loading"><div class="spinner"></div></div>`;
+  try{
+    const filters=employeeName?[['employee','=',employeeName]]:[];
+    const list=await getList('Leave Application',['name','leave_type','from_date','to_date','status'],filters,30,'from_date desc');
+    if(!list.length){document.getElementById('hrBody').innerHTML=emptyState('No leave applications');return;}
+    document.getElementById('hrBody').innerHTML=`<table class="data-table"><thead><tr><th>Type</th><th>From</th><th>To</th><th>Status</th></tr></thead><tbody>${list.map(l=>`<tr>
+      <td>${l.leave_type}</td><td>${l.from_date}</td><td>${l.to_date}</td>
+      <td><span class="pill ${pillCls(l.status)}">${l.status}</span></td>
+    </tr>`).join('')}</tbody></table>`;
+  }catch(e){document.getElementById('hrBody').innerHTML=`<div class="alert alert-error">⚠ ${e.message}</div>`;}
 }
 
-async function loadLeave() {
-  const filters = state.employee?[['employee','=',state.employee.name]]:[];
-  const data = await api('Leave Application',{filters,fields:['name','leave_type','from_date','to_date','status'],order_by:'from_date desc',limit:20});
-  document.getElementById('list-leave').innerHTML = data?.length ? data.map(l=>`
-    <div class="data-row" onclick="openERP('/app/leave-application/${l.name}')">
-      <div class="row-main"><div class="row-title">${l.leave_type||l.name}</div><div class="row-sub">${fmt(l.from_date)} → ${fmt(l.to_date)}</div></div>
-      <div class="row-meta"><span class="badge ${badgeClass(l.status)}">${l.status||'—'}</span></div>
-    </div>`).join('') : empty();
+async function loadPayroll(){
+  document.getElementById('hrTitle').textContent='💰 Salary Slips';
+  document.getElementById('hrBody').innerHTML=`<div class="loading"><div class="spinner"></div></div>`;
+  try{
+    const filters=employeeName?[['employee','=',employeeName]]:[];
+    const list=await getList('Salary Slip',['name','start_date','end_date','net_pay','status'],filters,24,'start_date desc');
+    if(!list.length){document.getElementById('hrBody').innerHTML=emptyState('No salary slips');return;}
+    document.getElementById('hrBody').innerHTML=`<table class="data-table"><thead><tr><th>Period</th><th>Net Pay</th><th>Status</th><th>Print</th></tr></thead><tbody>${list.map(s=>`<tr>
+      <td>${s.start_date} → ${s.end_date}</td>
+      <td style="font-family:'DM Mono',monospace;">₹${Number(s.net_pay||0).toLocaleString()}</td>
+      <td><span class="pill ${pillCls(s.status)}">${s.status}</span></td>
+      <td><a href="/printview?doctype=Salary+Slip&name=${s.name}&format=Standard" target="_blank" class="btn btn-ghost" style="font-size:12px;padding:3px 9px;">Print</a></td>
+    </tr>`).join('')}</tbody></table>`;
+  }catch(e){document.getElementById('hrBody').innerHTML=`<div class="alert alert-error">⚠ ${e.message}</div>`;}
 }
 
-async function loadPayroll() {
-  const filters = state.employee?[['employee','=',state.employee.name]]:[];
-  const data = await api('Salary Slip',{filters,fields:['name','posting_date','net_pay','status'],order_by:'posting_date desc',limit:12});
-  document.getElementById('list-payroll').innerHTML = data?.length ? data.map(s=>`
-    <div class="data-row" onclick="openERP('/app/salary-slip/${s.name}')">
-      <div class="row-main"><div class="row-title">${fmt(s.posting_date)}</div><div class="row-sub">Net Pay: ₹${Number(s.net_pay||0).toLocaleString('en-IN')}</div></div>
-      <div class="row-meta"><span class="badge ${badgeClass(s.status)}">${s.status||'—'}</span></div>
-    </div>`).join('') : empty();
+// VITALS
+function openVitalModal(){document.getElementById('vitalModal').classList.add('open');}
+function openVitalForPatient(id,name){document.getElementById('vPatient').value=name||id;openVitalModal();}
+
+async function saveVitals(){
+  const alertEl=document.getElementById('vitalAlert');
+  const patient=document.getElementById('vPatient').value.trim();
+  if(!patient){alertEl.innerHTML=`<div class="alert alert-error">⚠ Patient is required</div>`;return;}
+  try{
+    const bp=document.getElementById('vBP').value.split('/');
+    await api('frappe.client.insert',{doc:{
+      doctype:'Vital Signs',
+      patient,
+      signs_date:new Date().toISOString().slice(0,19).replace('T',' '),
+      bp_systolic:bp[0]||null,
+      bp_diastolic:bp[1]||null,
+      pulse:document.getElementById('vPulse').value||null,
+      temperature:document.getElementById('vTemp').value||null,
+      oxygen_saturation:document.getElementById('vSpO2').value||null,
+      respiratory_rate:document.getElementById('vResp').value||null,
+      weight:document.getElementById('vWeight').value||null,
+      notes:document.getElementById('vNotes').value||null
+    }});
+    alertEl.innerHTML=`<div class="alert alert-success">✓ Vital signs recorded successfully</div>`;
+    setTimeout(()=>closeModal('vitalModal'),1200);
+    loadVitals();
+  }catch(e){alertEl.innerHTML=`<div class="alert alert-error">⚠ ${e.message}</div>`;}
 }
 
-// Vitals quick entry
-function searchPatientForVitals() {
-  clearTimeout(vitalsPatientSearchTimer);
-  vitalsPatientSearchTimer = setTimeout(async () => {
-    const q = document.getElementById('vitals-patient-inp').value.trim();
-    if (q.length < 2) { document.getElementById('vitals-patient-result').innerHTML=''; return; }
-    const res = await api('Patient',{filters:[['patient_name','like','%'+q+'%']],fields:['name','patient_name'],limit:5});
-    if (!res?.length) { document.getElementById('vitals-patient-result').innerHTML='<p style="font-size:0.8rem;color:var(--text-3);padding:0.5rem 0;">No patients found.</p>'; return; }
-    document.getElementById('vitals-patient-result').innerHTML = `<div class="picker-list" style="margin:0.5rem 0;">` + res.map(p=>`<div class="picker-item" onclick="selectVitalsPatient('${p.name}','${p.patient_name}')">${p.patient_name}<div class="pid">${p.name}</div></div>`).join('') + `</div>`;
-  }, 300);
+function pillCls(s){
+  s=(s||'').toLowerCase();
+  if(['active','open','present','paid','completed'].some(v=>s.includes(v)))return 'pill-green';
+  if(['pending','draft','scheduled'].some(v=>s.includes(v)))return 'pill-yellow';
+  if(['cancel','absent','inactive'].some(v=>s.includes(v)))return 'pill-red';
+  return 'pill-blue';
+}
+function errRow(c,m){return `<tr><td colspan="${c}"><div class="alert alert-error">⚠ ${m}</div></td></tr>`;}
+function emptyRow(c,m){return `<tr><td colspan="${c}"><div class="empty-state"><div class="icon">📭</div><p>${m}</p></div></td></tr>`;}
+function emptyState(m){return `<div class="empty-state"><div class="icon">📭</div><p>${m}</p></div>`;}
+function escJs(s){return (s||'').replace(/'/g,"\\'");}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+async function logout(){
+  try{
+    await fetch(`${BASE}/api/method/frappe.auth.logout`,{method:'POST',headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token':getCsrf()},body:JSON.stringify({})});
+  }catch(e){}
+  localStorage.clear();
+  window.location.replace('/login');
 }
 
-function selectVitalsPatient(id, name) {
-  vitalsPatient = id;
-  document.getElementById('vitals-patient-inp').value = name+' ('+id+')';
-  document.getElementById('vitals-patient-result').innerHTML = '';
-}
-
-async function saveVitals() {
-  if (!vitalsPatient) { alert('Please select a patient first.'); return; }
-  const body = {
-    doctype: 'Vital Signs',
-    patient: vitalsPatient,
-    signs_date: new Date().toISOString().split('T')[0],
-  };
-  const fields = {temperature:'v-temp',pulse:'v-pulse',bp_systolic:'v-bp-sys',bp_diastolic:'v-bp-dia',spo2:'v-spo2',respiratory_rate:'v-rr',weight:'v-weight',height:'v-height'};
-  for (const [k,id] of Object.entries(fields)) {
-    const v = document.getElementById(id).value;
-    if (v) body[k] = parseFloat(v);
-  }
-  try {
-    const r = await fetch(`${BASE}/api/resource/Vital Signs`,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const d = await r.json();
-    if (d.data?.name) { alert('✅ Vital signs saved: '+d.data.name); clearVitalsForm(); loadVitals(); }
-    else { alert('Failed: '+(d.exc_type||JSON.stringify(d))); }
-  } catch(e) { alert('Error: '+e.message); }
-}
-
-function clearVitalsForm() {
-  ['v-temp','v-pulse','v-bp-sys','v-bp-dia','v-spo2','v-rr','v-weight','v-height'].forEach(id=>document.getElementById(id).value='');
-  vitalsPatient = null;
-  document.getElementById('vitals-patient-inp').value = '';
-}
-
-document.addEventListener('keydown', e => { if (e.key==='Enter' && document.getElementById('inp-pass')===document.activeElement) doLogin(); });
-initSession();
+init();
 </script>
 </body>
 </html>
