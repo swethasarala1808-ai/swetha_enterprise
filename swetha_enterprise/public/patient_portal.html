@@ -574,7 +574,7 @@ async function doRegister() {
   } catch(e) { $('reg-err').textContent='Registration failed. Please try again.'; $('reg-err').style.display='block'; }
 }
 
-function doLogout() { window.location.href = '/?cmd=logout'; }
+function doLogout() { fetch('/?cmd=logout',{credentials:'include'}).finally(()=>{ window.location.href='/login'; }); }
 
 function showLogin() { $('auth-login').style.display='block'; $('auth-register').style.display='none'; }
 function showRegister() { $('auth-login').style.display='none'; $('auth-register').style.display='block'; }
