@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doctor Portal | Sneha Health</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+:root {
+  --bg: #0d1117; --surface: #161b22; --surface2: #21262d; --border: #30363d;
+  --primary: #1f6feb; --primary-light: #388bfd; --success: #238636; --success-light: #3fb950;
+  --warning: #9e6a03; --warning-light: #d29922; --danger: #da3633; --danger-light: #f85149;
+  --text: #e6edf3; --text-muted: #8b949e; --text-dim: #484f58;
+  --radius: 8px; --radius-lg: 12px;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+/* LOGIN */
+#login-screen {
+  display:flex; align-items:center; justify-content:center; min-height:100vh;
+  background: radial-gradient(ellipse at 50% 0%, #1f2a3c 0%, var(--bg) 70%);
+}
+.login-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:40px; width:420px; box-shadow:0 16px 48px rgba(0,0,0,0.4);
+}
+.login-logo { text-align:center; margin-bottom:32px; }
+.login-logo .icon {
+  width:56px; height:56px; background:var(--primary); border-radius:12px;
+  display:inline-flex; align-items:center; justify-content:center; font-size:24px; margin-bottom:12px;
+}
+.login-logo h1 { font-size:22px; font-weight:700; }
+.login-logo p { color:var(--text-muted); font-size:14px; margin-top:4px; }
+.form-field { margin-bottom:16px; }
+.form-field label { display:block; font-size:12px; font-weight:600; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+.form-field input {
+  width:100%; padding:10px 14px; background:var(--bg); border:1px solid var(--border);
+  border-radius:var(--radius); color:var(--text); font-size:14px; font-family:inherit;
+  transition:border-color 0.2s;
+}
+.form-field input:focus { outline:none; border-color:var(--primary); }
+.btn-login {
+  width:100%; padding:12px; background:var(--primary); color:#fff; border:none;
+  border-radius:var(--radius); font-size:15px; font-weight:600; cursor:pointer;
+  font-family:inherit; transition:background 0.2s; margin-top:8px;
+}
+.btn-login:hover { background:var(--primary-light); }
+.login-status { margin-top:12px; font-size:13px; color:var(--text-muted); text-align:center; min-height:20px; }
+.login-status.error { color:var(--danger-light); }
+
+/* APP LAYOUT */
+#app { display:none; min-height:100vh; }
+.layout { display:flex; min-height:100vh; }
+
+/* SIDEBAR */
+.sidebar {
+  width:240px; background:var(--surface); border-right:1px solid var(--border);
+  display:flex; flex-direction:column; position:fixed; top:0; left:0; height:100vh;
+  overflow-y:auto; z-index:100;
+}
+.sidebar-brand {
+  padding:20px 16px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:10px;
+}
+.brand-icon {
+  width:36px; height:36px; background:var(--primary); border-radius:8px;
+  display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0;
+}
+.brand-name { font-size:14px; font-weight:700; }
+.brand-sub { font-size:11px; color:var(--text-muted); }
+.sidebar-nav { padding:12px 8px; flex:1; }
+.nav-section { margin-bottom:20px; }
+.nav-label { font-size:10px; font-weight:700; color:var(--text-dim); text-transform:uppercase; letter-spacing:1px; padding:0 8px; margin-bottom:4px; }
+.nav-item {
+  display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:var(--radius);
+  cursor:pointer; color:var(--text-muted); font-size:13px; font-weight:500;
+  transition:all 0.15s; margin-bottom:2px;
+}
+.nav-item:hover { background:var(--surface2); color:var(--text); }
+.nav-item.active { background:rgba(31,111,235,0.15); color:var(--primary-light); }
+.nav-item .icon { font-size:16px; width:20px; text-align:center; }
+.sidebar-footer {
+  padding:12px 8px; border-top:1px solid var(--border);
+}
+.user-info {
+  display:flex; align-items:center; gap:10px; padding:8px 10px;
+  border-radius:var(--radius); background:var(--surface2);
+}
+.user-avatar {
+  width:32px; height:32px; background:var(--primary); border-radius:50%;
+  display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; flex-shrink:0;
+}
+.user-name { font-size:12px; font-weight:600; }
+.user-role { font-size:11px; color:var(--text-muted); }
+.btn-logout {
+  width:100%; margin-top:8px; padding:8px; background:transparent; border:1px solid var(--border);
+  color:var(--danger-light); border-radius:var(--radius); font-size:12px; font-weight:600;
+  cursor:pointer; font-family:inherit; transition:all 0.2s;
+}
+.btn-logout:hover { background:rgba(218,54,51,0.1); border-color:var(--danger-light); }
+
+/* MAIN */
+.main { margin-left:240px; flex:1; padding:24px; }
+.page { display:none; }
+.page.active { display:block; }
+.page-header { margin-bottom:24px; }
+.page-title { font-size:24px; font-weight:700; }
+.page-sub { color:var(--text-muted); font-size:14px; margin-top:4px; }
+
+/* CARDS */
+.card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:20px; margin-bottom:16px;
+}
+.card-title { font-size:14px; font-weight:700; margin-bottom:16px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; }
+
+/* STATS GRID */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:24px; }
+.stat-card {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  padding:20px; position:relative; overflow:hidden;
+}
+.stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; }
+.stat-card.blue::before { background:var(--primary); }
+.stat-card.green::before { background:var(--success-light); }
+.stat-card.yellow::before { background:var(--warning-light); }
+.stat-card.red::before { background:var(--danger-light); }
+.stat-label { font-size:12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+.stat-value { font-size:32px; font-weight:700; margin:8px 0 4px; font-family:'DM Mono',monospace; }
+.stat-sub { font-size:12px; color:var(--text-muted); }
+
+/* TABLE */
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { padding:10px 14px; text-align:left; font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid var(--border); }
+td { padding:10px 14px; border-bottom:1px solid rgba(48,54,61,0.5); }
+tr:hover td { background:rgba(255,255,255,0.02); }
+tr:last-child td { border-bottom:none; }
+
+/* BADGE */
+.badge {
+  display:inline-flex; align-items:center; padding:3px 8px; border-radius:20px;
+  font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.3px;
+}
+.badge-green { background:rgba(35,134,54,0.2); color:var(--success-light); }
+.badge-blue { background:rgba(31,111,235,0.2); color:var(--primary-light); }
+.badge-yellow { background:rgba(158,106,3,0.2); color:var(--warning-light); }
+.badge-red { background:rgba(218,54,51,0.2); color:var(--danger-light); }
+.badge-gray { background:rgba(139,148,158,0.2); color:var(--text-muted); }
+
+/* PATIENT LIST */
+.patient-row {
+  display:flex; align-items:center; padding:12px 16px; border-bottom:1px solid var(--border);
+  cursor:pointer; transition:background 0.15s; gap:12px;
+}
+.patient-row:hover { background:var(--surface2); }
+.patient-row:last-child { border-bottom:none; }
+.p-avatar {
+  width:36px; height:36px; border-radius:50%; background:var(--primary);
+  display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:700; flex-shrink:0;
+}
+.p-name { font-size:14px; font-weight:600; }
+.p-meta { font-size:12px; color:var(--text-muted); }
+
+/* MODAL */
+.modal-overlay {
+  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:200;
+  align-items:center; justify-content:center; padding:20px;
+}
+.modal-overlay.open { display:flex; }
+.modal {
+  background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+  width:100%; max-width:780px; max-height:85vh; overflow-y:auto;
+  box-shadow:0 24px 64px rgba(0,0,0,0.5);
+}
+.modal-header {
+  padding:20px 24px; border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:var(--surface);
+}
+.modal-header h2 { font-size:18px; font-weight:700; }
+.modal-close { background:none; border:none; color:var(--text-muted); font-size:20px; cursor:pointer; }
+.modal-body { padding:24px; }
+.tabs { display:flex; gap:4px; border-bottom:1px solid var(--border); margin-bottom:20px; }
+.tab { padding:8px 16px; font-size:13px; font-weight:600; cursor:pointer; color:var(--text-muted); border-bottom:2px solid transparent; transition:all 0.15s; }
+.tab.active { color:var(--primary-light); border-bottom-color:var(--primary-light); }
+.tab-content { display:none; }
+.tab-content.active { display:block; }
+
+/* FORM ELEMENTS */
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+.field label { font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:4px; }
+.field input, .field select, .field textarea {
+  width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border);
+  border-radius:var(--radius); color:var(--text); font-size:13px; font-family:inherit;
+}
+.field textarea { resize:vertical; min-height:80px; }
+.field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color:var(--primary); }
+
+/* BUTTON */
+.btn {
+  padding:8px 16px; border-radius:var(--radius); font-size:13px; font-weight:600;
+  cursor:pointer; font-family:inherit; border:none; transition:all 0.15s; display:inline-flex; align-items:center; gap:6px;
+}
+.btn-primary { background:var(--primary); color:#fff; }
+.btn-primary:hover { background:var(--primary-light); }
+.btn-secondary { background:var(--surface2); color:var(--text); border:1px solid var(--border); }
+.btn-secondary:hover { background:var(--border); }
+.btn-success { background:var(--success); color:#fff; }
+.btn-sm { padding:5px 10px; font-size:12px; }
+
+/* SCHEDULE */
+.schedule-grid { display:grid; grid-template-columns:auto 1fr; gap:1px; }
+.time-slot { padding:8px 12px; font-size:12px; color:var(--text-muted); font-family:'DM Mono',monospace; border-bottom:1px solid var(--border); }
+.appt-slot { padding:8px 12px; border-bottom:1px solid var(--border); }
+.appt-block {
+  background:rgba(31,111,235,0.15); border-left:3px solid var(--primary);
+  padding:6px 10px; border-radius:4px; font-size:12px; cursor:pointer;
+}
+.appt-block:hover { background:rgba(31,111,235,0.25); }
+
+/* ALERT */
+.alert { padding:12px 16px; border-radius:var(--radius); font-size:13px; margin-bottom:12px; }
+.alert-info { background:rgba(31,111,235,0.1); border:1px solid rgba(31,111,235,0.3); color:var(--primary-light); }
+.alert-success { background:rgba(35,134,54,0.1); border:1px solid rgba(35,134,54,0.3); color:var(--success-light); }
+.alert-error { background:rgba(218,54,51,0.1); border:1px solid rgba(218,54,51,0.3); color:var(--danger-light); }
+
+.loading { color:var(--text-muted); font-size:13px; padding:20px; text-align:center; }
+.empty { color:var(--text-muted); font-size:13px; padding:40px; text-align:center; }
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+.info-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(48,54,61,0.5); font-size:13px; }
+.info-row:last-child { border-bottom:none; }
+.info-label { color:var(--text-muted); }
+.info-value { font-weight:600; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="icon">🩺</div>
+      <h1>Doctor Portal</h1>
+      <p>Sneha Health · Rena Rehabilitation Centre</p>
+    </div>
+    <div class="form-field">
+      <label>Email</label>
+      <input type="email" id="login-email" placeholder="doctor@snehahealth.com" autofocus>
+    </div>
+    <div class="form-field">
+      <label>Password</label>
+      <input type="password" id="login-password" placeholder="••••••••">
+    </div>
+    <button class="btn-login" onclick="doLogin()">Sign In →</button>
+    <div class="login-status" id="login-status">✓ Initializing session…</div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">🩺</div>
+        <div>
+          <div class="brand-name">Doctor Portal</div>
+          <div class="brand-sub">Sneha Health</div>
+        </div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-label">Overview</div>
+          <div class="nav-item active" onclick="showPage('dashboard')">
+            <span class="icon">📊</span> Dashboard
+          </div>
+          <div class="nav-item" onclick="showPage('schedule')">
+            <span class="icon">📅</span> Today's Schedule
+          </div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Clinical</div>
+          <div class="nav-item" onclick="showPage('patients')">
+            <span class="icon">👥</span> My Patients
+          </div>
+          <div class="nav-item" onclick="showPage('encounters')">
+            <span class="icon">🏥</span> Encounters
+          </div>
+          <div class="nav-item" onclick="showPage('service-requests')">
+            <span class="icon">📋</span> Service Requests
+          </div>
+          <div class="nav-item" onclick="showPage('therapy')">
+            <span class="icon">🧘</span> Therapy Plans
+          </div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">HR</div>
+          <div class="nav-item" onclick="showPage('attendance')">
+            <span class="icon">⏰</span> Attendance
+          </div>
+          <div class="nav-item" onclick="showPage('leave')">
+            <span class="icon">🌴</span> Leave
+          </div>
+          <div class="nav-item" onclick="showPage('payroll')">
+            <span class="icon">💰</span> Payroll
+          </div>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar" id="user-initial">D</div>
+          <div>
+            <div class="user-name" id="user-name">Doctor</div>
+            <div class="user-role">Practitioner</div>
+          </div>
+        </div>
+        <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-header">
+          <div class="page-title">Good Morning 👋</div>
+          <div class="page-sub" id="dashboard-date">Loading...</div>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <div class="stat-label">Today's Appointments</div>
+            <div class="stat-value" id="stat-today">—</div>
+            <div class="stat-sub">Scheduled for today</div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-label">Total Patients</div>
+            <div class="stat-value" id="stat-patients">—</div>
+            <div class="stat-sub">Under your care</div>
+          </div>
+          <div class="stat-card yellow">
+            <div class="stat-label">Pending Requests</div>
+            <div class="stat-value" id="stat-pending">—</div>
+            <div class="stat-sub">Service requests</div>
+          </div>
+          <div class="stat-card red">
+            <div class="stat-label">Active Therapy Plans</div>
+            <div class="stat-value" id="stat-therapy">—</div>
+            <div class="stat-sub">In progress</div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Today's Appointments</div>
+            <div id="today-appts"><div class="loading">Loading...</div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Recent Patients</div>
+            <div id="recent-patients"><div class="loading">Loading...</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SCHEDULE -->
+      <div class="page" id="page-schedule">
+        <div class="page-header">
+          <div class="page-title">Today's Schedule</div>
+          <div class="page-sub" id="schedule-date"></div>
+        </div>
+        <div class="card">
+          <div id="schedule-list"><div class="loading">Loading schedule...</div></div>
+        </div>
+      </div>
+
+      <!-- PATIENTS -->
+      <div class="page" id="page-patients">
+        <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div class="page-title">My Patients</div>
+            <div class="page-sub">All patients under your care</div>
+          </div>
+          <input type="text" id="patient-search" placeholder="Search patients..." style="padding:8px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;width:220px;" oninput="filterPatients(this.value)">
+        </div>
+        <div class="card" style="padding:0;">
+          <div id="patient-list"><div class="loading">Loading patients...</div></div>
+        </div>
+      </div>
+
+      <!-- ENCOUNTERS -->
+      <div class="page" id="page-encounters">
+        <div class="page-header">
+          <div class="page-title">Patient Encounters</div>
+          <div class="page-sub">Clinical encounter records</div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>Patient</th><th>Date</th><th>Type</th><th>Status</th></tr></thead>
+              <tbody id="encounters-tbody"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- SERVICE REQUESTS -->
+      <div class="page" id="page-service-requests">
+        <div class="page-header">
+          <div class="page-title">Service Requests</div>
+          <div class="page-sub">Pending and active service requests</div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>Patient</th><th>Service</th><th>Status</th><th>Date</th></tr></thead>
+              <tbody id="sr-tbody"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- THERAPY -->
+      <div class="page" id="page-therapy">
+        <div class="page-header">
+          <div class="page-title">Therapy Plans & Sessions</div>
+          <div class="page-sub">Manage patient therapy</div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Therapy Plans</div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Plan</th><th>Patient</th><th>Sessions</th><th>Status</th></tr></thead>
+                <tbody id="therapy-plans-tbody"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-title">Therapy Sessions</div>
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Session</th><th>Patient</th><th>Date</th><th>Status</th></tr></thead>
+                <tbody id="therapy-sessions-tbody"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE -->
+      <div class="page" id="page-attendance">
+        <div class="page-header">
+          <div class="page-title">My Attendance</div>
+          <div class="page-sub">This month's attendance record</div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Status</th><th>In Time</th><th>Out Time</th><th>Hours</th></tr></thead>
+              <tbody id="attendance-tbody"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEAVE -->
+      <div class="page" id="page-leave">
+        <div class="page-header">
+          <div class="page-title">Leave Management</div>
+          <div class="page-sub">Leave balance and applications</div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Leave Balance</div>
+            <div id="leave-balance"><div class="loading">Loading...</div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Recent Applications</div>
+            <div id="leave-apps"><div class="loading">Loading...</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAYROLL -->
+      <div class="page" id="page-payroll">
+        <div class="page-header">
+          <div class="page-title">Payroll</div>
+          <div class="page-sub">Salary slips and payroll history</div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Month</th><th>Gross Pay</th><th>Deductions</th><th>Net Pay</th><th>Status</th></tr></thead>
+              <tbody id="payroll-tbody"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- PATIENT MODAL -->
+<div class="modal-overlay" id="patient-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-patient-name">Patient Details</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('demographics')">Demographics</div>
+        <div class="tab" onclick="switchTab('visits')">Visit History</div>
+        <div class="tab" onclick="switchTab('notes')">Clinical Notes</div>
+        <div class="tab" onclick="switchTab('requests')">Service Requests</div>
+      </div>
+      <div class="tab-content active" id="tab-demographics"></div>
+      <div class="tab-content" id="tab-visits"></div>
+      <div class="tab-content" id="tab-notes"></div>
+      <div class="tab-content" id="tab-requests"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '/api/resource';
+const METHOD = '/api/method';
+let currentUser = null;
+let practitionerId = null;
+let allPatients = [];
+let currentPatient = null;
+
+// ── INIT ──────────────────────────────────────────────
+async function init() {
+  try {
+    const r = await fetch(`${METHOD}/frappe.auth.get_logged_user`);
+    const d = await r.json();
+    if (d.message && d.message !== 'Guest') {
+      currentUser = d.message;
+      await loadApp();
+    } else {
+      document.getElementById('login-status').textContent = 'Please sign in to continue.';
+    }
+  } catch(e) {
+    document.getElementById('login-status').textContent = 'Server connecting...';
+  }
+}
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pwd = document.getElementById('login-password').value;
+  const status = document.getElementById('login-status');
+  if (!email || !pwd) { status.textContent = 'Enter email and password.'; status.className='login-status error'; return; }
+  status.textContent = 'Signing in…'; status.className='login-status';
+  try {
+    const r = await fetch(`${METHOD}/login`, {
+      method:'POST', headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token':''},
+      body: JSON.stringify({usr: email, pwd})
+    });
+    const d = await r.json();
+    if (d.message === 'Logged In') {
+      currentUser = email;
+      await loadApp();
+    } else {
+      status.textContent = 'Invalid credentials. Try again.';
+      status.className = 'login-status error';
+    }
+  } catch(e) {
+    status.textContent = 'Connection error.';
+    status.className = 'login-status error';
+  }
+}
+
+// LOGOUT — only logs out from portal, redirects to portal login (not ERPNext login)
+function doLogout() {
+  fetch(`${METHOD}/frappe.handler.logout`, { method:'POST',
+    headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token': getCsrf()}
+  }).finally(() => {
+    // Redirect back to THIS portal's login page, not ERPNext's /login#login
+    window.location.href = window.location.href.split('?')[0] + '?t=' + Date.now();
+  });
+}
+
+function getCsrf() {
+  return document.cookie.split(';').map(c=>c.trim()).find(c=>c.startsWith('csrf_token='))?.split('=')?.[1] || '';
+}
+
+async function loadApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  await findPractitioner();
+  loadDashboard();
+}
+
+async function findPractitioner() {
+  try {
+    const r = await fetch(`${API}/Healthcare Practitioner?filters=[["email","=","${currentUser}"]]&fields=["name","practitioner_name"]&limit=1`);
+    const d = await r.json();
+    if (d.data && d.data.length > 0) {
+      practitionerId = d.data[0].name;
+      const name = d.data[0].practitioner_name || currentUser;
+      document.getElementById('user-name').textContent = name;
+      document.getElementById('user-initial').textContent = name.charAt(0).toUpperCase();
+    } else {
+      // Try by user link
+      const r2 = await fetch(`${API}/Healthcare Practitioner?filters=[["user","=","${currentUser}"]]&fields=["name","practitioner_name"]&limit=1`);
+      const d2 = await r2.json();
+      if (d2.data && d2.data.length > 0) {
+        practitionerId = d2.data[0].name;
+        const name = d2.data[0].practitioner_name || currentUser;
+        document.getElementById('user-name').textContent = name;
+        document.getElementById('user-initial').textContent = name.charAt(0).toUpperCase();
+      }
+    }
+  } catch(e) {}
+}
+
+// ── PAGES ────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  const loaders = { schedule: loadSchedule, patients: loadPatients, encounters: loadEncounters,
+    'service-requests': loadServiceRequests, therapy: loadTherapy,
+    attendance: loadAttendance, leave: loadLeave, payroll: loadPayroll };
+  if (loaders[id]) loaders[id]();
+}
+
+// ── DASHBOARD ────────────────────────────────────────
+async function loadDashboard() {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('dashboard-date').textContent = new Date().toLocaleDateString('en-IN', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('schedule-date').textContent = new Date().toLocaleDateString('en-IN', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
+
+  // Today's appointments
+  try {
+    let url = `${API}/Patient Appointment?filters=[["appointment_date","=","${today}"]${practitionerId ? `,[\"practitioner\",\"=\",\"${practitionerId}\"]` : ''}]&fields=["name","patient_name","appointment_time","status","department"]&limit=20`;
+    const r = await fetch(url);
+    const d = await r.json();
+    const appts = d.data || [];
+    document.getElementById('stat-today').textContent = appts.length;
+    const el = document.getElementById('today-appts');
+    if (!appts.length) { el.innerHTML = '<div class="empty">No appointments today</div>'; return; }
+    el.innerHTML = appts.map(a => `
+      <div class="info-row">
+        <span class="info-label">${a.appointment_time || 'TBD'} · ${a.patient_name}</span>
+        <span class="badge ${statusBadge(a.status)}">${a.status}</span>
+      </div>`).join('');
+  } catch(e) { document.getElementById('stat-today').textContent = '—'; }
+
+  // Patient count
+  try {
+    const filters = practitionerId ? `[["primary_practitioner","=","${practitionerId}"]]` : '[]';
+    const r = await fetch(`${API}/Patient?filters=${filters}&fields=["name"]&limit=200`);
+    const d = await r.json();
+    document.getElementById('stat-patients').textContent = (d.data || []).length;
+    const el = document.getElementById('recent-patients');
+    const pts = (d.data || []).slice(0, 5);
+    allPatients = d.data || [];
+    if (!pts.length) { el.innerHTML = '<div class="empty">No patients found</div>'; }
+    else {
+      el.innerHTML = pts.map(p => `<div class="info-row"><span class="info-label">${p.name}</span><span class="badge badge-blue">Active</span></div>`).join('');
+    }
+  } catch(e) { document.getElementById('stat-patients').textContent = '—'; }
+
+  // Pending service requests
+  try {
+    const filters = practitionerId ? `[["status","in","Draft,Open"],["practitioner","=","${practitionerId}"]]` : `[["status","in","Draft,Open"]]`;
+    const r = await fetch(`${API}/Service Request?filters=${JSON.stringify(JSON.parse(filters))}&fields=["name"]&limit=100`);
+    const d = await r.json();
+    document.getElementById('stat-pending').textContent = (d.data || []).length;
+  } catch(e) { document.getElementById('stat-pending').textContent = '0'; }
+
+  // Active therapy plans
+  try {
+    const filters = practitionerId ? `[["status","in","Active,In Progress"],["practitioner","=","${practitionerId}"]]` : `[["status","in","Active,In Progress"]]`;
+    const r = await fetch(`${API}/Therapy Plan?filters=${encodeURIComponent(filters)}&fields=["name"]&limit=100`);
+    const d = await r.json();
+    document.getElementById('stat-therapy').textContent = (d.data || []).length;
+  } catch(e) { document.getElementById('stat-therapy').textContent = '0'; }
+}
+
+// ── SCHEDULE ─────────────────────────────────────────
+async function loadSchedule() {
+  const today = new Date().toISOString().split('T')[0];
+  const el = document.getElementById('schedule-list');
+  try {
+    let url = `${API}/Patient Appointment?filters=[["appointment_date","=","${today}"]${practitionerId ? `,[\"practitioner\",\"=\",\"${practitionerId}\"]` : ''}]&fields=["name","patient_name","appointment_time","status","department","appointment_type"]&order_by=appointment_time asc&limit=50`;
+    const r = await fetch(url);
+    const d = await r.json();
+    const appts = d.data || [];
+    if (!appts.length) { el.innerHTML = '<div class="empty">No appointments scheduled for today</div>'; return; }
+    el.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>Time</th><th>Patient</th><th>Type</th><th>Department</th><th>Status</th></tr></thead>
+      <tbody>${appts.map(a => `<tr>
+        <td><span style="font-family:'DM Mono',monospace;font-size:13px;">${a.appointment_time || '—'}</span></td>
+        <td><strong>${a.patient_name || a.name}</strong></td>
+        <td>${a.appointment_type || '—'}</td>
+        <td>${a.department || '—'}</td>
+        <td><span class="badge ${statusBadge(a.status)}">${a.status}</span></td>
+      </tr>`).join('')}</tbody></table></div>`;
+  } catch(e) { el.innerHTML = '<div class="empty">Unable to load schedule</div>'; }
+}
+
+// ── PATIENTS ──────────────────────────────────────────
+async function loadPatients() {
+  const el = document.getElementById('patient-list');
+  try {
+    const filters = practitionerId ? `[["primary_practitioner","=","${practitionerId}"]]` : '[]';
+    const r = await fetch(`${API}/Patient?filters=${filters}&fields=["name","patient_name","sex","mobile","email","status","blood_group"]&limit=100&order_by=creation desc`);
+    const d = await r.json();
+    allPatients = d.data || [];
+    renderPatients(allPatients);
+  } catch(e) {
+    // Try without practitioner filter
+    try {
+      const r = await fetch(`${API}/Patient?fields=["name","patient_name","sex","mobile","email","status"]&limit=100&order_by=creation desc`);
+      const d = await r.json();
+      allPatients = d.data || [];
+      renderPatients(allPatients);
+    } catch(e2) { el.innerHTML = '<div class="empty">Unable to load patients</div>'; }
+  }
+}
+
+function renderPatients(pts) {
+  const el = document.getElementById('patient-list');
+  if (!pts.length) { el.innerHTML = '<div class="empty">No patients found</div>'; return; }
+  el.innerHTML = pts.map(p => `
+    <div class="patient-row" onclick="openPatient('${p.name}','${(p.patient_name||p.name).replace(/'/g,"\\'")}')">
+      <div class="p-avatar">${(p.patient_name || p.name).charAt(0).toUpperCase()}</div>
+      <div style="flex:1">
+        <div class="p-name">${p.patient_name || p.name}</div>
+        <div class="p-meta">${p.sex || '—'} · ${p.mobile || p.email || '—'}</div>
+      </div>
+      <span class="badge ${p.status === 'Active' ? 'badge-green' : 'badge-gray'}">${p.status || 'Active'}</span>
+    </div>`).join('');
+}
+
+function filterPatients(q) {
+  const filtered = allPatients.filter(p => (p.patient_name || '').toLowerCase().includes(q.toLowerCase()) || (p.mobile || '').includes(q));
+  renderPatients(filtered);
+}
+
+// ── PATIENT MODAL ─────────────────────────────────────
+async function openPatient(id, name) {
+  currentPatient = id;
+  document.getElementById('modal-patient-name').textContent = name;
+  document.getElementById('patient-modal').classList.add('open');
+  // Reset tabs
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', i===0));
+  document.querySelectorAll('.tab-content').forEach((c,i) => c.classList.toggle('active', i===0));
+  // Load demographics
+  await loadDemographics(id);
+}
+
+function closeModal() {
+  document.getElementById('patient-modal').classList.remove('open');
+}
+
+async function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'demographics') await loadDemographics(currentPatient);
+  if (tab === 'visits') await loadVisitHistory(currentPatient);
+  if (tab === 'notes') await loadClinicalNotes(currentPatient);
+  if (tab === 'requests') await loadPatientServiceRequests(currentPatient);
+}
+
+async function loadDemographics(id) {
+  const el = document.getElementById('tab-demographics');
+  el.innerHTML = '<div class="loading">Loading...</div>';
+  try {
+    const r = await fetch(`${API}/Patient/${id}`);
+    const d = await r.json();
+    const p = d.data;
+    el.innerHTML = `
+      <div class="grid-2">
+        <div><div class="info-row"><span class="info-label">Patient ID</span><span class="info-value" style="font-family:'DM Mono',monospace;font-size:12px;">${p.name}</span></div>
+        <div class="info-row"><span class="info-label">Full Name</span><span class="info-value">${p.patient_name || '—'}</span></div>
+        <div class="info-row"><span class="info-label">Gender</span><span class="info-value">${p.sex || '—'}</span></div>
+        <div class="info-row"><span class="info-label">DOB</span><span class="info-value">${p.dob || '—'}</span></div>
+        <div class="info-row"><span class="info-label">Blood Group</span><span class="info-value">${p.blood_group || '—'}</span></div></div>
+        <div><div class="info-row"><span class="info-label">Mobile</span><span class="info-value">${p.mobile || '—'}</span></div>
+        <div class="info-row"><span class="info-label">Email</span><span class="info-value">${p.email || '—'}</span></div>
+        <div class="info-row"><span class="info-label">Status</span><span class="info-value"><span class="badge ${p.status === 'Active' ? 'badge-green' : 'badge-gray'}">${p.status || 'Active'}</span></span></div>
+        <div class="info-row"><span class="info-label">Allergies</span><span class="info-value">${p.allergies || 'None recorded'}</span></div></div>
+      </div>`;
+  } catch(e) { el.innerHTML = '<div class="empty">Unable to load patient data</div>'; }
+}
+
+async function loadVisitHistory(patientId) {
+  const el = document.getElementById('tab-visits');
+  el.innerHTML = '<div class="loading">Loading...</div>';
+  try {
+    const r = await fetch(`${API}/Patient Appointment?filters=[["patient","=","${patientId}"]]&fields=["name","appointment_date","appointment_time","practitioner_name","status","department"]&order_by=appointment_date desc&limit=20`);
+    const d = await r.json();
+    const rows = d.data || [];
+    if (!rows.length) { el.innerHTML = '<div class="empty">No visit history</div>'; return; }
+    el.innerHTML = `<table><thead><tr><th>Date</th><th>Time</th><th>Practitioner</th><th>Department</th><th>Status</th></tr></thead>
+      <tbody>${rows.map(r => `<tr>
+        <td>${r.appointment_date}</td><td>${r.appointment_time || '—'}</td>
+        <td>${r.practitioner_name || '—'}</td><td>${r.department || '—'}</td>
+        <td><span class="badge ${statusBadge(r.status)}">${r.status}</span></td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch(e) { el.innerHTML = '<div class="empty">Unable to load visit history</div>'; }
+}
+
+async function loadClinicalNotes(patientId) {
+  const el = document.getElementById('tab-notes');
+  el.innerHTML = '<div class="loading">Loading...</div>';
+  try {
+    const r = await fetch(`${API}/Patient Encounter?filters=[["patient","=","${patientId}"]]&fields=["name","encounter_date","practitioner_name","encounter_type","symptoms","diagnosis"]&order_by=encounter_date desc&limit=20`);
+    const d = await r.json();
+    const rows = d.data || [];
+    if (!rows.length) { el.innerHTML = '<div class="empty">No clinical notes found</div>'; return; }
+    el.innerHTML = rows.map(enc => `
+      <div class="card" style="margin-bottom:12px;background:var(--bg);">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+          <strong>${enc.encounter_date}</strong>
+          <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--text-muted);">${enc.name}</span>
+        </div>
+        <div class="info-row"><span class="info-label">Practitioner</span><span class="info-value">${enc.practitioner_name || '—'}</span></div>
+        <div class="info-row"><span class="info-label">Symptoms</span><span class="info-value">${enc.symptoms || '—'}</span></div>
+        <div class="info-row"><span class="info-label">Diagnosis</span><span class="info-value">${enc.diagnosis || '—'}</span></div>
+      </div>`).join('');
+  } catch(e) { el.innerHTML = '<div class="empty">Unable to load clinical notes</div>'; }
+}
+
+async function loadPatientServiceRequests(patientId) {
+  const el = document.getElementById('tab-requests');
+  el.innerHTML = '<div class="loading">Loading...</div>';
+  try {
+    const r = await fetch(`${API}/Service Request?filters=[["patient","=","${patientId}"]]&fields=["name","template_dt","status","order_date","practitioner_name"]&order_by=order_date desc&limit=20`);
+    const d = await r.json();
+    const rows = d.data || [];
+    if (!rows.length) { el.innerHTML = '<div class="empty">No service requests found</div>'; return; }
+    el.innerHTML = `<table><thead><tr><th>ID</th><th>Service</th><th>Status</th><th>Date</th></tr></thead>
+      <tbody>${rows.map(r => `<tr>
+        <td style="font-family:'DM Mono',monospace;font-size:11px;">${r.name}</td>
+        <td>${r.template_dt || '—'}</td>
+        <td><span class="badge ${statusBadge(r.status)}">${r.status}</span></td>
+        <td>${r.order_date || '—'}</td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch(e) { el.innerHTML = '<div class="empty">Unable to load service requests</div>'; }
+}
+
+// ── ENCOUNTERS ────────────────────────────────────────
+async function loadEncounters() {
+  const el = document.getElementById('encounters-tbody');
+  try {
+    const filters = practitionerId ? `[["practitioner","=","${practitionerId}"]]` : '[]';
+    const r = await fetch(`${API}/Patient Encounter?filters=${filters}&fields=["name","patient_name","encounter_date","encounter_type","encounter_category","docstatus"]&order_by=encounter_date desc&limit=50`);
+    const d = await r.json();
+    const rows = d.data || [];
+    if (!rows.length) { el.innerHTML = '<tr><td colspan="5" class="empty">No encounters found</td></tr>'; return; }
+    el.innerHTML = rows.map(r => `<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;">${r.name}</td>
+      <td>${r.patient_name || '—'}</td><td>${r.encounter_date || '—'}</td>
+      <td>${r.encounter_type || r.encounter_category || '—'}</td>
+      <td><span class="badge ${r.docstatus == 1 ? 'badge-green' : 'badge-yellow'}">${r.docstatus == 1 ? 'Submitted' : 'Draft'}</span></td>
+    </tr>`).join('');
+  } catch(e) { el.innerHTML = '<tr><td colspan="5" class="empty">Unable to load encounters</td></tr>'; }
+}
+
+// ── SERVICE REQUESTS ──────────────────────────────────
+async function loadServiceRequests() {
+  const el = document.getElementById('sr-tbody');
+  try {
+    const filters = practitionerId ? `[["practitioner","=","${practitionerId}"]]` : '[]';
+    const r = await fetch(`${API}/Service Request?filters=${filters}&fields=["name","patient_name","template_dt","status","order_date"]&order_by=order_date desc&limit=50`);
+    const d = await r.json();
+    const rows = d.data || [];
+    if (!rows.length) { el.innerHTML = '<tr><td colspan="5" class="empty">No service requests found</td></tr>'; return; }
+    el.innerHTML = rows.map(r => `<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;">${r.name}</td>
+      <td>${r.patient_name || '—'}</td><td>${r.template_dt || '—'}</td>
+      <td><span class="badge ${statusBadge(r.status)}">${r.status}</span></td>
+      <td>${r.order_date || '—'}</td>
+    </tr>`).join('');
+  } catch(e) { el.innerHTML = '<tr><td colspan="5" class="empty">Unable to load service requests</td></tr>'; }
+}
+
+// ── THERAPY ───────────────────────────────────────────
+async function loadTherapy() {
+  // Therapy Plans
+  const plansEl = document.getElementById('therapy-plans-tbody');
+  const sessEl = document.getElementById('therapy-sessions-tbody');
+  try {
+    const filters = practitionerId ? `[["practitioner","=","${practitionerId}"]]` : '[]';
+    const r = await fetch(`${API}/Therapy Plan?filters=${filters}&fields=["name","patient","patient_name","total_sessions","sessions_completed","status","start_date"]&order_by=start_date desc&limit=50`);
+    const d = await r.json();
+    const rows = d.data || [];
+    document.getElementById('stat-therapy').textContent = rows.filter(r => r.status === 'Active' || r.status === 'In Progress').length;
+    if (!rows.length) { plansEl.innerHTML = '<tr><td colspan="4" class="empty">No therapy plans found</td></tr>'; }
+    else {
+      plansEl.innerHTML = rows.map(r => `<tr>
+        <td style="font-family:'DM Mono',monospace;font-size:11px;">${r.name}</td>
+        <td>${r.patient_name || r.patient || '—'}</td>
+        <td>${r.sessions_completed || 0}/${r.total_sessions || '?'}</td>
+        <td><span class="badge ${r.status === 'Completed' ? 'badge-green' : r.status === 'Active' || r.status === 'In Progress' ? 'badge-blue' : 'badge-gray'}">${r.status || 'Draft'}</span></td>
+      </tr>`).join('');
+    }
+  } catch(e) { plansEl.innerHTML = '<tr><td colspan="4" class="empty">Unable to load therapy plans</td></tr>'; }
+
+  // Therapy Sessions
+  try {
+    const filters = practitionerId ? `[["practitioner","=","${practitionerId}"]]` : '[]';
+    const r = await fetch(`${API}/Therapy Session?filters=${filters}&fields=["name","patient","patient_name","start_date","session_type","custom_session_status","status"]&order_by=start_date desc&limit=50`);
+    const d = await r.json();
+    const rows = d.data || [];
+    if (!rows.length) { sessEl.innerHTML = '<tr><td colspan="4" class="empty">No therapy sessions found</td></tr>'; }
+    else {
+      sessEl.innerHTML = rows.map(r => `<tr>
+        <td style="font-family:'DM Mono',monospace;font-size:11px;">${r.name}</td>
+        <td>${r.patient_name || r.patient || '—'}</td>
+        <td>${r.start_date || '—'}</td>
+        <td><span class="badge ${statusBadge(r.custom_session_status || r.status)}">${r.custom_session_status || r.status || 'Draft'}</span></td>
+      </tr>`).join('');
+    }
+  } catch(e) { sessEl.innerHTML = '<tr><td colspan="4" class="empty">Unable to load therapy sessions</td></tr>'; }
+}
+
+// ── HR ────────────────────────────────────────────────
+async function loadAttendance() {
+  const el = document.getElementById('attendance-tbody');
+  const now = new Date();
+  const from = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+  const to = now.toISOString().split('T')[0];
+  try {
+    const r = await fetch(`${API}/Attendance?filters=[["employee_name","like","%${(document.getElementById('user-name').textContent||'').split(' ')[0]}%"],["attendance_date","between","${from},${to}"]]&fields=["name","attendance_date","status","in_time","out_time","working_hours"]&order_by=attendance_date desc&limit=31`);
+    const d = await r.json();
+    const rows = d.data || [];
+    if (!rows.length) { el.innerHTML = '<tr><td colspan="5" class="empty">No attendance records found</td></tr>'; return; }
+    el.innerHTML = rows.map(r => `<tr>
+      <td>${r.attendance_date}</td>
+      <td><span class="badge ${r.status === 'Present' ? 'badge-green' : r.status === 'Absent' ? 'badge-red' : 'badge-yellow'}">${r.status}</span></td>
+      <td>${r.in_time || '—'}</td><td>${r.out_time || '—'}</td>
+      <td>${r.working_hours ? parseFloat(r.working_hours).toFixed(1) + 'h' : '—'}</td>
+    </tr>`).join('');
+  } catch(e) { el.innerHTML = '<tr><td colspan="5" class="empty">Unable to load attendance</td></tr>'; }
+}
+
+async function loadLeave() {
+  const balEl = document.getElementById('leave-balance');
+  const appEl = document.getElementById('leave-apps');
+  try {
+    const r = await fetch(`${API}/Leave Allocation?filters=[["employee_name","like","%${(document.getElementById('user-name').textContent||'').split(' ')[0]}%"]]&fields=["leave_type","total_leaves_allocated","carry_forwarded_leaves"]&limit=10`);
+    const d = await r.json();
+    const rows = d.data || [];
+    balEl.innerHTML = rows.length ? rows.map(r => `<div class="info-row"><span class="info-label">${r.leave_type}</span><span class="info-value">${r.total_leaves_allocated || 0} days</span></div>`).join('') : '<div class="empty">No leave balance data</div>';
+  } catch(e) { balEl.innerHTML = '<div class="empty">Unable to load leave balance</div>'; }
+  try {
+    const r = await fetch(`${API}/Leave Application?filters=[["employee_name","like","%${(document.getElementById('user-name').textContent||'').split(' ')[0]}%"]]&fields=["name","leave_type","from_date","to_date","status","total_leave_days"]&order_by=from_date desc&limit=10`);
+    const d = await r.json();
+    const rows = d.data || [];
+    appEl.innerHTML = rows.length ? rows.map(r => `<div class="info-row"><span class="info-label">${r.leave_type} · ${r.from_date}</span><span class="badge ${r.status === 'Approved' ? 'badge-green' : r.status === 'Rejected' ? 'badge-red' : 'badge-yellow'}">${r.status}</span></div>`).join('') : '<div class="empty">No leave applications</div>';
+  } catch(e) { appEl.innerHTML = '<div class="empty">Unable to load applications</div>'; }
+}
+
+async function loadPayroll() {
+  const el = document.getElementById('payroll-tbody');
+  try {
+    const r = await fetch(`${API}/Salary Slip?filters=[["employee_name","like","%${(document.getElementById('user-name').textContent||'').split(' ')[0]}%"]]&fields=["name","start_date","end_date","gross_pay","total_deduction","net_pay","docstatus"]&order_by=start_date desc&limit=12`);
+    const d = await r.json();
+    const rows = d.data || [];
+    if (!rows.length) { el.innerHTML = '<tr><td colspan="5" class="empty">No payroll records found</td></tr>'; return; }
+    el.innerHTML = rows.map(r => `<tr>
+      <td>${r.start_date ? r.start_date.slice(0,7) : '—'}</td>
+      <td>₹${fmt(r.gross_pay)}</td><td>₹${fmt(r.total_deduction)}</td>
+      <td style="font-weight:700;">₹${fmt(r.net_pay)}</td>
+      <td><span class="badge ${r.docstatus == 1 ? 'badge-green' : 'badge-yellow'}">${r.docstatus == 1 ? 'Paid' : 'Draft'}</span></td>
+    </tr>`).join('');
+  } catch(e) { el.innerHTML = '<tr><td colspan="5" class="empty">Unable to load payroll</td></tr>'; }
+}
+
+// ── HELPERS ───────────────────────────────────────────
+function statusBadge(s) {
+  if (!s) return 'badge-gray';
+  const m = { 'Scheduled':'badge-blue','Open':'badge-blue','Completed':'badge-green','Present':'badge-green',
+    'Active':'badge-green','Approved':'badge-green','In Progress':'badge-blue','Submitted':'badge-green',
+    'Cancelled':'badge-red','Absent':'badge-red','Rejected':'badge-red','Draft':'badge-yellow','Pending':'badge-yellow' };
+  return m[s] || 'badge-gray';
+}
+function fmt(n) { return Number(n||0).toLocaleString('en-IN', {minimumFractionDigits:0, maximumFractionDigits:0}); }
+
+// Enter key on login
+document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+document.getElementById('login-email').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('login-password').focus(); });
+// Close modal on overlay click
+document.getElementById('patient-modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+
+init();
+</script>
+</body>
+</html>
