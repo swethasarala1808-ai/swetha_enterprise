@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nurse Portal | Sneha Health</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;--primary:#1f6feb;--primary-light:#388bfd;--success:#238636;--success-light:#3fb950;--warning-light:#d29922;--danger-light:#f85149;--accent:#6e40c9;--accent-light:#a371f7;--text:#e6edf3;--text-muted:#8b949e;--text-dim:#484f58;--radius:8px;--radius-lg:12px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);}
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#1a1a2e,var(--bg) 70%);}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px;width:420px;}
+.login-logo{text-align:center;margin-bottom:32px;}
+.login-logo .icon{width:56px;height:56px;background:var(--accent);border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:12px;}
+.login-logo h1{font-size:22px;font-weight:700;}
+.login-logo p{color:var(--text-muted);font-size:14px;margin-top:4px;}
+.form-field{margin-bottom:16px;}
+.form-field label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.form-field input{width:100%;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px;font-family:inherit;}
+.form-field input:focus{outline:none;border-color:var(--accent);}
+.btn-login{width:100%;padding:12px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;}
+.btn-login:hover{background:var(--accent-light);}
+.login-status{margin-top:12px;font-size:13px;color:var(--text-muted);text-align:center;min-height:20px;}
+.login-status.error{color:var(--danger-light);}
+#app{display:none;min-height:100vh;}
+.layout{display:flex;min-height:100vh;}
+.sidebar{width:240px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;}
+.sidebar-brand{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.brand-icon{width:36px;height:36px;background:var(--accent);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.brand-name{font-size:14px;font-weight:700;}
+.brand-sub{font-size:11px;color:var(--text-muted);}
+.sidebar-nav{padding:12px 8px;flex:1;}
+.nav-section{margin-bottom:20px;}
+.nav-label{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;padding:0 8px;margin-bottom:4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;color:var(--text-muted);font-size:13px;font-weight:500;transition:all 0.15s;margin-bottom:2px;}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:rgba(110,64,201,0.15);color:var(--accent-light);}
+.sidebar-footer{padding:12px 8px;border-top:1px solid var(--border);}
+.user-info{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius);background:var(--surface2);}
+.user-avatar{width:32px;height:32px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.user-name{font-size:12px;font-weight:600;}
+.btn-logout{width:100%;margin-top:8px;padding:8px;background:transparent;border:1px solid var(--border);color:var(--danger-light);border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+.main{margin-left:240px;flex:1;padding:24px;}
+.page{display:none;}
+.page.active{display:block;}
+.page-title{font-size:24px;font-weight:700;margin-bottom:4px;}
+.page-sub{color:var(--text-muted);font-size:14px;margin-bottom:24px;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;position:relative;overflow:hidden;}
+.stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.stat-card.purple::before{background:var(--accent-light);}
+.stat-card.green::before{background:var(--success-light);}
+.stat-card.blue::before{background:var(--primary-light);}
+.stat-card.red::before{background:var(--danger-light);}
+.stat-label{font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
+.stat-value{font-size:32px;font-weight:700;margin:8px 0 4px;font-family:'DM Mono',monospace;}
+.stat-sub{font-size:12px;color:var(--text-muted);}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;}
+.card-title{font-size:14px;font-weight:700;margin-bottom:16px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
+td{padding:10px 14px;border-bottom:1px solid rgba(48,54,61,0.5);}
+tr:last-child td{border-bottom:none;}
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;}
+.badge-green{background:rgba(35,134,54,0.2);color:var(--success-light);}
+.badge-blue{background:rgba(31,111,235,0.2);color:var(--primary-light);}
+.badge-yellow{background:rgba(158,106,3,0.2);color:var(--warning-light);}
+.badge-red{background:rgba(218,54,51,0.2);color:var(--danger-light);}
+.badge-purple{background:rgba(110,64,201,0.2);color:var(--accent-light);}
+.badge-gray{background:rgba(139,148,158,0.2);color:var(--text-muted);}
+.patient-row{display:flex;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;gap:12px;}
+.patient-row:hover{background:var(--surface2);}
+.patient-row:last-child{border-bottom:none;}
+.p-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;flex-shrink:0;}
+.p-name{font-size:14px;font-weight:600;}
+.p-meta{font-size:12px;color:var(--text-muted);}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:640px;max-height:85vh;overflow-y:auto;}
+.modal-header{padding:20px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--surface);}
+.modal-header h2{font-size:18px;font-weight:700;}
+.modal-close{background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;}
+.modal-body{padding:24px;}
+.vitals-form{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.field label{font-size:12px;font-weight:600;color:var(--text-muted);display:block;margin-bottom:4px;}
+.field input,.field select{width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:inherit;}
+.field input:focus,.field select:focus{outline:none;border-color:var(--accent);}
+.btn{padding:10px 20px;border-radius:var(--radius);font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;border:none;transition:all 0.15s;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:var(--accent-light);}
+.btn-success{background:var(--success);color:#fff;}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border);}
+.alert{padding:12px 16px;border-radius:var(--radius);font-size:13px;margin-bottom:12px;}
+.alert-success{background:rgba(35,134,54,0.1);border:1px solid rgba(35,134,54,0.3);color:var(--success-light);}
+.alert-error{background:rgba(218,54,51,0.1);border:1px solid rgba(218,54,51,0.3);color:var(--danger-light);}
+.alert-info{background:rgba(110,64,201,0.1);border:1px solid rgba(110,64,201,0.3);color:var(--accent-light);}
+.loading{color:var(--text-muted);font-size:13px;padding:20px;text-align:center;}
+.empty{color:var(--text-muted);font-size:13px;padding:40px;text-align:center;}
+.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(48,54,61,0.5);font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-label{color:var(--text-muted);}
+.vitals-history-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;}
+.vh-header{display:flex;justify-content:space-between;margin-bottom:10px;}
+.vh-date{font-size:12px;font-weight:700;color:var(--accent-light);}
+.vh-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.vh-item{background:var(--surface);padding:8px;border-radius:6px;text-align:center;}
+.vh-label{font-size:10px;color:var(--text-muted);text-transform:uppercase;}
+.vh-val{font-size:14px;font-weight:700;font-family:'DM Mono',monospace;}
+</style>
+</head>
+<body>
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="icon">👩‍⚕️</div>
+      <h1>Nurse Portal</h1>
+      <p>Sneha Health · Rena Rehabilitation Centre</p>
+    </div>
+    <div class="form-field"><label>Email</label><input type="email" id="login-email" placeholder="nurse@snehahealth.com" autofocus></div>
+    <div class="form-field"><label>Password</label><input type="password" id="login-password" placeholder="••••••••"></div>
+    <button class="btn-login" onclick="doLogin()">Sign In →</button>
+    <div class="login-status" id="login-status">✓ Initializing session…</div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">👩‍⚕️</div>
+        <div><div class="brand-name">Nurse Portal</div><div class="brand-sub">Sneha Health</div></div>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-label">Overview</div>
+          <div class="nav-item active" onclick="showPage('dashboard',event)"><span>📊</span> Dashboard</div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Patient Care</div>
+          <div class="nav-item" onclick="showPage('patients',event)"><span>👥</span> Patients</div>
+          <div class="nav-item" onclick="showPage('vitals',event)"><span>💓</span> Record Vitals</div>
+          <div class="nav-item" onclick="showPage('vitals-history',event)"><span>📈</span> Vitals History</div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">Ward</div>
+          <div class="nav-item" onclick="showPage('inpatient',event)"><span>🛏️</span> Inpatient Ward</div>
+          <div class="nav-item" onclick="showPage('tasks',event)"><span>✅</span> Nursing Tasks</div>
+        </div>
+        <div class="nav-section">
+          <div class="nav-label">HR</div>
+          <div class="nav-item" onclick="showPage('attendance',event)"><span>⏰</span> Attendance</div>
+        </div>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar" id="user-initial">N</div>
+          <div><div class="user-name" id="user-name">Nurse</div><div style="font-size:11px;color:var(--text-muted);">Nurse</div></div>
+        </div>
+        <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="page-title">Nurse Dashboard 👩‍⚕️</div>
+        <div class="page-sub" id="dash-date">Loading...</div>
+        <div class="stats-grid">
+          <div class="stat-card purple"><div class="stat-label">Total Patients</div><div class="stat-value" id="stat-patients">—</div><div class="stat-sub">In system</div></div>
+          <div class="stat-card green"><div class="stat-label">Vitals Today</div><div class="stat-value" id="stat-vitals">—</div><div class="stat-sub">Recorded today</div></div>
+          <div class="stat-card blue"><div class="stat-label">Inpatients</div><div class="stat-value" id="stat-inpatient">—</div><div class="stat-sub">Currently admitted</div></div>
+          <div class="stat-card red"><div class="stat-label">Pending Tasks</div><div class="stat-value" id="stat-tasks">—</div><div class="stat-sub">Nursing tasks</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Today's Vitals Recorded</div>
+            <div id="today-vitals"><div class="loading">Loading...</div></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Recent Patients</div>
+            <div id="recent-patients"><div class="loading">Loading...</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENTS -->
+      <div class="page" id="page-patients">
+        <div class="page-title">Patients</div>
+        <div class="page-sub">All patients in the system</div>
+        <div class="card" style="padding:0;">
+          <div id="patient-list"><div class="loading">Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- VITALS -->
+      <div class="page" id="page-vitals">
+        <div class="page-title">Record Vitals</div>
+        <div class="page-sub">Enter and submit patient vital signs directly</div>
+        <div class="card" style="max-width:700px;">
+          <div class="card-title">New Vitals Entry</div>
+          <div class="alert alert-info">⚡ Vitals are saved and <strong>submitted</strong> directly in ERPNext (not draft)</div>
+          <div style="margin-bottom:16px;">
+            <div class="field">
+              <label>Select Patient</label>
+              <select id="vitals-patient" style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:inherit;">
+                <option value="">-- Select Patient --</option>
+              </select>
+            </div>
+          </div>
+          <div class="vitals-form" id="vitals-form">
+            <div class="field"><label>Temperature (°F)</label><input type="number" id="v-temp" placeholder="98.6" step="0.1"></div>
+            <div class="field"><label>Pulse Rate (bpm)</label><input type="number" id="v-pulse" placeholder="72"></div>
+            <div class="field"><label>Respiratory Rate</label><input type="number" id="v-resp" placeholder="16"></div>
+            <div class="field"><label>Blood Pressure (mmHg)</label><input type="text" id="v-bp" placeholder="120/80"></div>
+            <div class="field"><label>SpO2 (%)</label><input type="number" id="v-spo2" placeholder="98" max="100"></div>
+            <div class="field"><label>Weight (kg)</label><input type="number" id="v-weight" placeholder="70" step="0.1"></div>
+            <div class="field"><label>Height (cm)</label><input type="number" id="v-height" placeholder="170"></div>
+            <div class="field"><label>Blood Sugar (mg/dL)</label><input type="number" id="v-sugar" placeholder="100"></div>
+          </div>
+          <div style="margin-top:16px;">
+            <div class="field"><label>Notes</label><textarea id="v-notes" rows="3" style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:inherit;resize:vertical;" placeholder="Additional observations..."></textarea></div>
+          </div>
+          <div id="vitals-msg"></div>
+          <div style="display:flex;gap:12px;margin-top:16px;">
+            <button class="btn btn-primary" onclick="saveVitals()">💾 Save & Submit Vitals</button>
+            <button class="btn btn-secondary" onclick="clearVitalsForm()">Clear Form</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- VITALS HISTORY -->
+      <div class="page" id="page-vitals-history">
+        <div class="page-title">Vitals History</div>
+        <div class="page-sub">All recorded vital signs</div>
+        <div class="card">
+          <div style="display:flex;gap:12px;margin-bottom:16px;">
+            <select id="vh-patient-filter" style="padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:inherit;flex:1;" onchange="loadVitalsHistory()">
+              <option value="">All Patients</option>
+            </select>
+            <button class="btn btn-secondary" onclick="loadVitalsHistory()">🔄 Refresh</button>
+          </div>
+          <div id="vitals-history-list"><div class="loading">Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- INPATIENT -->
+      <div class="page" id="page-inpatient">
+        <div class="page-title">Inpatient Ward</div>
+        <div class="page-sub">Currently admitted patients</div>
+        <div class="card">
+          <table><thead><tr><th>Patient</th><th>Ward</th><th>Bed</th><th>Admitted</th><th>Status</th></tr></thead>
+          <tbody id="inpatient-tbody"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody></table>
+        </div>
+      </div>
+
+      <!-- TASKS -->
+      <div class="page" id="page-tasks">
+        <div class="page-title">Nursing Tasks</div>
+        <div class="page-sub">Pending and active nursing tasks</div>
+        <div class="card">
+          <div id="tasks-list"><div class="loading">Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE -->
+      <div class="page" id="page-attendance">
+        <div class="page-title">My Attendance</div>
+        <div class="page-sub">This month's attendance record</div>
+        <div class="card">
+          <table><thead><tr><th>Date</th><th>Status</th><th>In Time</th><th>Out Time</th></tr></thead>
+          <tbody id="att-tbody"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody></table>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- PATIENT VITALS MODAL -->
+<div class="modal-overlay" id="vitals-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-patient-name">Patient Vitals</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-vitals-content"></div>
+  </div>
+</div>
+
+<script>
+const API='/api/resource', METHOD='/api/method';
+let currentUser=null, allPatients=[];
+
+async function init() {
+  try {
+    const r=await fetch(`${METHOD}/frappe.auth.get_logged_user`);
+    const d=await r.json();
+    if(d.message&&d.message!=='Guest'){currentUser=d.message;await loadApp();}
+    else{document.getElementById('login-status').textContent='Please sign in.';}
+  } catch(e){document.getElementById('login-status').textContent='Connecting...';}
+}
+
+async function doLogin() {
+  const email=document.getElementById('login-email').value.trim();
+  const pwd=document.getElementById('login-password').value;
+  const status=document.getElementById('login-status');
+  if(!email||!pwd){status.textContent='Enter credentials.';status.className='login-status error';return;}
+  status.textContent='Signing in…';
+  try {
+    const r=await fetch(`${METHOD}/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usr:email,pwd})});
+    const d=await r.json();
+    if(d.message==='Logged In'){currentUser=email;await loadApp();}
+    else{status.textContent='Invalid credentials.';status.className='login-status error';}
+  } catch(e){status.textContent='Connection error.';status.className='login-status error';}
+}
+
+function doLogout() {
+  fetch(`${METHOD}/frappe.handler.logout`,{method:'POST',headers:{'Content-Type':'application/json'}})
+    .finally(()=>{window.location.href=window.location.href.split('?')[0]+'?t='+Date.now();});
+}
+
+async function loadApp() {
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('user-name').textContent=currentUser.split('@')[0];
+  document.getElementById('user-initial').textContent=currentUser.charAt(0).toUpperCase();
+  document.getElementById('dash-date').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  await loadPatients();
+  loadDashboard();
+}
+
+async function loadPatients() {
+  try {
+    const r=await fetch(`${API}/Patient?fields=["name","patient_name","sex","mobile","status"]&limit=200&order_by=patient_name asc`);
+    const d=await r.json();
+    allPatients=d.data||[];
+    // Populate selects
+    const opts=allPatients.map(p=>`<option value="${p.name}">${p.patient_name||p.name}</option>`).join('');
+    document.getElementById('vitals-patient').innerHTML='<option value="">-- Select Patient --</option>'+opts;
+    document.getElementById('vh-patient-filter').innerHTML='<option value="">All Patients</option>'+opts;
+  } catch(e){}
+}
+
+async function loadDashboard() {
+  const today=new Date().toISOString().split('T')[0];
+  // Patient count
+  document.getElementById('stat-patients').textContent=allPatients.length;
+  document.getElementById('recent-patients').innerHTML=allPatients.slice(0,5).map(p=>`
+    <div class="info-row"><span class="info-label">${p.patient_name||p.name}</span><span class="badge ${p.status==='Active'?'badge-green':'badge-gray'}">${p.status||'Active'}</span></div>`).join('')||'<div class="empty">No patients</div>';
+
+  // Vitals today
+  try {
+    const r=await fetch(`${API}/Vital Signs?filters=[["signs_date","=","${today}"],["docstatus","=",1]]&fields=["name","patient","patient_name","signs_date","temperature","pulse"]&limit=50`);
+    const d=await r.json();
+    const vitals=d.data||[];
+    document.getElementById('stat-vitals').textContent=vitals.length;
+    document.getElementById('today-vitals').innerHTML=vitals.length?
+      vitals.map(v=>`<div class="info-row"><span class="info-label">${v.patient_name||v.patient}</span><span style="font-size:12px;color:var(--text-muted);">T:${v.temperature||'—'} P:${v.pulse||'—'}</span></div>`).join(''):
+      '<div class="empty">No vitals recorded today</div>';
+  } catch(e){document.getElementById('stat-vitals').textContent='0';}
+
+  // Inpatient
+  try {
+    const r=await fetch(`${API}/Inpatient Record?filters=[["status","in","Admitted,Discharge Scheduled"]]&fields=["name"]&limit=100`);
+    const d=await r.json();
+    document.getElementById('stat-inpatient').textContent=(d.data||[]).length;
+  } catch(e){document.getElementById('stat-inpatient').textContent='0';}
+
+  // Tasks
+  try {
+    const r=await fetch(`${API}/Nursing Task?filters=[["status","in","Open,Draft"]]&fields=["name"]&limit=100`);
+    const d=await r.json();
+    document.getElementById('stat-tasks').textContent=(d.data||[]).length;
+  } catch(e){document.getElementById('stat-tasks').textContent='0';}
+}
+
+function showPage(id,e) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  e.currentTarget.classList.add('active');
+  const loaders={patients:loadPatientList,vitals:()=>{},
+    'vitals-history':loadVitalsHistory,inpatient:loadInpatient,tasks:loadTasks,attendance:loadAttendance};
+  if(loaders[id])loaders[id]();
+}
+
+function loadPatientList() {
+  const el=document.getElementById('patient-list');
+  if(!allPatients.length){el.innerHTML='<div class="empty">No patients found</div>';return;}
+  el.innerHTML=allPatients.map(p=>`
+    <div class="patient-row" onclick="openPatientVitals('${p.name}','${(p.patient_name||p.name).replace(/'/g,"\\'")}')">
+      <div class="p-avatar">${(p.patient_name||p.name).charAt(0).toUpperCase()}</div>
+      <div style="flex:1"><div class="p-name">${p.patient_name||p.name}</div><div class="p-meta">${p.sex||'—'} · ${p.mobile||'—'}</div></div>
+      <span class="badge ${p.status==='Active'?'badge-green':'badge-gray'}">${p.status||'Active'}</span>
+    </div>`).join('');
+}
+
+async function openPatientVitals(id,name) {
+  document.getElementById('modal-patient-name').textContent=name+' — Vital History';
+  document.getElementById('modal-vitals-content').innerHTML='<div class="loading">Loading vitals...</div>';
+  document.getElementById('vitals-modal').classList.add('open');
+  try {
+    const r=await fetch(`${API}/Vital Signs?filters=[["patient","=","${id}"],["docstatus","=",1]]&fields=["name","signs_date","temperature","pulse","respiratory_rate","bp_systolic","bp_diastolic","oxygen_saturation","weight","height"]&order_by=signs_date desc&limit=10`);
+    const d=await r.json();
+    const rows=d.data||[];
+    if(!rows.length){document.getElementById('modal-vitals-content').innerHTML='<div class="empty">No vitals recorded for this patient</div>';return;}
+    document.getElementById('modal-vitals-content').innerHTML=rows.map(v=>`
+      <div class="vitals-history-card">
+        <div class="vh-header"><span class="vh-date">${v.signs_date}</span><span class="badge badge-green">Submitted</span></div>
+        <div class="vh-grid">
+          <div class="vh-item"><div class="vh-label">Temp</div><div class="vh-val">${v.temperature||'—'}°F</div></div>
+          <div class="vh-item"><div class="vh-label">Pulse</div><div class="vh-val">${v.pulse||'—'} bpm</div></div>
+          <div class="vh-item"><div class="vh-label">Resp</div><div class="vh-val">${v.respiratory_rate||'—'}/min</div></div>
+          <div class="vh-item"><div class="vh-label">BP</div><div class="vh-val">${v.bp_systolic&&v.bp_diastolic?v.bp_systolic+'/'+v.bp_diastolic:'—'}</div></div>
+          <div class="vh-item"><div class="vh-label">SpO2</div><div class="vh-val">${v.oxygen_saturation||'—'}%</div></div>
+          <div class="vh-item"><div class="vh-label">Weight</div><div class="vh-val">${v.weight||'—'} kg</div></div>
+        </div>
+      </div>`).join('');
+  } catch(e){document.getElementById('modal-vitals-content').innerHTML='<div class="empty">Unable to load vitals</div>';}
+}
+
+function closeModal(){document.getElementById('vitals-modal').classList.remove('open');}
+
+// ── SAVE VITALS — SUBMITTED MODE ──────────────────────
+async function saveVitals() {
+  const patient=document.getElementById('vitals-patient').value;
+  if(!patient){showMsg('error','Please select a patient.');return;}
+  const msgEl=document.getElementById('vitals-msg');
+  msgEl.innerHTML='<div class="alert alert-info">Saving and submitting vitals...</div>';
+
+  const bp=document.getElementById('v-bp').value;
+  let bpSys='',bpDia='';
+  if(bp&&bp.includes('/')){[bpSys,bpDia]=bp.split('/').map(x=>x.trim());}
+
+  const payload={
+    doctype:'Vital Signs',
+    patient,
+    signs_date:new Date().toISOString().split('T')[0],
+    signs_time:new Date().toTimeString().split(' ')[0],
+    temperature:document.getElementById('v-temp').value||null,
+    pulse:document.getElementById('v-pulse').value||null,
+    respiratory_rate:document.getElementById('v-resp').value||null,
+    bp_systolic:bpSys||null,
+    bp_diastolic:bpDia||null,
+    oxygen_saturation:document.getElementById('v-spo2').value||null,
+    weight:document.getElementById('v-weight').value||null,
+    height:document.getElementById('v-height').value||null,
+    blood_sugar:document.getElementById('v-sugar').value||null,
+    notes:document.getElementById('v-notes').value||null
+  };
+
+  try {
+    // Step 1: Save
+    const r=await fetch(`${API}/Vital Signs`,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token':getCsrf()},
+      body:JSON.stringify(payload)
+    });
+    const d=await r.json();
+    if(!d.data){throw new Error(JSON.stringify(d.exc||d));}
+
+    // Step 2: Submit (docstatus=1)
+    const name=d.data.name;
+    const r2=await fetch(`${API}/Vital Signs/${name}`,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token':getCsrf()},
+      body:JSON.stringify({docstatus:1})
+    });
+    const d2=await r2.json();
+    if(d2.data){
+      msgEl.innerHTML=`<div class="alert alert-success">✅ Vitals submitted successfully! (${name})</div>`;
+      clearVitalsForm(false);
+      // Update dashboard stats
+      loadDashboard();
+    } else {
+      msgEl.innerHTML=`<div class="alert alert-error">Saved but could not submit: ${JSON.stringify(d2.exc||d2)}</div>`;
+    }
+  } catch(e){msgEl.innerHTML=`<div class="alert alert-error">Error: ${e.message}</div>`;}
+}
+
+function clearVitalsForm(resetMsg=true) {
+  ['v-temp','v-pulse','v-resp','v-bp','v-spo2','v-weight','v-height','v-sugar','v-notes'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.value='';
+  });
+  if(resetMsg)document.getElementById('vitals-msg').innerHTML='';
+}
+function showMsg(type,msg){document.getElementById('vitals-msg').innerHTML=`<div class="alert alert-${type}">${msg}</div>`;}
+
+async function loadVitalsHistory() {
+  const el=document.getElementById('vitals-history-list');
+  el.innerHTML='<div class="loading">Loading...</div>';
+  const patient=document.getElementById('vh-patient-filter').value;
+  try {
+    const filters=patient?`[["patient","=","${patient}"],["docstatus","=",1]]`:`[["docstatus","=",1]]`;
+    const r=await fetch(`${API}/Vital Signs?filters=${filters}&fields=["name","patient","patient_name","signs_date","temperature","pulse","respiratory_rate","bp_systolic","bp_diastolic","oxygen_saturation","weight"]&order_by=signs_date desc&limit=50`);
+    const d=await r.json();
+    const rows=d.data||[];
+    if(!rows.length){el.innerHTML='<div class="empty">No vital records found</div>';return;}
+    el.innerHTML=rows.map(v=>`
+      <div class="vitals-history-card">
+        <div class="vh-header">
+          <span><strong>${v.patient_name||v.patient}</strong></span>
+          <span class="vh-date">${v.signs_date}</span>
+        </div>
+        <div class="vh-grid">
+          <div class="vh-item"><div class="vh-label">Temp</div><div class="vh-val">${v.temperature||'—'}°F</div></div>
+          <div class="vh-item"><div class="vh-label">Pulse</div><div class="vh-val">${v.pulse||'—'}</div></div>
+          <div class="vh-item"><div class="vh-label">Resp</div><div class="vh-val">${v.respiratory_rate||'—'}</div></div>
+          <div class="vh-item"><div class="vh-label">BP</div><div class="vh-val">${v.bp_systolic&&v.bp_diastolic?v.bp_systolic+'/'+v.bp_diastolic:'—'}</div></div>
+          <div class="vh-item"><div class="vh-label">SpO2</div><div class="vh-val">${v.oxygen_saturation||'—'}%</div></div>
+          <div class="vh-item"><div class="vh-label">Wt</div><div class="vh-val">${v.weight||'—'}kg</div></div>
+        </div>
+      </div>`).join('');
+  } catch(e){el.innerHTML='<div class="empty">Unable to load vitals history</div>';}
+}
+
+async function loadInpatient() {
+  const el=document.getElementById('inpatient-tbody');
+  try {
+    const r=await fetch(`${API}/Inpatient Record?filters=[["status","in","Admitted,Discharge Scheduled"]]&fields=["name","patient_name","ward","bed","admission_datetime","status"]&limit=50`);
+    const d=await r.json();
+    const rows=d.data||[];
+    if(!rows.length){el.innerHTML='<tr><td colspan="5" class="empty">No inpatients currently</td></tr>';return;}
+    el.innerHTML=rows.map(r=>`<tr>
+      <td><strong>${r.patient_name||r.name}</strong></td>
+      <td>${r.ward||'—'}</td><td>${r.bed||'—'}</td>
+      <td>${r.admission_datetime?r.admission_datetime.split(' ')[0]:'—'}</td>
+      <td><span class="badge ${r.status==='Admitted'?'badge-blue':'badge-yellow'}">${r.status}</span></td>
+    </tr>`).join('');
+  } catch(e){el.innerHTML='<tr><td colspan="5" class="empty">Unable to load inpatient data</td></tr>';}
+}
+
+async function loadTasks() {
+  const el=document.getElementById('tasks-list');
+  try {
+    const r=await fetch(`${API}/Nursing Task?fields=["name","patient_name","task","status","assigned_to","priority"]&limit=50&order_by=creation desc`);
+    const d=await r.json();
+    const rows=d.data||[];
+    if(!rows.length){el.innerHTML='<div class="empty">No nursing tasks found</div>';return;}
+    el.innerHTML=`<table><thead><tr><th>Task</th><th>Patient</th><th>Assigned To</th><th>Priority</th><th>Status</th></tr></thead>
+      <tbody>${rows.map(r=>`<tr>
+        <td>${r.task||r.name}</td><td>${r.patient_name||'—'}</td>
+        <td>${r.assigned_to||'—'}</td>
+        <td><span class="badge ${r.priority==='High'?'badge-red':r.priority==='Medium'?'badge-yellow':'badge-gray'}">${r.priority||'Normal'}</span></td>
+        <td><span class="badge ${r.status==='Completed'?'badge-green':r.status==='Open'?'badge-blue':'badge-gray'}">${r.status||'Open'}</span></td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch(e){el.innerHTML='<div class="empty">Nursing Tasks doctype not found or no tasks</div>';}
+}
+
+async function loadAttendance() {
+  const el=document.getElementById('att-tbody');
+  const now=new Date();
+  const from=new Date(now.getFullYear(),now.getMonth(),1).toISOString().split('T')[0];
+  const to=now.toISOString().split('T')[0];
+  try {
+    const r=await fetch(`${API}/Attendance?filters=[["attendance_date","between","${from},${to}"]]&fields=["attendance_date","status","in_time","out_time"]&order_by=attendance_date desc&limit=31`);
+    const d=await r.json();
+    const rows=d.data||[];
+    if(!rows.length){el.innerHTML='<tr><td colspan="4" class="empty">No attendance records</td></tr>';return;}
+    el.innerHTML=rows.map(r=>`<tr>
+      <td>${r.attendance_date}</td>
+      <td><span class="badge ${r.status==='Present'?'badge-green':r.status==='Absent'?'badge-red':'badge-yellow'}">${r.status}</span></td>
+      <td>${r.in_time||'—'}</td><td>${r.out_time||'—'}</td>
+    </tr>`).join('');
+  } catch(e){el.innerHTML='<tr><td colspan="4" class="empty">Unable to load attendance</td></tr>';}
+}
+
+function getCsrf(){return document.cookie.split(';').map(c=>c.trim()).find(c=>c.startsWith('csrf_token='))?.split('=')?.[1]||'';}
+document.getElementById('vitals-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+document.getElementById('login-password').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+init();
+</script>
+</body>
+</html>
