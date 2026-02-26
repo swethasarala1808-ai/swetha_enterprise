@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pharmacist Portal | Sneha Health</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+:root {
+  --bg:#0d1117;--surface:#161b22;--surface2:#21262d;--border:#30363d;
+  --primary:#1f6feb;--primary-light:#388bfd;--success:#238636;--success-light:#3fb950;
+  --warning-light:#d29922;--danger-light:#f85149;
+  --text:#e6edf3;--text-muted:#8b949e;--text-dim:#484f58;--radius:8px;--radius-lg:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;background:radial-gradient(ellipse at 50% 0%,#1a2a1a,var(--bg) 70%);}
+.login-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:40px;width:420px;}
+.login-logo{text-align:center;margin-bottom:32px;}
+.login-logo .icon{width:56px;height:56px;background:#238636;border-radius:12px;display:inline-flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:12px;}
+.login-logo h1{font-size:22px;font-weight:700;}
+.login-logo p{color:var(--text-muted);font-size:14px;margin-top:4px;}
+.form-field{margin-bottom:16px;}
+.form-field label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:6px;}
+.form-field input{width:100%;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px;font-family:inherit;}
+.form-field input:focus{outline:none;border-color:#238636;}
+.btn-login{width:100%;padding:12px;background:#238636;color:#fff;border:none;border-radius:var(--radius);font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;}
+.btn-login:hover{background:var(--success-light);}
+.login-status{margin-top:12px;font-size:13px;color:var(--text-muted);text-align:center;min-height:20px;}
+.login-status.error{color:var(--danger-light);}
+
+/* APP */
+#app{display:none;}
+.layout{display:grid;grid-template-columns:240px 1fr 360px;height:100vh;overflow:hidden;}
+
+/* SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;}
+.sidebar-brand{padding:20px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.brand-icon{width:36px;height:36px;background:#238636;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.brand-name{font-size:14px;font-weight:700;}
+.brand-sub{font-size:11px;color:var(--text-muted);}
+.nav-section{padding:12px 8px;}
+.nav-label{font-size:10px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px;padding:0 8px;margin-bottom:4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius);cursor:pointer;color:var(--text-muted);font-size:13px;font-weight:500;transition:all 0.15s;margin-bottom:2px;}
+.nav-item:hover{background:var(--surface2);color:var(--text);}
+.nav-item.active{background:rgba(35,134,54,0.15);color:var(--success-light);}
+.sidebar-footer{padding:12px 8px;border-top:1px solid var(--border);margin-top:auto;}
+.user-info{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius);background:var(--surface2);}
+.user-avatar{width:32px;height:32px;background:#238636;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;}
+.user-name{font-size:12px;font-weight:600;}
+.btn-logout{width:100%;margin-top:8px;padding:8px;background:transparent;border:1px solid var(--border);color:var(--danger-light);border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;}
+.btn-logout:hover{background:rgba(218,54,51,0.1);}
+
+/* POS MAIN */
+.pos-main{display:flex;flex-direction:column;overflow:hidden;background:var(--bg);}
+.pos-header{padding:16px 20px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:12px;}
+.pos-title{font-size:16px;font-weight:700;}
+.search-wrap{flex:1;position:relative;}
+.search-input{width:100%;padding:9px 14px 9px 36px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:inherit;}
+.search-input:focus{outline:none;border-color:#238636;}
+.search-icon{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:14px;}
+.search-results{position:absolute;top:100%;left:0;right:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);max-height:300px;overflow-y:auto;z-index:50;margin-top:4px;display:none;}
+.search-results.open{display:block;}
+.search-item{padding:10px 14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(48,54,61,0.5);font-size:13px;}
+.search-item:hover{background:var(--surface2);}
+.search-item:last-child{border-bottom:none;}
+.item-price{font-family:'DM Mono',monospace;color:var(--success-light);font-weight:600;}
+.item-stock{font-size:11px;color:var(--text-muted);}
+
+/* ITEM GRID */
+.items-area{flex:1;overflow-y:auto;padding:16px;}
+.category-tabs{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.cat-tab{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface);border:1px solid var(--border);color:var(--text-muted);transition:all 0.15s;}
+.cat-tab.active{background:rgba(35,134,54,0.15);border-color:#238636;color:var(--success-light);}
+.items-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.item-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all 0.15s;}
+.item-card:hover{border-color:#238636;transform:translateY(-2px);}
+.item-card-name{font-size:13px;font-weight:600;margin-bottom:4px;}
+.item-card-price{font-size:16px;font-weight:700;font-family:'DM Mono',monospace;color:var(--success-light);}
+.item-card-stock{font-size:11px;color:var(--text-muted);margin-top:4px;}
+.item-card.out-of-stock{opacity:0.5;pointer-events:none;}
+.loading-msg{color:var(--text-muted);font-size:13px;padding:40px;text-align:center;}
+
+/* CART */
+.cart{background:var(--surface);border-left:1px solid var(--border);display:flex;flex-direction:column;overflow:hidden;}
+.cart-header{padding:16px 20px;border-bottom:1px solid var(--border);}
+.cart-title{font-size:16px;font-weight:700;margin-bottom:12px;}
+.customer-select select{width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:inherit;}
+.cart-items{flex:1;overflow-y:auto;padding:12px;}
+.cart-empty{text-align:center;padding:40px 20px;color:var(--text-muted);font-size:13px;}
+.cart-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(48,54,61,0.5);}
+.cart-item:last-child{border-bottom:none;}
+.ci-name{flex:1;font-size:13px;font-weight:600;}
+.ci-qty{display:flex;align-items:center;gap:6px;}
+.qty-btn{width:24px;height:24px;border-radius:50%;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.qty-btn:hover{background:var(--border);}
+.qty-val{font-size:13px;font-weight:600;font-family:'DM Mono',monospace;min-width:24px;text-align:center;}
+.ci-total{font-size:13px;font-weight:700;font-family:'DM Mono',monospace;color:var(--success-light);min-width:60px;text-align:right;}
+.ci-remove{color:var(--danger-light);cursor:pointer;font-size:16px;padding:2px;}
+
+/* CART FOOTER */
+.cart-footer{padding:16px;border-top:1px solid var(--border);}
+.totals{margin-bottom:16px;}
+.total-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;color:var(--text-muted);}
+.total-row.grand{font-size:18px;font-weight:700;color:var(--text);padding-top:8px;border-top:1px solid var(--border);margin-top:4px;}
+.total-row.grand .amount{color:var(--success-light);}
+.payment-modes{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+.pay-mode{padding:8px;border:1px solid var(--border);border-radius:var(--radius);text-align:center;cursor:pointer;font-size:12px;font-weight:600;transition:all 0.15s;}
+.pay-mode.active{border-color:#238636;background:rgba(35,134,54,0.15);color:var(--success-light);}
+.btn-checkout{width:100%;padding:14px;background:#238636;color:#fff;border:none;border-radius:var(--radius);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;}
+.btn-checkout:hover{background:var(--success-light);}
+.btn-checkout:disabled{opacity:0.5;cursor:not-allowed;}
+.btn-clear{width:100%;padding:8px;background:transparent;border:1px solid var(--border);color:var(--text-muted);border-radius:var(--radius);font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px;}
+
+/* RECEIPT MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;align-items:center;justify-content:center;padding:20px;}
+.modal-overlay.open{display:flex;}
+.receipt-modal{background:#fff;color:#000;border-radius:var(--radius);width:380px;padding:0;font-family:'DM Mono',monospace;box-shadow:0 24px 64px rgba(0,0,0,0.5);overflow:hidden;}
+.receipt-header{background:#000;color:#fff;padding:20px;text-align:center;}
+.receipt-header h2{font-size:18px;font-weight:700;margin-bottom:2px;}
+.receipt-header p{font-size:11px;opacity:0.7;}
+.receipt-body{padding:20px;}
+.receipt-meta{border-bottom:1px dashed #ccc;padding-bottom:12px;margin-bottom:12px;font-size:11px;}
+.receipt-meta div{display:flex;justify-content:space-between;margin-bottom:4px;}
+.receipt-items{margin-bottom:12px;}
+.receipt-item{display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:1px solid #f0f0f0;}
+.receipt-item:last-child{border-bottom:none;}
+.ri-details{flex:1;}
+.ri-name{font-weight:700;}
+.ri-qty{font-size:11px;color:#666;}
+.ri-total{font-weight:700;text-align:right;}
+.receipt-totals{border-top:2px solid #000;padding-top:12px;font-size:12px;}
+.receipt-total-row{display:flex;justify-content:space-between;margin-bottom:4px;}
+.receipt-total-row.grand{font-size:16px;font-weight:700;margin-top:8px;padding-top:8px;border-top:1px dashed #ccc;}
+.receipt-footer{text-align:center;font-size:11px;color:#666;margin-top:16px;padding-top:12px;border-top:1px dashed #ccc;}
+.receipt-actions{display:flex;gap:8px;padding:16px;background:#f8f8f8;border-top:1px solid #eee;}
+.btn-print{flex:1;padding:10px;background:#000;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Mono',monospace;}
+.btn-close-receipt{flex:1;padding:10px;background:#fff;color:#000;border:1px solid #000;border-radius:6px;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Mono',monospace;}
+
+/* STOCK PAGE */
+.stock-page{padding:20px;overflow-y:auto;}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
+td{padding:10px 14px;border-bottom:1px solid rgba(48,54,61,0.5);}
+tr:last-child td{border-bottom:none;}
+.badge{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;}
+.badge-green{background:rgba(35,134,54,0.2);color:var(--success-light);}
+.badge-yellow{background:rgba(158,106,3,0.2);color:var(--warning-light);}
+.badge-red{background:rgba(218,54,51,0.2);color:var(--danger-light);}
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="icon">💊</div>
+      <h1>Pharmacist Portal</h1>
+      <p>Sneha Health · Rena Rehabilitation Centre</p>
+    </div>
+    <div class="form-field"><label>Email</label><input type="email" id="login-email" placeholder="pharmacist@snehahealth.com" autofocus></div>
+    <div class="form-field"><label>Password</label><input type="password" id="login-password" placeholder="••••••••"></div>
+    <button class="btn-login" onclick="doLogin()">Sign In →</button>
+    <div class="login-status" id="login-status">✓ Initializing session…</div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">💊</div>
+        <div><div class="brand-name">Pharmacist</div><div class="brand-sub">Sneha Health</div></div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-label">POS</div>
+        <div class="nav-item active" onclick="switchView('pos',this)"><span>🛒</span> Point of Sale</div>
+        <div class="nav-item" onclick="switchView('stock',this)"><span>📦</span> Stock Status</div>
+        <div class="nav-item" onclick="switchView('history',this)"><span>🧾</span> Sales History</div>
+      </div>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar" id="user-initial">P</div>
+          <div><div class="user-name" id="user-name">Pharmacist</div><div style="font-size:11px;color:var(--text-muted);">Pharmacist</div></div>
+        </div>
+        <button class="btn-logout" onclick="doLogout()">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- POS VIEW -->
+    <div class="pos-main" id="view-pos">
+      <div class="pos-header">
+        <div class="pos-title">💊 POS</div>
+        <div class="search-wrap">
+          <span class="search-icon">🔍</span>
+          <input class="search-input" id="item-search" placeholder="Search medicines by name or code..." oninput="searchItems(this.value)" autocomplete="off">
+          <div class="search-results" id="search-results"></div>
+        </div>
+      </div>
+      <div class="items-area">
+        <div class="category-tabs" id="cat-tabs">
+          <div class="cat-tab active" onclick="filterCategory('',this)">All Items</div>
+        </div>
+        <div class="items-grid" id="items-grid"><div class="loading-msg">Loading medicines...</div></div>
+      </div>
+    </div>
+
+    <!-- STOCK VIEW -->
+    <div id="view-stock" style="display:none;overflow-y:auto;padding:20px;">
+      <h2 style="margin-bottom:16px;font-size:20px;">Stock Status</h2>
+      <div class="card">
+        <table><thead><tr><th>Item</th><th>Item Code</th><th>Stock Qty</th><th>Status</th></tr></thead>
+        <tbody id="stock-tbody"><tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-muted);">Loading...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- HISTORY VIEW -->
+    <div id="view-history" style="display:none;overflow-y:auto;padding:20px;">
+      <h2 style="margin-bottom:16px;font-size:20px;">Sales History</h2>
+      <div class="card">
+        <table><thead><tr><th>Invoice</th><th>Customer</th><th>Date</th><th>Amount</th><th>Mode</th></tr></thead>
+        <tbody id="history-tbody"><tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted);">Loading...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- CART -->
+    <div class="cart">
+      <div class="cart-header">
+        <div class="cart-title">🛒 Cart</div>
+        <div class="customer-select">
+          <select id="customer-select" style="width:100%;padding:8px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px;font-family:inherit;">
+            <option value="">Walk-in Customer</option>
+          </select>
+        </div>
+      </div>
+      <div class="cart-items" id="cart-items">
+        <div class="cart-empty">🛒<br><br>Cart is empty<br><span style="font-size:11px;">Search or click items to add</span></div>
+      </div>
+      <div class="cart-footer">
+        <div class="totals">
+          <div class="total-row"><span>Subtotal</span><span id="subtotal">₹0.00</span></div>
+          <div class="total-row"><span>Tax (0%)</span><span>₹0.00</span></div>
+          <div class="total-row grand"><span>Total</span><span class="amount" id="grand-total">₹0.00</span></div>
+        </div>
+        <div class="payment-modes">
+          <div class="pay-mode active" onclick="selectPayMode('Cash',this)">💵 Cash</div>
+          <div class="pay-mode" onclick="selectPayMode('Card',this)">💳 Card</div>
+          <div class="pay-mode" onclick="selectPayMode('UPI',this)">📱 UPI</div>
+        </div>
+        <button class="btn-checkout" id="checkout-btn" onclick="checkout()" disabled>Complete Sale</button>
+        <button class="btn-clear" onclick="clearCart()">Clear Cart</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RECEIPT -->
+<div class="modal-overlay" id="receipt-modal">
+  <div class="receipt-modal">
+    <div class="receipt-header">
+      <h2>SNEHA HEALTH</h2>
+      <p>Rena Rehabilitation Centre</p>
+      <p>Tax Invoice · Pharmacy</p>
+    </div>
+    <div class="receipt-body">
+      <div class="receipt-meta" id="receipt-meta"></div>
+      <div class="receipt-items" id="receipt-items"></div>
+      <div class="receipt-totals" id="receipt-totals"></div>
+      <div class="receipt-footer">Thank you for your purchase!<br>Get well soon 💊</div>
+    </div>
+    <div class="receipt-actions">
+      <button class="btn-print" onclick="printReceipt()">🖨️ Print</button>
+      <button class="btn-close-receipt" onclick="closeReceipt()">New Sale</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API='/api/resource', METHOD='/api/method';
+let cart=[], allItems=[], payMode='Cash', currentUser=null, posProfile=null;
+
+// ── AUTH ──────────────────────────────────────────────
+async function init() {
+  try {
+    const r = await fetch(`${METHOD}/frappe.auth.get_logged_user`);
+    const d = await r.json();
+    if (d.message && d.message !== 'Guest') { currentUser=d.message; await loadApp(); }
+    else document.getElementById('login-status').textContent='Please sign in.';
+  } catch(e) { document.getElementById('login-status').textContent='Connecting...'; }
+}
+
+async function doLogin() {
+  const email=document.getElementById('login-email').value.trim();
+  const pwd=document.getElementById('login-password').value;
+  const status=document.getElementById('login-status');
+  if(!email||!pwd){status.textContent='Enter credentials.';status.className='login-status error';return;}
+  status.textContent='Signing in…';
+  try {
+    const r=await fetch(`${METHOD}/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usr:email,pwd})});
+    const d=await r.json();
+    if(d.message==='Logged In'){currentUser=email;await loadApp();}
+    else{status.textContent='Invalid credentials.';status.className='login-status error';}
+  } catch(e){status.textContent='Connection error.';status.className='login-status error';}
+}
+
+function doLogout() {
+  fetch(`${METHOD}/frappe.handler.logout`,{method:'POST',headers:{'Content-Type':'application/json'}})
+    .finally(()=>{ window.location.href=window.location.href.split('?')[0]+'?t='+Date.now(); });
+}
+
+async function loadApp() {
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  document.getElementById('user-name').textContent=currentUser.split('@')[0];
+  document.getElementById('user-initial').textContent=currentUser.charAt(0).toUpperCase();
+  await loadItems();
+  await loadCustomers();
+}
+
+// ── ITEMS ─────────────────────────────────────────────
+async function loadItems() {
+  const grid=document.getElementById('items-grid');
+  try {
+    // Fetch items that are for sale - try multiple approaches
+    const r=await fetch(`${API}/Item?filters=[["is_sales_item","=",1]]&fields=["name","item_name","item_code","item_group","standard_rate","description"]&limit=200&order_by=item_name asc`);
+    const d=await r.json();
+    allItems=d.data||[];
+
+    if(!allItems.length) {
+      // Try without filter
+      const r2=await fetch(`${API}/Item?fields=["name","item_name","item_code","item_group","standard_rate"]&limit=200&order_by=item_name asc`);
+      const d2=await r2.json();
+      allItems=d2.data||[];
+    }
+
+    // Build category tabs
+    const cats=[...new Set(allItems.map(i=>i.item_group).filter(Boolean))];
+    const tabsEl=document.getElementById('cat-tabs');
+    cats.forEach(c=>{
+      const tab=document.createElement('div');
+      tab.className='cat-tab';
+      tab.textContent=c;
+      tab.onclick=()=>filterCategory(c,tab);
+      tabsEl.appendChild(tab);
+    });
+
+    renderItems(allItems);
+
+    // Also fetch stock
+    fetchStock();
+  } catch(e) { grid.innerHTML='<div class="loading-msg">Unable to load items. Check ERPNext connection.</div>'; }
+}
+
+async function fetchStock() {
+  try {
+    const r=await fetch(`${API}/Bin?fields=["item_code","actual_qty","warehouse"]&limit=500`);
+    const d=await r.json();
+    const stockMap={};
+    (d.data||[]).forEach(b=>{ stockMap[b.item_code]=(stockMap[b.item_code]||0)+b.actual_qty; });
+    allItems.forEach(i=>{ i.stock=stockMap[i.item_code]||stockMap[i.name]||0; });
+    renderItems(allItems);
+    renderStock();
+  } catch(e) {}
+}
+
+function renderItems(items) {
+  const grid=document.getElementById('items-grid');
+  if(!items.length){grid.innerHTML='<div class="loading-msg">No items found</div>';return;}
+  grid.innerHTML=items.map(item=>`
+    <div class="item-card${(item.stock||0)<=0?' out-of-stock':''}" onclick="addToCart('${item.item_code||item.name}','${(item.item_name||item.name).replace(/'/g,"\\'")}',${item.standard_rate||0})">
+      <div class="item-card-name">${item.item_name||item.name}</div>
+      <div class="item-card-price">₹${fmt(item.standard_rate||0)}</div>
+      <div class="item-card-stock">${item.item_group||'General'} · ${item.stock!==undefined?`Stock: ${item.stock}`:'—'}</div>
+    </div>`).join('');
+}
+
+function filterCategory(cat,el) {
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderItems(cat?allItems.filter(i=>i.item_group===cat):allItems);
+}
+
+function searchItems(q) {
+  const res=document.getElementById('search-results');
+  if(!q.trim()){res.classList.remove('open');return;}
+  const matches=allItems.filter(i=>(i.item_name||'').toLowerCase().includes(q.toLowerCase())||(i.item_code||'').toLowerCase().includes(q.toLowerCase())).slice(0,8);
+  if(!matches.length){res.innerHTML='<div style="padding:12px 14px;color:var(--text-muted);font-size:13px;">No items found</div>';res.classList.add('open');return;}
+  res.innerHTML=matches.map(i=>`
+    <div class="search-item" onclick="addToCart('${i.item_code||i.name}','${(i.item_name||i.name).replace(/'/g,"\\'")}',${i.standard_rate||0});document.getElementById('item-search').value='';document.getElementById('search-results').classList.remove('open');">
+      <div><div style="font-weight:600;">${i.item_name||i.name}</div><div class="item-stock">${i.item_code||i.name} · ${i.item_group||'—'}</div></div>
+      <div class="item-price">₹${fmt(i.standard_rate||0)}</div>
+    </div>`).join('');
+  res.classList.add('open');
+}
+document.addEventListener('click',e=>{if(!e.target.closest('.search-wrap'))document.getElementById('search-results').classList.remove('open');});
+
+// ── CART ──────────────────────────────────────────────
+function addToCart(code,name,rate) {
+  const existing=cart.find(i=>i.item_code===code);
+  if(existing){existing.qty+=1;existing.amount=existing.qty*existing.rate;}
+  else{cart.push({item_code:code,item_name:name,qty:1,rate:rate||0,amount:rate||0});}
+  renderCart();
+}
+
+function changeQty(code,delta) {
+  const item=cart.find(i=>i.item_code===code);
+  if(!item)return;
+  item.qty+=delta;
+  if(item.qty<=0){cart=cart.filter(i=>i.item_code!==code);}
+  else{item.amount=item.qty*item.rate;}
+  renderCart();
+}
+
+function removeFromCart(code){cart=cart.filter(i=>i.item_code!==code);renderCart();}
+function clearCart(){cart=[];renderCart();}
+
+function renderCart() {
+  const el=document.getElementById('cart-items');
+  if(!cart.length){el.innerHTML='<div class="cart-empty">🛒<br><br>Cart is empty<br><span style="font-size:11px;">Search or click items to add</span></div>';updateTotals();return;}
+  el.innerHTML=cart.map(i=>`
+    <div class="cart-item">
+      <div class="ci-name">${i.item_name}<br><span style="font-size:11px;color:var(--text-muted);">₹${fmt(i.rate)} each</span></div>
+      <div class="ci-qty">
+        <button class="qty-btn" onclick="changeQty('${i.item_code}',-1)">−</button>
+        <span class="qty-val">${i.qty}</span>
+        <button class="qty-btn" onclick="changeQty('${i.item_code}',1)">+</button>
+      </div>
+      <div class="ci-total">₹${fmt(i.amount)}</div>
+      <span class="ci-remove" onclick="removeFromCart('${i.item_code}')">✕</span>
+    </div>`).join('');
+  updateTotals();
+}
+
+function updateTotals() {
+  const total=cart.reduce((s,i)=>s+i.amount,0);
+  document.getElementById('subtotal').textContent='₹'+fmt(total);
+  document.getElementById('grand-total').textContent='₹'+fmt(total);
+  document.getElementById('checkout-btn').disabled=cart.length===0;
+}
+
+function selectPayMode(mode,el) {
+  payMode=mode;
+  document.querySelectorAll('.pay-mode').forEach(m=>m.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── CHECKOUT ──────────────────────────────────────────
+async function checkout() {
+  if(!cart.length)return;
+  const btn=document.getElementById('checkout-btn');
+  btn.disabled=true;btn.textContent='Processing...';
+
+  const customer=document.getElementById('customer-select').value||'Walk-in Customer';
+  const total=cart.reduce((s,i)=>s+i.amount,0);
+
+  try {
+    // Get default POS profile or create invoice directly
+    const items=cart.map(i=>({item_code:i.item_code,item_name:i.item_name,qty:i.qty,rate:i.rate,amount:i.amount}));
+
+    // Create POS Invoice
+    const payload={
+      doctype:'POS Invoice',
+      customer: customer||'Walk-in Customer',
+      is_pos:1,
+      items,
+      payments:[{mode_of_payment:payMode,amount:total}]
+    };
+
+    const r=await fetch('/api/resource/POS Invoice',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token':getCsrf()},
+      body:JSON.stringify(payload)
+    });
+    const d=await r.json();
+
+    if(d.data) {
+      // Submit the invoice
+      const name=d.data.name;
+      await fetch(`/api/resource/POS Invoice/${name}`,{
+        method:'PUT',
+        headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token':getCsrf()},
+        body:JSON.stringify({docstatus:1})
+      });
+      showReceipt(d.data,name);
+    } else {
+      // Try Sales Invoice as fallback
+      const r2=await fetch('/api/resource/Sales Invoice',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token':getCsrf()},
+        body:JSON.stringify({doctype:'Sales Invoice',customer:customer||'Walk-in Customer',is_pos:1,items,payments:[{mode_of_payment:payMode,amount:total}]})
+      });
+      const d2=await r2.json();
+      if(d2.data){showReceipt(d2.data,d2.data.name);}
+      else{throw new Error(JSON.stringify(d2.exc||d2));}
+    }
+  } catch(e) {
+    alert('Sale failed: '+e.message+'\nCheck ERPNext POS settings.');
+    btn.disabled=false;btn.textContent='Complete Sale';
+  }
+}
+
+function showReceipt(data,invName) {
+  const total=cart.reduce((s,i)=>s+i.amount,0);
+  const now=new Date();
+  document.getElementById('receipt-meta').innerHTML=`
+    <div><span>Invoice No.</span><span>${invName}</span></div>
+    <div><span>Date</span><span>${now.toLocaleDateString('en-IN')}</span></div>
+    <div><span>Time</span><span>${now.toLocaleTimeString('en-IN')}</span></div>
+    <div><span>Payment</span><span>${payMode}</span></div>
+    <div><span>Cashier</span><span>${currentUser.split('@')[0]}</span></div>`;
+  document.getElementById('receipt-items').innerHTML=cart.map(i=>`
+    <div class="receipt-item">
+      <div class="ri-details"><div class="ri-name">${i.item_name}</div><div class="ri-qty">${i.qty} × ₹${fmt(i.rate)}</div></div>
+      <div class="ri-total">₹${fmt(i.amount)}</div>
+    </div>`).join('');
+  document.getElementById('receipt-totals').innerHTML=`
+    <div class="receipt-total-row"><span>Subtotal</span><span>₹${fmt(total)}</span></div>
+    <div class="receipt-total-row"><span>Tax</span><span>₹0.00</span></div>
+    <div class="receipt-total-row grand"><span>TOTAL</span><span>₹${fmt(total)}</span></div>
+    <div class="receipt-total-row" style="margin-top:8px;color:#555;"><span>Paid via ${payMode}</span><span>₹${fmt(total)}</span></div>`;
+  document.getElementById('receipt-modal').classList.add('open');
+}
+
+function closeReceipt() {
+  document.getElementById('receipt-modal').classList.remove('open');
+  cart=[];renderCart();
+  document.getElementById('checkout-btn').disabled=true;
+  document.getElementById('checkout-btn').textContent='Complete Sale';
+}
+
+function printReceipt() { window.print(); }
+
+// ── STOCK ─────────────────────────────────────────────
+function renderStock() {
+  const el=document.getElementById('stock-tbody');
+  if(!allItems.length){el.innerHTML='<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--text-muted);">No items found</td></tr>';return;}
+  el.innerHTML=allItems.map(i=>`<tr>
+    <td><strong>${i.item_name||i.name}</strong></td>
+    <td style="font-family:'DM Mono',monospace;font-size:12px;">${i.item_code||i.name}</td>
+    <td style="font-family:'DM Mono',monospace;">${i.stock!==undefined?i.stock:'—'}</td>
+    <td><span class="badge ${i.stock>10?'badge-green':i.stock>0?'badge-yellow':'badge-red'}">${i.stock>10?'In Stock':i.stock>0?'Low Stock':'Out of Stock'}</span></td>
+  </tr>`).join('');
+}
+
+// ── HISTORY ───────────────────────────────────────────
+async function loadHistory() {
+  const el=document.getElementById('history-tbody');
+  try {
+    const r=await fetch(`${API}/POS Invoice?fields=["name","customer","posting_date","grand_total","mode_of_payment"]&order_by=posting_date desc&limit=50`);
+    const d=await r.json();
+    const rows=d.data||[];
+    if(!rows.length){el.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted);">No sales history</td></tr>';return;}
+    el.innerHTML=rows.map(r=>`<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;">${r.name}</td>
+      <td>${r.customer||'—'}</td><td>${r.posting_date||'—'}</td>
+      <td style="font-family:'DM Mono',monospace;font-weight:700;">₹${fmt(r.grand_total)}</td>
+      <td>${r.mode_of_payment||'—'}</td>
+    </tr>`).join('');
+  } catch(e){el.innerHTML='<tr><td colspan="5" style="text-align:center;padding:20px;color:var(--text-muted);">Unable to load history</td></tr>';}
+}
+
+// ── CUSTOMERS ─────────────────────────────────────────
+async function loadCustomers() {
+  try {
+    const r=await fetch(`${API}/Customer?fields=["name","customer_name"]&limit=100&order_by=customer_name asc`);
+    const d=await r.json();
+    const sel=document.getElementById('customer-select');
+    (d.data||[]).forEach(c=>{
+      const opt=document.createElement('option');
+      opt.value=c.name;opt.textContent=c.customer_name||c.name;
+      sel.appendChild(opt);
+    });
+  } catch(e){}
+}
+
+// ── VIEW SWITCH ───────────────────────────────────────
+function switchView(v,el) {
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('view-pos').style.display=v==='pos'?'flex':'none';
+  document.getElementById('view-stock').style.display=v==='stock'?'block':'none';
+  document.getElementById('view-history').style.display=v==='history'?'block':'none';
+  if(v==='stock')renderStock();
+  if(v==='history')loadHistory();
+}
+
+function getCsrf(){return document.cookie.split(';').map(c=>c.trim()).find(c=>c.startsWith('csrf_token='))?.split('=')?.[1]||'';}
+function fmt(n){return Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+
+document.getElementById('login-password').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+init();
+</script>
+</body>
+</html>
