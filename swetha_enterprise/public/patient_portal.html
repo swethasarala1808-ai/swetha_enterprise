@@ -3,780 +3,1066 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Patient Portal | Sneha Health</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Patient Portal — Rena Rehabilitation Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy: #05152e; --navy-2: #0a2144; --navy-3: #0f2d5c;
-  --blue: #1565c0; --blue-bright: #1e88e5; --blue-light: #42a5f5;
-  --cyan: #00b4d8; --teal: #00897b;
-  --surface: #0d1f3c; --surface-2: #112547; --card: #132a52; --card-2: #163060;
-  --border: rgba(30,136,229,0.18); --border-bright: rgba(66,165,245,0.35);
-  --text: #e8f0fe; --text-2: #90a8d0; --text-3: #5a7aaa;
-  --green: #00c853; --amber: #ffab00; --red: #ff1744;
-  --radius: 14px; --radius-sm: 8px;
+  --navy-900: #050d1a;
+  --navy-800: #0a1628;
+  --navy-700: #0d1f3c;
+  --blue-500: #1a56db;
+  --blue-400: #3b82f6;
+  --blue-300: #60a5fa;
+  --blue-200: #93c5fd;
+  --blue-100: #dbeafe;
+  --accent: #0ea5e9;
+  --accent-glow: rgba(14,165,233,0.3);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --text-primary: #f0f6ff;
+  --text-secondary: #94b8d8;
+  --text-muted: #5a7fa8;
+  --card-bg: rgba(13,31,60,0.7);
+  --card-border: rgba(59,130,246,0.15);
+  --sidebar-w: 250px;
 }
 * { margin:0; padding:0; box-sizing:border-box; }
-body { font-family:'Sora',sans-serif; background:var(--navy); color:var(--text); min-height:100vh; }
-::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-thumb { background:var(--border-bright); border-radius:4px; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy-900);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(26,86,219,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(14,165,233,0.08) 0%, transparent 50%);
+  pointer-events:none;
+  z-index:0;
+}
 
-/* ── AUTH SCREEN ── */
-.auth-screen { min-height:100vh; display:flex; align-items:center; justify-content:center; background:linear-gradient(135deg,#020c1e,#051535,#071a3e); padding:1.5rem; }
-.auth-card { background:var(--card); border:1px solid var(--border-bright); border-radius:24px; padding:2.5rem 2rem; width:100%; max-width:440px; box-shadow:0 32px 80px rgba(0,0,0,0.6); }
-.auth-logo { width:72px; height:72px; background:linear-gradient(135deg,var(--blue),var(--cyan)); border-radius:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; box-shadow:0 8px 32px rgba(21,101,192,0.5); }
-.auth-logo svg { width:32px; height:32px; }
-.auth-card h1 { font-size:1.5rem; font-weight:800; text-align:center; margin-bottom:0.3rem; }
-.auth-sub { color:var(--text-3); font-size:0.82rem; text-align:center; margin-bottom:2rem; }
-.field-group { margin-bottom:1rem; }
-.field-group label { font-size:0.72rem; font-weight:600; color:var(--text-2); text-transform:uppercase; letter-spacing:0.08em; display:block; margin-bottom:0.4rem; }
-.field-group input { width:100%; padding:0.75rem 1rem; background:var(--navy-3); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); font-family:inherit; font-size:0.9rem; transition:border-color 0.2s; }
-.field-group input:focus { outline:none; border-color:var(--blue-bright); }
-.btn { width:100%; padding:0.85rem; border:none; border-radius:var(--radius-sm); font-family:inherit; font-size:0.9rem; font-weight:600; cursor:pointer; transition:all 0.2s; }
-.btn-blue { background:linear-gradient(135deg,var(--blue),var(--blue-bright)); color:#fff; box-shadow:0 4px 16px rgba(21,101,192,0.4); }
-.btn-blue:hover { transform:translateY(-1px); }
-.btn-outline { background:transparent; border:1px solid var(--border-bright); color:var(--text-2); margin-top:0.5rem; }
-.btn-outline:hover { border-color:var(--blue-bright); color:var(--text); }
-.auth-toggle { text-align:center; margin-top:1.25rem; font-size:0.82rem; color:var(--text-3); }
-.auth-toggle a { color:var(--cyan); cursor:pointer; text-decoration:none; }
-.auth-toggle a:hover { text-decoration:underline; }
-.err-msg { background:rgba(255,23,68,0.12); border:1px solid rgba(255,23,68,0.3); color:#ff6b6b; border-radius:8px; padding:0.6rem 0.9rem; font-size:0.82rem; margin-bottom:1rem; display:none; }
+/* SIDEBAR */
+.sidebar {
+  position:fixed; top:0; left:0;
+  width:var(--sidebar-w);
+  height:100vh;
+  background:linear-gradient(180deg, var(--navy-800) 0%, var(--navy-900) 100%);
+  border-right:1px solid var(--card-border);
+  display:flex; flex-direction:column;
+  z-index:100;
+}
+.brand {
+  padding:24px 20px 18px;
+  border-bottom:1px solid var(--card-border);
+}
+.brand-logo {
+  width:42px; height:42px;
+  background:linear-gradient(135deg, var(--blue-500), var(--accent));
+  border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:22px;
+  margin-bottom:10px;
+  box-shadow:0 4px 16px var(--accent-glow);
+}
+.brand-name {
+  font-family:'Sora',sans-serif;
+  font-size:13px; font-weight:600;
+  color:var(--text-primary); line-height:1.3;
+}
+.brand-sub { font-size:11px; color:var(--text-muted); margin-top:2px; }
 
-/* ── REGISTRATION FEE NOTICE ── */
-.fee-notice { text-align:center; padding:1rem; }
-.fee-badge { display:inline-block; background:rgba(255,171,0,0.12); border:1px solid rgba(255,171,0,0.3); color:var(--amber); border-radius:10px; padding:0.6rem 1.2rem; font-size:0.85rem; font-weight:600; margin-bottom:1.5rem; }
-.fee-amount { font-size:2.5rem; font-weight:800; font-family:'JetBrains Mono',monospace; color:var(--text); margin:0.5rem 0; }
-.fee-desc { font-size:0.82rem; color:var(--text-3); margin-bottom:2rem; }
+.patient-info {
+  padding:14px 16px;
+  margin:12px 8px;
+  background:rgba(26,86,219,0.1);
+  border:1px solid var(--card-border);
+  border-radius:10px;
+}
+.pt-avatar {
+  width:38px; height:38px;
+  background:linear-gradient(135deg, #1e3a5f, var(--blue-500));
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px;
+  margin-bottom:8px;
+}
+.pt-name { font-family:'Sora',sans-serif; font-size:13px; font-weight:600; }
+.pt-id { font-size:11px; color:var(--text-muted); font-family:'DM Mono',monospace; margin-top:2px; }
+.reg-badge {
+  display:inline-flex; align-items:center; gap:4px;
+  font-size:10px; padding:2px 7px;
+  border-radius:20px;
+  margin-top:6px;
+}
+.reg-active { background:rgba(16,185,129,0.15); color:var(--success); border:1px solid rgba(16,185,129,0.3); }
+.reg-pending { background:rgba(245,158,11,0.15); color:var(--warning); border:1px solid rgba(245,158,11,0.3); }
 
-/* ── APP ── */
-.app { min-height:100vh; display:flex; flex-direction:column; }
+.nav-section { padding:8px 12px 4px; font-size:10px; font-weight:600; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); }
+.nav-item {
+  display:flex; align-items:center; gap:10px;
+  padding:9px 16px 9px 20px;
+  margin:1px 8px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:13.5px;
+  color:var(--text-secondary);
+  transition:all .18s ease;
+}
+.nav-item:hover { background:rgba(59,130,246,.1); color:var(--text-primary); }
+.nav-item.active { background:rgba(26,86,219,.2); color:var(--blue-300); border-left:2px solid var(--blue-400); }
+.nav-item .icon { font-size:16px; width:20px; text-align:center; }
+.sidebar-footer { margin-top:auto; padding:12px 8px; border-top:1px solid var(--card-border); }
 
-/* TOPBAR */
-.topbar { background:rgba(10,33,68,0.97); border-bottom:1px solid var(--border); padding:0 1.5rem; display:flex; align-items:center; gap:1rem; height:64px; position:sticky; top:0; z-index:100; backdrop-filter:blur(12px); }
-.topbar-logo { display:flex; align-items:center; gap:0.625rem; }
-.topbar-logo-icon { width:36px; height:36px; background:linear-gradient(135deg,var(--blue),var(--cyan)); border-radius:10px; display:flex; align-items:center; justify-content:center; }
-.topbar-logo-icon svg { width:18px; height:18px; }
-.brand { font-size:0.95rem; font-weight:700; }
-.brand-sub { font-size:0.65rem; color:var(--text-3); }
-.topbar-nav { display:flex; gap:0.25rem; margin-left:2rem; }
-.tn-item { padding:0.5rem 1rem; border-radius:6px; cursor:pointer; font-size:0.82rem; font-weight:500; color:var(--text-2); transition:all 0.18s; white-space:nowrap; }
-.tn-item:hover { background:rgba(66,165,245,0.08); color:var(--text); }
-.tn-item.active { background:rgba(21,101,192,0.2); color:var(--blue-light); }
-.topbar-right { margin-left:auto; display:flex; align-items:center; gap:0.75rem; }
-.user-chip { display:flex; align-items:center; gap:0.5rem; background:var(--surface-2); border-radius:8px; padding:0.4rem 0.75rem; font-size:0.8rem; }
-.user-dot { width:8px; height:8px; background:var(--green); border-radius:50%; }
-.logout-link { font-size:0.78rem; color:var(--text-3); cursor:pointer; padding:0.4rem 0.5rem; }
-.logout-link:hover { color:var(--red); }
+/* MAIN */
+.main { margin-left:var(--sidebar-w); min-height:100vh; position:relative; z-index:1; }
+.topbar {
+  position:sticky; top:0;
+  background:rgba(5,13,26,.92);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--card-border);
+  padding:0 28px; height:60px;
+  display:flex; align-items:center; justify-content:space-between;
+  z-index:90;
+}
+.page-title { font-family:'Sora',sans-serif; font-size:17px; font-weight:600; }
+.content { padding:24px 28px; }
+.section { display:none; }
+.section.active { display:block; animation:fadeIn .3s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
 
-/* PAGE */
-.page { display:none; flex:1; }
-.page.active { display:block; }
-
-/* HOME */
-.hero { padding:4rem 2rem; text-align:center; max-width:680px; margin:0 auto; }
-.hero h2 { font-size:2rem; font-weight:800; margin-bottom:0.75rem; }
-.hero h2 span { background:linear-gradient(90deg,var(--blue-light),var(--cyan)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-.hero p { color:var(--text-2); font-size:1rem; margin-bottom:2.5rem; line-height:1.7; }
-.home-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:1rem; max-width:900px; margin:0 auto; padding:0 1.5rem 3rem; }
-.home-card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:1.75rem 1.5rem; cursor:pointer; transition:all 0.22s; text-align:center; }
-.home-card:hover { border-color:var(--blue-bright); transform:translateY(-4px); box-shadow:0 16px 48px rgba(0,0,0,0.3); }
-.home-card .hc-icon { font-size:2.25rem; margin-bottom:1rem; }
-.home-card .hc-title { font-size:1rem; font-weight:700; margin-bottom:0.4rem; }
-.home-card .hc-desc { font-size:0.78rem; color:var(--text-3); line-height:1.5; }
-
-/* CONTENT */
-.page-content { max-width:900px; margin:0 auto; padding:2rem 1.5rem; }
-.page-header { margin-bottom:2rem; }
-.page-header h2 { font-size:1.4rem; font-weight:800; }
-.page-header p { color:var(--text-3); font-size:0.85rem; margin-top:0.3rem; }
+/* BUTTONS */
+.btn {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 16px; border-radius:8px;
+  font-size:13px; font-weight:500;
+  cursor:pointer; border:none;
+  transition:all .18s ease;
+  font-family:'DM Sans',sans-serif;
+  text-decoration:none;
+}
+.btn-primary { background:var(--blue-500); color:white; }
+.btn-primary:hover { background:var(--blue-400); transform:translateY(-1px); }
+.btn-secondary { background:rgba(26,86,219,.15); color:var(--blue-300); border:1px solid rgba(26,86,219,.3); }
+.btn-secondary:hover { background:rgba(26,86,219,.25); }
+.btn-ghost { background:transparent; color:var(--text-secondary); border:1px solid var(--card-border); }
+.btn-ghost:hover { background:rgba(59,130,246,.1); color:var(--text-primary); }
+.btn-success { background:rgba(16,185,129,.2); color:var(--success); border:1px solid rgba(16,185,129,.3); }
+.btn-danger { background:rgba(239,68,68,.12); color:var(--danger); border:1px solid rgba(239,68,68,.25); }
 
 /* CARDS */
-.card { background:var(--card); border:1px solid var(--border); border-radius:var(--radius); overflow:hidden; margin-bottom:1.25rem; }
-.card-header { display:flex; align-items:center; justify-content:space-between; padding:1rem 1.25rem; border-bottom:1px solid var(--border); }
-.card-title { font-size:0.95rem; font-weight:700; }
-.card-body { padding:0; }
-
-/* DATA ROWS */
-.data-row { display:flex; align-items:center; gap:1rem; padding:0.9rem 1.25rem; border-bottom:1px solid var(--border); cursor:pointer; transition:all 0.15s; position:relative; }
-.data-row:last-child { border-bottom:none; }
-.data-row:hover { background:rgba(66,165,245,0.06); }
-.row-main { flex:1; min-width:0; }
-.row-title { font-size:0.875rem; font-weight:600; }
-.row-sub { font-size:0.75rem; color:var(--text-3); font-family:'JetBrains Mono',monospace; margin-top:2px; }
-.row-meta { display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0; }
-
-/* BADGES */
-.badge { font-size:0.68rem; font-weight:600; padding:0.25rem 0.5rem; border-radius:4px; }
-.badge-success { background:rgba(0,200,83,0.15); color:#69db7c; }
-.badge-warn { background:rgba(255,171,0,0.15); color:var(--amber); }
-.badge-error { background:rgba(255,23,68,0.12); color:#ff6b6b; }
-.badge-info { background:rgba(66,165,245,0.12); color:var(--blue-light); }
-.empty-state { padding:3rem; text-align:center; color:var(--text-3); font-size:0.875rem; }
-.emoji { display:block; font-size:2.5rem; margin-bottom:0.75rem; }
-
-/* BOOKING STEPPER */
-.stepper { display:flex; align-items:center; gap:0; margin-bottom:2rem; }
-.step { display:flex; align-items:center; gap:0.5rem; flex:1; }
-.step-num { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.82rem; font-weight:700; flex-shrink:0; transition:all 0.3s; }
-.step-num.done { background:var(--blue); color:#fff; }
-.step-num.active { background:linear-gradient(135deg,var(--blue),var(--cyan)); color:#fff; box-shadow:0 4px 12px rgba(21,101,192,0.5); }
-.step-num.pending { background:var(--navy-3); color:var(--text-3); border:1px solid var(--border); }
-.step-label { font-size:0.75rem; font-weight:600; color:var(--text-3); }
-.step.active .step-label { color:var(--text); }
-.step-line { flex:1; height:2px; background:var(--border); margin:0 0.5rem; max-width:40px; }
-.step-line.done { background:var(--blue); }
-
-.booking-step { display:none; }
-.booking-step.active { display:block; }
-
-/* DEPT/PRACTITIONER GRID */
-.dept-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr)); gap:0.75rem; }
-.dept-card { background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:1rem; cursor:pointer; transition:all 0.18s; text-align:center; }
-.dept-card:hover, .dept-card.selected { border-color:var(--blue-bright); background:rgba(21,101,192,0.15); }
-.dept-card .dept-icon { font-size:1.75rem; margin-bottom:0.5rem; }
-.dept-card .dept-name { font-size:0.82rem; font-weight:600; line-height:1.3; }
-
-.prac-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:0.75rem; }
-.prac-card { background:var(--surface-2); border:1px solid var(--border); border-radius:10px; padding:1.25rem; cursor:pointer; transition:all 0.18s; }
-.prac-card:hover, .prac-card.selected { border-color:var(--cyan); background:rgba(0,180,216,0.1); }
-.prac-name { font-size:0.9rem; font-weight:700; }
-.prac-dept { font-size:0.75rem; color:var(--text-3); margin-top:3px; }
-.prac-avatar { width:42px; height:42px; background:linear-gradient(135deg,var(--blue),var(--cyan)); border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1rem; font-weight:700; margin-bottom:0.75rem; }
-
-/* DATE PICKER */
-.date-slots { padding:1.25rem; }
-.date-row { display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1.25rem; }
-.date-btn { padding:0.5rem 0.9rem; background:var(--navy-3); border:1px solid var(--border); border-radius:8px; cursor:pointer; font-family:inherit; font-size:0.78rem; font-weight:600; color:var(--text-2); transition:all 0.18s; }
-.date-btn:hover, .date-btn.selected { border-color:var(--blue-bright); color:var(--text); background:rgba(21,101,192,0.2); }
-.slot-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(100px,1fr)); gap:0.5rem; }
-.slot-btn { padding:0.55rem 0; background:var(--navy-3); border:1px solid var(--border); border-radius:6px; cursor:pointer; font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:600; color:var(--text-2); transition:all 0.18s; text-align:center; }
-.slot-btn:hover, .slot-btn.selected { border-color:var(--cyan); color:var(--cyan); background:rgba(0,180,216,0.1); }
-.slot-btn.taken { opacity:0.35; cursor:not-allowed; }
-
-/* Confirm box */
-.confirm-box { background:var(--navy-3); border:1px solid var(--border-bright); border-radius:var(--radius); padding:1.5rem; margin-bottom:1.25rem; }
-.confirm-row { display:flex; justify-content:space-between; align-items:center; padding:0.6rem 0; border-bottom:1px solid var(--border); }
-.confirm-row:last-child { border-bottom:none; }
-.confirm-label { font-size:0.78rem; color:var(--text-3); font-weight:600; text-transform:uppercase; letter-spacing:0.08em; }
-.confirm-value { font-size:0.875rem; font-weight:600; }
-
-.step-footer { display:flex; gap:0.75rem; margin-top:1.5rem; }
-.step-footer button { padding:0.75rem 1.5rem; border-radius:8px; font-family:inherit; font-weight:600; font-size:0.875rem; cursor:pointer; border:none; transition:all 0.18s; }
-.btn-next { background:linear-gradient(135deg,var(--blue),var(--blue-bright)); color:#fff; flex:1; }
-.btn-back { background:transparent; border:1px solid var(--border); color:var(--text-2); }
-
-/* Loading */
-.loading { display:flex; align-items:center; justify-content:center; padding:2.5rem; gap:0.75rem; color:var(--text-3); font-size:0.875rem; }
-.spinner { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--blue-bright); border-radius:50%; animation:spin 0.7s linear infinite; }
-@keyframes spin { to { transform:rotate(360deg); } }
-
-/* Success */
-.success-screen { text-align:center; padding:3rem 1.5rem; }
-.success-icon { width:80px; height:80px; background:rgba(0,200,83,0.15); border:2px solid var(--green); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 1.5rem; font-size:2rem; }
-.success-screen h3 { font-size:1.4rem; font-weight:800; margin-bottom:0.5rem; }
-.success-screen p { color:var(--text-2); font-size:0.9rem; }
-
-@media (max-width:700px) {
-  .topbar-nav { display:none; }
-  .home-cards { grid-template-columns:1fr 1fr; }
-  .dept-grid { grid-template-columns:repeat(2,1fr); }
-  .prac-grid { grid-template-columns:1fr; }
+.card {
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:14px;
+  backdrop-filter:blur(10px);
+  overflow:hidden;
+  margin-bottom:16px;
 }
+.card-header {
+  padding:16px 20px;
+  border-bottom:1px solid var(--card-border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.card-title { font-family:'Sora',sans-serif; font-size:14px; font-weight:600; }
+.card-body { padding:20px; }
+
+/* STATS */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:22px; }
+.stat-card {
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:14px;
+  padding:18px 20px;
+  position:relative;
+  overflow:hidden;
+  backdrop-filter:blur(10px);
+  transition:transform .2s, box-shadow .2s;
+}
+.stat-card:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(26,86,219,.15); }
+.stat-card::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0;
+  height:2px;
+  background:linear-gradient(90deg, var(--blue-500), var(--accent));
+  opacity:.6;
+}
+.stat-icon { font-size:22px; margin-bottom:10px; }
+.stat-value { font-family:'Sora',sans-serif; font-size:26px; font-weight:700; line-height:1; }
+.stat-label { font-size:12px; color:var(--text-muted); margin-top:4px; }
+
+/* TABLE */
+.data-table { width:100%; border-collapse:collapse; }
+.data-table th {
+  padding:10px 16px;
+  text-align:left;
+  font-size:11px; font-weight:600;
+  letter-spacing:.06em; text-transform:uppercase;
+  color:var(--text-muted);
+  background:rgba(26,86,219,.06);
+  border-bottom:1px solid var(--card-border);
+}
+.data-table td {
+  padding:12px 16px;
+  font-size:13px; color:var(--text-secondary);
+  border-bottom:1px solid rgba(59,130,246,.06);
+}
+.data-table tr:last-child td { border-bottom:none; }
+.data-table tr:hover td { background:rgba(59,130,246,.04); }
+.data-table .primary { color:var(--text-primary); font-weight:500; }
+
+/* STATUS */
+.pill {
+  display:inline-block; padding:3px 9px;
+  border-radius:20px; font-size:11px; font-weight:500;
+}
+.pill-green { background:rgba(16,185,129,.15); color:var(--success); }
+.pill-blue { background:rgba(59,130,246,.15); color:var(--blue-300); }
+.pill-yellow { background:rgba(245,158,11,.15); color:var(--warning); }
+.pill-red { background:rgba(239,68,68,.15); color:var(--danger); }
+
+/* MODAL */
+.modal-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(5,13,26,.88);
+  backdrop-filter:blur(6px);
+  z-index:200;
+  align-items:center; justify-content:center;
+}
+.modal-overlay.open { display:flex; }
+.modal {
+  background:var(--navy-700);
+  border:1px solid var(--card-border);
+  border-radius:18px;
+  width:640px; max-width:95vw;
+  max-height:88vh; overflow-y:auto;
+}
+.modal-header {
+  padding:20px 24px;
+  border-bottom:1px solid var(--card-border);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.modal-title { font-family:'Sora',sans-serif; font-size:16px; font-weight:600; }
+.modal-close { background:none; border:none; color:var(--text-muted); font-size:20px; cursor:pointer; padding:2px 8px; border-radius:6px; }
+.modal-close:hover { background:rgba(239,68,68,.15); color:var(--danger); }
+.modal-body { padding:24px; }
+
+/* FORMS */
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-group { display:flex; flex-direction:column; gap:5px; }
+.form-group.full { grid-column:1/-1; }
+.form-label { font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--text-muted); }
+.form-input, .form-select {
+  background:rgba(26,86,219,.06);
+  border:1px solid var(--card-border);
+  border-radius:8px; padding:9px 12px;
+  color:var(--text-primary); font-size:13px;
+  font-family:'DM Sans',sans-serif;
+  outline:none; width:100%;
+  transition:border-color .15s;
+}
+.form-input:focus, .form-select:focus { border-color:var(--blue-400); background:rgba(26,86,219,.1); }
+.form-select option { background:var(--navy-700); }
+
+/* STEPS */
+.steps {
+  display:flex; align-items:center; gap:8px;
+  margin-bottom:24px;
+}
+.step {
+  display:flex; align-items:center; gap:6px;
+  font-size:12px; color:var(--text-muted);
+}
+.step.active { color:var(--blue-300); }
+.step.done { color:var(--success); }
+.step-num {
+  width:22px; height:22px;
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:11px; font-weight:700;
+  background:rgba(59,130,246,.1);
+  border:1px solid var(--card-border);
+  flex-shrink:0;
+}
+.step.active .step-num { background:var(--blue-500); border-color:var(--blue-400); color:white; }
+.step.done .step-num { background:var(--success); border-color:var(--success); color:white; }
+.step-sep { width:24px; height:1px; background:var(--card-border); flex-shrink:0; }
+
+/* SLOT GRID */
+.slot-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
+  margin:12px 0;
+}
+.slot {
+  padding:8px; text-align:center;
+  background:rgba(26,86,219,.08);
+  border:1px solid var(--card-border);
+  border-radius:8px;
+  font-size:12px; font-family:'DM Mono',monospace;
+  cursor:pointer; transition:all .15s;
+}
+.slot:hover { border-color:var(--blue-400); background:rgba(26,86,219,.2); color:var(--blue-200); }
+.slot.selected { background:var(--blue-500); border-color:var(--blue-400); color:white; }
+.slot.booked { opacity:.35; cursor:not-allowed; }
+
+/* INVOICE CARD */
+.invoice-card {
+  border:1px solid var(--card-border);
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:10px;
+  transition:all .2s;
+}
+.invoice-card:hover { border-color:var(--blue-400); }
+.invoice-header {
+  padding:12px 16px;
+  background:rgba(26,86,219,.08);
+  display:flex; justify-content:space-between; align-items:center;
+}
+.invoice-body { padding:12px 16px; }
+
+/* LOADING */
+.loading { display:flex; align-items:center; justify-content:center; padding:36px; color:var(--text-muted); font-size:13px; gap:8px; }
+.spinner { width:16px; height:16px; border:2px solid var(--card-border); border-top-color:var(--blue-400); border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state { text-align:center; padding:40px 20px; color:var(--text-muted); }
+.empty-state .icon { font-size:36px; margin-bottom:10px; opacity:.5; }
+.empty-state p { font-size:13px; }
+.alert { padding:10px 14px; border-radius:8px; font-size:12px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+.alert-info { background:rgba(14,165,233,.12); border:1px solid rgba(14,165,233,.25); color:var(--accent); }
+.alert-success { background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.25); color:var(--success); }
+.alert-error { background:rgba(239,68,68,.12); border:1px solid rgba(239,68,68,.25); color:var(--danger); }
+.alert-warn { background:rgba(245,158,11,.12); border:1px solid rgba(245,158,11,.25); color:var(--warning); }
+
+/* DEPT GRID */
+.dept-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+.dept-card {
+  padding:14px;
+  background:rgba(26,86,219,.06);
+  border:1px solid var(--card-border);
+  border-radius:10px;
+  cursor:pointer; text-align:center;
+  transition:all .2s;
+}
+.dept-card:hover, .dept-card.selected { background:rgba(26,86,219,.2); border-color:var(--blue-400); }
+.dept-card .dept-icon { font-size:24px; margin-bottom:6px; }
+.dept-card .dept-name { font-size:12px; font-weight:500; }
+
+/* PRAC CARDS */
+.prac-cards { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.prac-card {
+  padding:14px;
+  background:rgba(26,86,219,.06);
+  border:1px solid var(--card-border);
+  border-radius:10px;
+  cursor:pointer;
+  transition:all .2s;
+  display:flex; align-items:center; gap:10px;
+}
+.prac-card:hover, .prac-card.selected { background:rgba(26,86,219,.2); border-color:var(--blue-400); }
+.prac-avatar { width:36px; height:36px; border-radius:50%; background:linear-gradient(135deg, #1e3a5f, var(--blue-500)); display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.prac-name { font-size:13px; font-weight:500; }
+.prac-dept { font-size:11px; color:var(--text-muted); margin-top:2px; }
+
+::-webkit-scrollbar{width:6px} ::-webkit-scrollbar-track{background:transparent} ::-webkit-scrollbar-thumb{background:#1e3a5f; border-radius:3px}
 </style>
 </head>
 <body>
 
-<!-- AUTH -->
-<div id="auth-screen" class="auth-screen">
-  <div class="auth-card">
-    <div class="auth-logo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-      </svg>
-    </div>
-    <h1>Patient Portal</h1>
-    <p class="auth-sub">Sneha Health · Rena Rehabilitation Centre</p>
-
-    <!-- LOGIN FORM -->
-    <div id="auth-login">
-      <div class="err-msg" id="login-err">Invalid email or password.</div>
-      <div class="field-group"><label>Email</label><input type="email" id="login-email" placeholder="you@example.com" autocomplete="email"></div>
-      <div class="field-group"><label>Password</label><input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"></div>
-      <button class="btn btn-blue" onclick="doLogin()">Sign In</button>
-      <div class="auth-toggle">Don't have an account? <a onclick="showRegister()">Register now →</a></div>
-    </div>
-
-    <!-- REGISTER FORM -->
-    <div id="auth-register" style="display:none;">
-      <div class="err-msg" id="reg-err">Registration failed.</div>
-      <div class="field-group"><label>Full Name</label><input type="text" id="reg-name" placeholder="Your full name"></div>
-      <div class="field-group"><label>Email</label><input type="email" id="reg-email" placeholder="you@example.com"></div>
-      <div class="field-group"><label>Password</label><input type="password" id="reg-pass" placeholder="Min. 8 characters"></div>
-      <div class="field-group"><label>Mobile</label><input type="tel" id="reg-mobile" placeholder="+91 9XXXXXXXXX"></div>
-      <button class="btn btn-blue" onclick="doRegister()">Create Account</button>
-      <div class="auth-toggle">Already have an account? <a onclick="showLogin()">Sign in →</a></div>
-    </div>
-
-    <!-- FEE NOTICE -->
-    <div id="auth-fee" style="display:none;">
-      <div class="fee-notice">
-        <div class="fee-badge">⚠️ Registration Fee Required</div>
-        <div class="fee-amount" id="fee-amount">₹0</div>
-        <div class="fee-desc">A one-time registration fee is required to activate your patient account and book appointments.</div>
-        <button class="btn btn-blue" onclick="payRegistrationFee()">Pay Registration Fee</button>
-        <button class="btn btn-outline" onclick="doLogout()">Use a different account</button>
-      </div>
-    </div>
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-logo">🏥</div>
+    <div class="brand-name">Rena Rehabilitation</div>
+    <div class="brand-sub">Patient Portal</div>
   </div>
-</div>
 
-<!-- APP -->
-<div id="app" style="display:none;" class="app">
+  <div class="patient-info" id="patientInfoBox">
+    <div class="pt-avatar">👤</div>
+    <div class="pt-name" id="ptName">Loading...</div>
+    <div class="pt-id" id="ptId">—</div>
+    <span class="reg-badge reg-pending" id="regBadge">⏳ Checking status...</span>
+  </div>
 
-  <!-- TOPBAR -->
+  <div class="nav-section">Menu</div>
+  <div class="nav-item active" onclick="showSection('dashboard')"><span class="icon">📊</span> Dashboard</div>
+  <div class="nav-item" onclick="showSection('bookAppt')"><span class="icon">📅</span> Book Appointment</div>
+  <div class="nav-item" onclick="showSection('myAppts')"><span class="icon">🗓</span> My Appointments</div>
+  <div class="nav-item" onclick="showSection('myBills')"><span class="icon">💳</span> My Bills</div>
+  <div class="nav-item" onclick="showSection('myHistory')"><span class="icon">📋</span> Medical History</div>
+
+  <div class="sidebar-footer">
+    <div class="nav-item" onclick="logout()" style="color:var(--danger)"><span class="icon">🚪</span> Logout</div>
+  </div>
+</aside>
+
+<main class="main">
   <div class="topbar">
-    <div class="topbar-logo">
-      <div class="topbar-logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-      </div>
-      <div>
-        <div class="brand">Sneha Health</div>
-        <div class="brand-sub">Patient Portal</div>
-      </div>
-    </div>
-    <div class="topbar-nav">
-      <div class="tn-item active" onclick="showPage('home')">Home</div>
-      <div class="tn-item" onclick="showPage('book')">Book Appointment</div>
-      <div class="tn-item" onclick="showPage('appointments')">My Appointments</div>
-      <div class="tn-item" onclick="showPage('billing')">Billing</div>
-    </div>
-    <div class="topbar-right">
-      <div class="user-chip"><div class="user-dot"></div><span id="user-display">Patient</span></div>
-      <span class="logout-link" onclick="doLogout()">Sign out</span>
+    <div class="page-title" id="pageTitle">Dashboard</div>
+    <div style="display:flex;gap:10px;align-items:center;">
+      <div id="topbarMsg"></div>
+      <button class="btn btn-primary" onclick="showSection('bookAppt')">+ Book Appointment</button>
     </div>
   </div>
 
-  <!-- HOME -->
-  <div id="page-home" class="page active">
-    <div class="hero">
-      <h2>Welcome back, <span id="hero-name">Patient</span></h2>
-      <p>Manage your healthcare journey with ease. Book appointments, view your medical records, and track your billing — all in one place.</p>
-    </div>
-    <div class="home-cards">
-      <div class="home-card" onclick="showPage('book')">
-        <div class="hc-icon">📅</div>
-        <div class="hc-title">Book Appointment</div>
-        <div class="hc-desc">Schedule with a specialist from our team</div>
-      </div>
-      <div class="home-card" onclick="showPage('appointments')">
-        <div class="hc-icon">🗓️</div>
-        <div class="hc-title">My Appointments</div>
-        <div class="hc-desc">View upcoming and past appointments</div>
-      </div>
-      <div class="home-card" onclick="showPage('billing')">
-        <div class="hc-icon">🧾</div>
-        <div class="hc-title">Billing & Payments</div>
-        <div class="hc-desc">View invoices and payment history</div>
-      </div>
-      <div class="home-card" onclick="window.open(window.location.origin+'/app/patient/'+state.patient?.name,'_blank')">
-        <div class="hc-icon">📋</div>
-        <div class="hc-title">Medical Profile</div>
-        <div class="hc-desc">View your complete health profile</div>
+  <div class="content">
+
+    <!-- REGISTRATION GATE -->
+    <div id="regGate" style="display:none;" class="card" style="margin-bottom:20px;">
+      <div class="card-body" style="text-align:center; padding:32px;">
+        <div style="font-size:40px; margin-bottom:12px;">🏥</div>
+        <div style="font-family:'Sora',sans-serif; font-size:18px; font-weight:600; margin-bottom:8px;">Complete Registration</div>
+        <div style="font-size:13px; color:var(--text-muted); margin-bottom:20px;">Pay the one-time registration fee to activate your patient account.</div>
+        <div style="font-family:'Sora',sans-serif; font-size:28px; font-weight:700; color:var(--blue-300); margin-bottom:20px;" id="regFeeAmt">₹ —</div>
+        <button class="btn btn-primary" onclick="payRegistrationFee()">Pay Registration Fee</button>
       </div>
     </div>
-  </div>
 
-  <!-- BOOK APPOINTMENT -->
-  <div id="page-book" class="page">
-    <div class="page-content">
-      <div class="page-header">
-        <h2>Book Appointment</h2>
-        <p>Follow the steps below to schedule your visit</p>
+    <!-- DASHBOARD -->
+    <div id="s_dashboard" class="section active">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-value" id="statUpcoming">—</div><div class="stat-label">Upcoming Appointments</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-value" id="statVisits">—</div><div class="stat-label">Total Visits</div></div>
+        <div class="stat-card"><div class="stat-icon">💳</div><div class="stat-value" id="statPending">—</div><div class="stat-label">Pending Bills</div></div>
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-value" id="statRecords">—</div><div class="stat-label">Medical Records</div></div>
       </div>
 
-      <div class="stepper">
-        <div class="step" id="step-ind-1">
-          <div class="step-num active" id="sn-1">1</div>
-          <div class="step-label">Department</div>
-        </div>
-        <div class="step-line" id="sl-1"></div>
-        <div class="step" id="step-ind-2">
-          <div class="step-num pending" id="sn-2">2</div>
-          <div class="step-label">Practitioner</div>
-        </div>
-        <div class="step-line" id="sl-2"></div>
-        <div class="step" id="step-ind-3">
-          <div class="step-num pending" id="sn-3">3</div>
-          <div class="step-label">Date & Time</div>
-        </div>
-        <div class="step-line" id="sl-3"></div>
-        <div class="step" id="step-ind-4">
-          <div class="step-num pending" id="sn-4">4</div>
-          <div class="step-label">Confirm</div>
-        </div>
-      </div>
-
-      <!-- Step 1: Department -->
-      <div id="book-step-1" class="booking-step active">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
         <div class="card">
-          <div class="card-header"><h3 class="card-title">Select Department</h3></div>
-          <div style="padding:1.25rem;">
-            <div class="dept-grid" id="dept-grid">
-              <div class="loading"><div class="spinner"></div> Loading departments…</div>
+          <div class="card-header"><span class="card-title">📅 Upcoming Appointments</span></div>
+          <div id="dashAppts"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">💳 Recent Bills</span><button class="btn btn-ghost" style="font-size:12px;" onclick="showSection('myBills')">View All</button></div>
+          <div id="dashBills"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOOK APPOINTMENT -->
+    <div id="s_bookAppt" class="section">
+      <div class="card">
+        <div class="card-header"><span class="card-title">📅 Book New Appointment</span></div>
+        <div class="card-body">
+          <div class="steps" id="bookingSteps">
+            <div class="step active" id="stepEl1"><div class="step-num">1</div> Department</div>
+            <div class="step-sep"></div>
+            <div class="step" id="stepEl2"><div class="step-num">2</div> Doctor</div>
+            <div class="step-sep"></div>
+            <div class="step" id="stepEl3"><div class="step-num">3</div> Date & Slot</div>
+            <div class="step-sep"></div>
+            <div class="step" id="stepEl4"><div class="step-num">4</div> Confirm</div>
+          </div>
+
+          <div id="bookingAlert"></div>
+
+          <!-- STEP 1: DEPARTMENT -->
+          <div id="bStep1">
+            <div style="margin-bottom:12px; font-size:13px; color:var(--text-muted);">Select your department</div>
+            <div class="dept-grid" id="deptGrid"><div class="loading"><div class="spinner"></div></div></div>
+          </div>
+
+          <!-- STEP 2: DOCTOR -->
+          <div id="bStep2" style="display:none;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+              <button class="btn btn-ghost" style="font-size:12px;" onclick="gotoBookStep(1)">← Back</button>
+              <span style="font-size:13px; color:var(--text-muted);">Select a practitioner</span>
+            </div>
+            <div class="prac-cards" id="pracGrid"><div class="loading"><div class="spinner"></div></div></div>
+          </div>
+
+          <!-- STEP 3: DATE & SLOT -->
+          <div id="bStep3" style="display:none;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+              <button class="btn btn-ghost" style="font-size:12px;" onclick="gotoBookStep(2)">← Back</button>
+              <span style="font-size:13px; color:var(--text-muted);">Choose date and time</span>
+            </div>
+            <div style="display:grid; grid-template-columns:200px 1fr; gap:20px;">
+              <div>
+                <div class="form-group">
+                  <label class="form-label">Appointment Date</label>
+                  <input type="date" class="form-input" id="apptDate" onchange="loadSlots()">
+                </div>
+                <div class="form-group" style="margin-top:10px;">
+                  <label class="form-label">Appointment Type</label>
+                  <select class="form-select" id="apptType">
+                    <option value="New Patient">New Patient</option>
+                    <option value="Follow Up">Follow Up</option>
+                    <option value="Emergency">Emergency</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <div class="form-label" style="margin-bottom:8px;">Available Slots</div>
+                <div class="slot-grid" id="slotGrid"><div style="color:var(--text-muted);font-size:13px;">Select a date first</div></div>
+              </div>
+            </div>
+            <div style="margin-top:16px; text-align:right;">
+              <button class="btn btn-primary" onclick="gotoBookStep(4)" id="slotNextBtn" disabled>Continue →</button>
+            </div>
+          </div>
+
+          <!-- STEP 4: CONFIRM -->
+          <div id="bStep4" style="display:none;">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:16px;">
+              <button class="btn btn-ghost" style="font-size:12px;" onclick="gotoBookStep(3)">← Back</button>
+              <span style="font-size:13px; color:var(--text-muted);">Confirm your appointment</span>
+            </div>
+            <div class="card" style="background:rgba(26,86,219,.08);">
+              <div class="card-body">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;" id="confirmDetails"></div>
+              </div>
+            </div>
+            <div style="margin-top:16px; text-align:right; display:flex; gap:10px; justify-content:flex-end;">
+              <button class="btn btn-ghost" onclick="gotoBookStep(3)">Change</button>
+              <button class="btn btn-primary" id="confirmBookBtn" onclick="confirmBooking()">✓ Confirm Booking</button>
             </div>
           </div>
         </div>
-        <div class="step-footer">
-          <button class="btn-next" onclick="goStep(2)">Next: Choose Practitioner →</button>
-        </div>
       </div>
+    </div>
 
-      <!-- Step 2: Practitioner -->
-      <div id="book-step-2" class="booking-step">
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">Select Practitioner</h3><span id="selected-dept-badge" style="font-size:0.78rem;color:var(--cyan)"></span></div>
-          <div style="padding:1.25rem;">
-            <div class="prac-grid" id="prac-grid">
-              <div class="loading"><div class="spinner"></div> Loading practitioners…</div>
-            </div>
-          </div>
-        </div>
-        <div class="step-footer">
-          <button class="btn-back" onclick="goStep(1)">← Back</button>
-          <button class="btn-next" onclick="goStep(3)">Next: Choose Date →</button>
-        </div>
-      </div>
-
-      <!-- Step 3: Date & Time -->
-      <div id="book-step-3" class="booking-step">
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">Choose Date & Time</h3></div>
-          <div class="date-slots">
-            <div style="font-size:0.78rem;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.6rem;">Select Date</div>
-            <div class="date-row" id="date-row"></div>
-            <div style="font-size:0.78rem;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.6rem;margin-top:1rem;">Available Slots</div>
-            <div class="slot-grid" id="slot-grid"><div style="color:var(--text-3);font-size:0.85rem;">Select a date above</div></div>
-          </div>
-        </div>
-        <div class="step-footer">
-          <button class="btn-back" onclick="goStep(2)">← Back</button>
-          <button class="btn-next" onclick="goStep(4)">Next: Confirm →</button>
-        </div>
-      </div>
-
-      <!-- Step 4: Confirm -->
-      <div id="book-step-4" class="booking-step">
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">Confirm Appointment</h3></div>
-          <div style="padding:1.25rem;">
-            <div class="confirm-box">
-              <div class="confirm-row"><span class="confirm-label">Patient</span><span class="confirm-value" id="confirm-patient">—</span></div>
-              <div class="confirm-row"><span class="confirm-label">Department</span><span class="confirm-value" id="confirm-dept">—</span></div>
-              <div class="confirm-row"><span class="confirm-label">Practitioner</span><span class="confirm-value" id="confirm-prac">—</span></div>
-              <div class="confirm-row"><span class="confirm-label">Date</span><span class="confirm-value" id="confirm-date">—</span></div>
-              <div class="confirm-row"><span class="confirm-label">Time</span><span class="confirm-value" id="confirm-time">—</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="step-footer">
-          <button class="btn-back" onclick="goStep(3)">← Back</button>
-          <button class="btn-next" onclick="confirmBooking()">✅ Book Appointment</button>
-        </div>
-      </div>
-
-      <!-- Success -->
-      <div id="book-success" style="display:none;">
-        <div class="card">
-          <div class="success-screen">
-            <div class="success-icon">✅</div>
-            <h3>Appointment Booked!</h3>
-            <p style="margin-bottom:1.5rem;" id="success-detail">Your appointment has been scheduled successfully.</p>
-            <button class="btn btn-blue" style="width:auto;padding:0.75rem 2rem;" onclick="resetBooking()">Book Another</button>
-          </div>
+    <!-- MY APPOINTMENTS -->
+    <div id="s_myAppts" class="section">
+      <div class="card">
+        <div class="card-header"><span class="card-title">🗓 My Appointments</span></div>
+        <div class="card-body" style="padding:0;">
+          <table class="data-table">
+            <thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Department</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="apptsTbody"><tr><td colspan="7"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+          </table>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- MY APPOINTMENTS -->
-  <div id="page-appointments" class="page">
-    <div class="page-content">
-      <div class="page-header"><h2>My Appointments</h2><p>Your upcoming and past appointments</p></div>
+    <!-- MY BILLS -->
+    <div id="s_myBills" class="section">
       <div class="card">
-        <div class="card-header"><h3 class="card-title">Upcoming</h3></div>
-        <div class="card-body" id="list-upcoming"><div class="loading"><div class="spinner"></div>Loading…</div></div>
-      </div>
-      <div class="card">
-        <div class="card-header"><h3 class="card-title">Past Appointments</h3></div>
-        <div class="card-body" id="list-past"><div class="loading"><div class="spinner"></div>Loading…</div></div>
+        <div class="card-header"><span class="card-title">💳 My Bills & Invoices</span></div>
+        <div class="card-body" style="padding:0;">
+          <table class="data-table">
+            <thead><tr><th>Invoice</th><th>Date</th><th>Amount</th><th>Outstanding</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="billsTbody"><tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- BILLING -->
-  <div id="page-billing" class="page">
-    <div class="page-content">
-      <div class="page-header"><h2>Billing & Payments</h2><p>Your invoices and payment history</p></div>
+    <!-- MEDICAL HISTORY -->
+    <div id="s_myHistory" class="section">
       <div class="card">
-        <div class="card-header"><h3 class="card-title">Invoices</h3></div>
-        <div class="card-body" id="list-invoices"><div class="loading"><div class="spinner"></div>Loading…</div></div>
+        <div class="card-header"><span class="card-title">📋 Medical History</span></div>
+        <div class="card-body">
+          <div id="historyContent"><div class="loading"><div class="spinner"></div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal" style="width:480px;">
+    <div class="modal-header">
+      <div class="modal-title">Pay Registration Fee</div>
+      <button class="modal-close" onclick="closeModal('payModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="payAlertArea"></div>
+      <div style="text-align:center; padding:20px 0;">
+        <div style="font-size:36px; margin-bottom:8px;">💳</div>
+        <div style="font-family:'Sora',sans-serif; font-size:28px; font-weight:700; color:var(--blue-300);" id="modalFeeAmt">₹ —</div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:4px;">One-time registration fee</div>
+      </div>
+      <div class="form-group" style="margin-bottom:16px;">
+        <label class="form-label">Payment Mode</label>
+        <select class="form-select" id="payMode">
+          <option value="Cash">Cash</option>
+          <option value="Card">Card</option>
+          <option value="UPI">UPI</option>
+          <option value="Cheque">Cheque</option>
+        </select>
+      </div>
+      <div style="display:flex; gap:10px; justify-content:flex-end;">
+        <button class="btn btn-ghost" onclick="closeModal('payModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitRegPayment()">Pay Now</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const BASE = window.location.origin;
-let state = { user: null, patient: null, registrationPaid: false };
-let booking = { dept: null, deptName: null, prac: null, pracName: null, date: null, slot: null };
+const BASE = '';
+
+// Get CSRF token from frappe global or cookie
+function getCsrf() {
+  if (typeof frappe !== 'undefined' && frappe.csrf_token) return frappe.csrf_token;
+  return (document.cookie.match(/csrftoken=([^;]+)/) || [])[1] || '';
+}
+
+// Call a Server Script API method (short name, no module prefix needed)
+async function api(method, args={}) {
+  const res = await fetch(`${BASE}/api/method/${method}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Frappe-CSRF-Token': getCsrf()
+    },
+    body: JSON.stringify(args)
+  });
+  if (res.status === 403) { window.location.href = '/login'; return null; }
+  const data = await res.json();
+  if (data.exc) throw new Error(data._server_messages || data.exc);
+  return data.message ?? data;
+}
+
+// Frappe method call (built-in methods)
+async function frappe_call(method, args={}) {
+  const res = await fetch(`${BASE}/api/method/${method}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Frappe-CSRF-Token': getCsrf()
+    },
+    body: JSON.stringify(args)
+  });
+  const data = await res.json();
+  if (data.exc) throw new Error(data.exc);
+  return data.message ?? data;
+}
+
+async function getList(doctype, fields=['name'], filters=[], limit=50, orderBy='modified desc') {
+  const params = new URLSearchParams({
+    doctype,
+    fields: JSON.stringify(fields),
+    filters: JSON.stringify(filters),
+    limit_page_length: limit,
+    order_by: orderBy
+  });
+  const res = await fetch(`${BASE}/api/resource/${encodeURIComponent(doctype)}?${params}`, {
+    headers: { 'X-Frappe-CSRF-Token': getCsrf() }
+  });
+  if (res.status === 403) { window.location.href = '/login'; return []; }
+  const d = await res.json();
+  return d.data || [];
+}
+
+let patientDoc = null;
+let isRegistered = false;
+let booking = { dept: null, prac: null, pracName: null, deptName: null, date: null, slot: null, type: null };
+
+async function init() {
+  // Step 1: Check if user is logged in via whoami
+  let currentUser = null;
+  try {
+    const res = await fetch(`${BASE}/api/method/frappe.auth.get_logged_user`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Frappe-CSRF-Token': getCsrf() },
+      body: JSON.stringify({})
+    });
+    const d = await res.json();
+    currentUser = d.message || null;
+  } catch(e) {}
+
+  if (!currentUser || currentUser === 'Guest') {
+    window.location.replace('/login');
+    return;
+  }
+
+  // Step 2: Get patient profile (links email → Patient record)
+  try {
+    const prof = await api('patient_profile');
+    if (prof && prof.patient) {
+      patientDoc = { name: prof.patient, patient_name: prof.patient_name, ...prof };
+      document.getElementById('ptName').textContent = prof.patient_name || currentUser;
+      document.getElementById('ptId').textContent = prof.patient || '';
+
+      // Step 3: Check registration status
+      try {
+        const status = await api('patient_portal_status');
+        isRegistered = !!(status && status.paid);
+      } catch(e) {
+        // If status check fails, assume registered (Active patient)
+        isRegistered = (prof.status === 'Active');
+      }
+
+      const badge = document.getElementById('regBadge');
+      if (isRegistered) {
+        badge.textContent = '✓ Active Patient';
+        badge.className = 'reg-badge reg-active';
+      } else {
+        badge.textContent = '⏳ Registration Pending';
+        badge.className = 'reg-badge reg-pending';
+        try {
+          const feeResp = await api('get_registration_fee');
+          showRegGate(feeResp?.fee || 0);
+        } catch(e) { showRegGate(0); }
+      }
+    } else {
+      // Logged in but not linked to any Patient record
+      document.getElementById('ptName').textContent = currentUser;
+      document.getElementById('ptId').textContent = 'No patient record';
+      document.getElementById('regBadge').textContent = '⚠ Not Linked';
+      document.getElementById('regBadge').className = 'reg-badge reg-pending';
+      document.getElementById('topbarMsg').innerHTML =
+        `<span style="font-size:12px;color:var(--warning)">⚠ Your account (${currentUser}) is not linked to a Patient record. Contact the front desk.</span>`;
+    }
+  } catch(e) {
+    console.error('Portal init error:', e);
+    document.getElementById('ptName').textContent = currentUser;
+    document.getElementById('topbarMsg').innerHTML =
+      `<span style="font-size:12px;color:var(--danger)">⚠ Error loading patient data: ${e.message}</span>`;
+  }
+
+  loadDashboard();
+  setDefaultDate();
+}
+
+function showRegGate(fee) {
+  document.getElementById('regGate').style.display = 'block';
+  document.getElementById('regFeeAmt').textContent = `₹ ${fee}`;
+  document.getElementById('modalFeeAmt').textContent = `₹ ${fee}`;
+}
+
+function setDefaultDate() {
+  const d = new Date();
+  d.setDate(d.getDate()+1);
+  document.getElementById('apptDate').min = new Date().toISOString().split('T')[0];
+  document.getElementById('apptDate').value = d.toISOString().split('T')[0];
+}
+
+// ─── NAVIGATION ───────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s_'+id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  event?.currentTarget?.classList.add('active');
+  const titles={dashboard:'Dashboard',bookAppt:'Book Appointment',myAppts:'My Appointments',myBills:'My Bills',myHistory:'Medical History'};
+  document.getElementById('pageTitle').textContent = titles[id]||id;
+  const loaders={myAppts:loadAppts, myBills:loadBills, myHistory:loadHistory, bookAppt:loadDeptStep, dashboard:loadDashboard};
+  if(loaders[id]) loaders[id]();
+}
+
+// ─── DASHBOARD ───────────────────────────────────────
+async function loadDashboard() {
+  if(!patientDoc) return;
+  try {
+    const [appts, bills, encounters] = await Promise.all([
+      getList('Patient Appointment',['name','status'],patientDoc?[['patient','=',patientDoc.name]]:[],200),
+      getList('Sales Invoice',['name','status','outstanding_amount'],patientDoc?[['patient','=',patientDoc.name],['docstatus','=',1]]:[],200),
+      getList('Patient Encounter',['name'],patientDoc?[['patient','=',patientDoc.name]]:[],500)
+    ]);
+    const today = new Date().toISOString().split('T')[0];
+    const upcoming = appts.filter(a=>a.status==='Open');
+    document.getElementById('statUpcoming').textContent = upcoming.length;
+    document.getElementById('statVisits').textContent = encounters.length;
+    document.getElementById('statPending').textContent = bills.filter(b=>parseFloat(b.outstanding_amount)>0).length;
+    document.getElementById('statRecords').textContent = encounters.length;
+  } catch(e){}
+  loadDashAppts();
+  loadDashBills();
+}
+
+async function loadDashAppts() {
+  const el = document.getElementById('dashAppts');
+  try {
+    if(!patientDoc) { el.innerHTML=emptyState('Login to see appointments'); return; }
+    const appts = await getList('Patient Appointment',['name','appointment_date','appointment_time','practitioner','status'],[['patient','=',patientDoc.name],['status','in',['Open','Scheduled']]],5,'appointment_date asc');
+    if(!appts.length) { el.innerHTML=emptyState('No upcoming appointments'); return; }
+    el.innerHTML=`<table class="data-table"><tbody>${appts.map(a=>`<tr>
+      <td class="primary">${a.appointment_date}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;">${a.appointment_time||'—'}</td>
+      <td>${a.practitioner||'—'}</td>
+      <td><span class="pill pill-blue">${a.status}</span></td>
+    </tr>`).join('')}</tbody></table>`;
+  } catch(e) { el.innerHTML=`<div class="alert alert-error">⚠ ${e.message}</div>`; }
+}
+
+async function loadDashBills() {
+  const el = document.getElementById('dashBills');
+  try {
+    if(!patientDoc) { el.innerHTML=emptyState('Login to see bills'); return; }
+    const bills = await getList('Sales Invoice',['name','posting_date','grand_total','outstanding_amount','status'],[['patient','=',patientDoc.name],['docstatus','=',1]],5,'posting_date desc');
+    if(!bills.length) { el.innerHTML=emptyState('No bills found'); return; }
+    el.innerHTML=`<table class="data-table"><tbody>${bills.map(b=>`<tr>
+      <td class="primary" style="font-family:'DM Mono',monospace;font-size:12px;">${b.name}</td>
+      <td>₹${Number(b.grand_total||0).toLocaleString()}</td>
+      <td><span class="pill ${b.outstanding_amount>0?'pill-yellow':'pill-green'}">${b.outstanding_amount>0?'Unpaid':'Paid'}</span></td>
+    </tr>`).join('')}</tbody></table>`;
+  } catch(e) { el.innerHTML=`<div class="alert alert-error">⚠ ${e.message}</div>`; }
+}
+
+// ─── BOOKING ───────────────────────────────────────
+const stepEls = [null,...[1,2,3,4].map(i=>document.getElementById('bStep'+i))];
 let currentStep = 1;
 
-// ─── HELPERS ───
-function $(id) { return document.getElementById(id); }
-function fmt(d) { if (!d) return '—'; return new Date(d).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'}); }
-function badgeClass(s='') {
-  const v = s.toLowerCase();
-  if (['completed','paid','active'].some(x=>v.includes(x))) return 'badge-success';
-  if (['cancelled','rejected'].some(x=>v.includes(x))) return 'badge-error';
-  if (['pending','open','draft','scheduled','waiting'].some(x=>v.includes(x))) return 'badge-warn';
-  return 'badge-info';
-}
-function empty(msg) { return `<div class="empty-state"><span class="emoji">📭</span>${msg||'No records found.'}</div>`; }
-
-async function api(resource, params={}) {
-  const url = new URL(`${BASE}/api/resource/${encodeURIComponent(resource)}`);
-  if (params.filters) url.searchParams.set('filters', JSON.stringify(params.filters));
-  if (params.fields) url.searchParams.set('fields', JSON.stringify(params.fields));
-  if (params.limit) url.searchParams.set('limit', params.limit);
-  if (params.order_by) url.searchParams.set('order_by', params.order_by);
-  try { const r = await fetch(url,{credentials:'include'}); if (r.ok) return (await r.json())?.data||[]; return null; } catch { return null; }
-}
-
-async function callMethod(method, data={}) {
-  try {
-    const r = await fetch(`${BASE}/api/method/${method}`,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token':await getCSRF()},body:JSON.stringify(data)});
-    return (await r.json());
-  } catch { return null; }
-}
-
-async function getCSRF() {
-  try { const r = await fetch(`${BASE}/api/method/frappe.auth.get_logged_user`,{credentials:'include'}); return r.headers.get('X-Frappe-CSRF-Token')||''; } catch { return ''; }
-}
-
-// ─── AUTH ───
-async function initSession() {
-  try {
-    const r = await fetch('/api/method/frappe.auth.get_logged_user');
-    const user = (await r.json())?.message;
-    if (!user || user==='Guest') return;
-    state.user = user;
-    await loadPatient();
-  } catch {}
-}
-
-async function loadPatient() {
-  // Try server-side portal status first
-  const res = await callMethod('frappe.client.get_list', {
-    doctype: 'Patient',
-    filters: JSON.stringify([['user_id','=',state.user]]),
-    fields: JSON.stringify(['name','patient_name','mobile','blood_group','sex']),
-    limit: 1
+function gotoBookStep(n) {
+  [1,2,3,4].forEach(i => {
+    document.getElementById('bStep'+i).style.display = i===n?'block':'none';
+    const se = document.getElementById('stepEl'+i);
+    se.className = 'step' + (i<n?' done':i===n?' active':'');
   });
-  let patient = res?.message?.[0];
+  currentStep = n;
+}
 
-  if (!patient) {
-    // Fallback: search by email
-    const p2 = await api('Patient',{filters:[['user_id','=',state.user]],fields:['name','patient_name','mobile','blood_group','sex'],limit:1});
-    patient = p2?.[0];
+async function loadDeptStep() {
+  gotoBookStep(1);
+  const grid = document.getElementById('deptGrid');
+  grid.innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+  try {
+    const depts = await api('portal_departments');
+    const icons = { 'Physiotherapy':'🦴','Neurology':'🧠','Cardiology':'❤️','Orthopedics':'🦴','General':'🩺','Pediatrics':'👶','Psychiatry':'🧘','Ophthalmology':'👁','Dermatology':'🧴','ENT':'👂' };
+    if(!depts?.length) { grid.innerHTML=emptyState('No departments found'); return; }
+    grid.innerHTML = depts.map(d=>`
+      <div class="dept-card" onclick="selectDept('${d.name}','${escJs(d.name)}')">
+        <div class="dept-icon">${icons[d.name]||'🏥'}</div>
+        <div class="dept-name">${d.name}</div>
+      </div>`).join('');
+  } catch(e) {
+    // Fallback direct
+    try {
+      const list = await getList('Medical Department',['name'],[],50);
+      const icons = { 'Physiotherapy':'🦴','Neurology':'🧠','Cardiology':'❤️','Orthopedics':'🦴','General':'🩺' };
+      grid.innerHTML = list.map(d=>`
+        <div class="dept-card" onclick="selectDept('${d.name}','${escJs(d.name)}')">
+          <div class="dept-icon">${icons[d.name]||'🏥'}</div>
+          <div class="dept-name">${d.name}</div>
+        </div>`).join('');
+    } catch(e2) { grid.innerHTML=`<div class="alert alert-error">⚠ Could not load departments</div>`; }
   }
-
-  if (!patient) {
-    // Check if user has linked patient any other way
-    const p3 = await api('Patient',{filters:[['email','=',state.user]],fields:['name','patient_name'],limit:1});
-    patient = p3?.[0];
-  }
-
-  if (patient) {
-    state.patient = patient;
-    await checkRegistrationFee();
-  } else {
-    // New patient - show app directly (they may have just registered in ERPNext)
-    showApp();
-  }
-}
-
-async function checkRegistrationFee() {
-  try {
-    const res = await callMethod('portal_patient_status', { patient: state.patient?.name });
-    if (res?.message?.status === 'Fee Pending') {
-      const fee = res.message.fee || 0;
-      $('fee-amount').textContent = '₹'+Number(fee).toLocaleString('en-IN');
-      $('auth-login').style.display = 'none';
-      $('auth-register').style.display = 'none';
-      $('auth-fee').style.display = 'block';
-      state._regFee = fee;
-      return;
-    }
-  } catch {}
-  // Either paid or no fee required
-  state.registrationPaid = true;
-  showApp();
-}
-
-async function payRegistrationFee() {
-  try {
-    const res = await callMethod('create_registration_invoice', { patient: state.patient?.name });
-    if (res?.message?.invoice) {
-      window.location.href = `${BASE}/app/sales-invoice/${res.message.invoice}`;
-    } else {
-      state.registrationPaid = true;
-      showApp();
-    }
-  } catch { showApp(); }
-}
-
-function showApp() {
-  $('auth-screen').style.display = 'none';
-  $('app').style.display = 'flex';
-  const name = state.patient?.patient_name || state.user?.split('@')[0] || 'Patient';
-  $('user-display').textContent = name;
-  $('hero-name').textContent = name.split(' ')[0];
-  loadDepts();
-}
-
-async function doLogin() {
-  const email = $('login-email').value.trim();
-  const pass = $('login-pass').value;
-  $('login-err').style.display = 'none';
-  if (!email||!pass) return;
-  try {
-    const r = await fetch('/api/method/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usr:email,pwd:pass}),credentials:'include'});
-    const d = await r.json();
-    if (d.message==='Logged In') { state.user = email; await loadPatient(); }
-    else { $('login-err').style.display = 'block'; }
-  } catch { $('login-err').style.display = 'block'; }
-}
-
-async function doRegister() {
-  const name = $('reg-name').value.trim();
-  const email = $('reg-email').value.trim();
-  const pass = $('reg-pass').value;
-  const mobile = $('reg-mobile').value.trim();
-  $('reg-err').style.display = 'none';
-  if (!name||!email||!pass) { $('reg-err').textContent='Please fill all required fields.'; $('reg-err').style.display='block'; return; }
-  try {
-    // Create user account
-    const r = await fetch('/api/method/frappe.core.doctype.user.user.create_user_settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,first_name:name.split(' ')[0],last_name:name.split(' ').slice(1).join(' ')||''}),credentials:'include'});
-    // Fallback: just try to login if user already exists
-    const lr = await fetch('/api/method/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usr:email,pwd:pass}),credentials:'include'});
-    const ld = await lr.json();
-    if (ld.message==='Logged In') { state.user=email; await loadPatient(); }
-    else { $('reg-err').textContent='Please contact the hospital to activate your account.'; $('reg-err').style.display='block'; }
-  } catch(e) { $('reg-err').textContent='Registration failed. Please try again.'; $('reg-err').style.display='block'; }
-}
-
-async function doLogout() { await fetch('/api/method/logout',{method:'POST',credentials:'include'}); location.reload(); }
-
-function showLogin() { $('auth-login').style.display='block'; $('auth-register').style.display='none'; }
-function showRegister() { $('auth-login').style.display='none'; $('auth-register').style.display='block'; }
-
-// ─── NAVIGATION ───
-function showPage(page) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.tn-item').forEach(t=>t.classList.remove('active'));
-  $(`page-${page}`)?.classList.add('active');
-  document.querySelectorAll('.tn-item').forEach(t=>{ if (t.textContent.toLowerCase().includes(page==='book'?'book':page==='appointments'?'appointment':page)) t.classList.add('active'); });
-
-  if (page==='appointments') loadAppointments();
-  if (page==='billing') loadBilling();
-  if (page==='home') { const tn=document.querySelectorAll('.tn-item'); tn[0]?.classList.add('active'); }
-}
-
-// ─── BOOKING ───
-let departments = [];
-let practitioners = [];
-
-async function loadDepts() {
-  const data = await callMethod('portal_departments') || await api('Medical Department',{fields:['name','department_name'],limit:30});
-  const depts = data?.message || data || [];
-  departments = depts;
-  const icons = {'Physiotherapy':'🏃','Rehabilitation':'♿','Neurology':'🧠','Cardiology':'❤️','Orthopedics':'🦴','Pediatrics':'👶','General Medicine':'🏥','Psychiatry':'🧘','ENT':'👂','Ophthalmology':'👁️','Dermatology':'🩺','Dental':'🦷'};
-  $('dept-grid').innerHTML = depts.length ? depts.map(d=>`
-    <div class="dept-card" id="dept-${d.name}" onclick="selectDept('${d.name}','${(d.department_name||d.name).replace(/'/g,"&apos;")}')">
-      <div class="dept-icon">${icons[d.department_name]||icons[d.name]||'🏥'}</div>
-      <div class="dept-name">${d.department_name||d.name}</div>
-    </div>`).join('') : '<div style="color:var(--text-3);padding:1rem;">No departments found.</div>';
 }
 
 function selectDept(id, name) {
   booking.dept = id; booking.deptName = name;
   document.querySelectorAll('.dept-card').forEach(c=>c.classList.remove('selected'));
-  $(`dept-${id}`)?.classList.add('selected');
+  event.currentTarget.classList.add('selected');
+  setTimeout(()=>loadPracStep(), 200);
 }
 
-async function loadPracs(deptId) {
-  $('prac-grid').innerHTML = '<div class="loading"><div class="spinner"></div>Loading…</div>';
-  $('selected-dept-badge').textContent = booking.deptName;
-  const data = await callMethod('portal_practitioners',{department:deptId}) || await api('Healthcare Practitioner',{filters:[['department','=',deptId]],fields:['name','practitioner_name','department','designation'],limit:20});
-  practitioners = data?.message || data || [];
-  $('prac-grid').innerHTML = practitioners.length ? practitioners.map(p=>`
-    <div class="prac-card" id="prac-${p.name}" onclick="selectPrac('${p.name}','${(p.practitioner_name||p.name).replace(/'/g,"&apos;")}')">
-      <div class="prac-avatar">${(p.practitioner_name||p.name)[0].toUpperCase()}</div>
-      <div class="prac-name">${p.practitioner_name||p.name}</div>
-      <div class="prac-dept">${p.department||''} · ${p.designation||'Practitioner'}</div>
-    </div>`).join('') : '<div style="color:var(--text-3);padding:1rem;">No practitioners in this department.</div>';
+async function loadPracStep() {
+  gotoBookStep(2);
+  const grid = document.getElementById('pracGrid');
+  grid.innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+  try {
+    const pracs = await api('portal_practitioners', { department: booking.dept });
+    if(!pracs?.length) { grid.innerHTML=emptyState('No practitioners in this department'); return; }
+    grid.innerHTML = pracs.map(p=>`
+      <div class="prac-card" onclick="selectPrac('${p.name}','${escJs(p.practitioner_name||p.name)}')">
+        <div class="prac-avatar">👨‍⚕️</div>
+        <div>
+          <div class="prac-name">${p.practitioner_name||p.name}</div>
+          <div class="prac-dept">${booking.deptName}</div>
+        </div>
+      </div>`).join('');
+  } catch(e) { grid.innerHTML=`<div class="alert alert-error">⚠ ${e.message}</div>`; }
 }
 
 function selectPrac(id, name) {
   booking.prac = id; booking.pracName = name;
   document.querySelectorAll('.prac-card').forEach(c=>c.classList.remove('selected'));
-  $(`prac-${id}`)?.classList.add('selected');
+  event.currentTarget.classList.add('selected');
+  setTimeout(()=>gotoBookStep(3), 200);
 }
 
-function buildDateButtons() {
-  const dates = [];
-  const today = new Date();
-  for (let i=0; i<14; i++) {
-    const d = new Date(today); d.setDate(today.getDate()+i);
-    if (d.getDay()!==0) dates.push(d); // skip Sundays
-  }
-  $('date-row').innerHTML = dates.map(d=>{
-    const iso = d.toISOString().split('T')[0];
-    const label = d.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
-    return `<button class="date-btn" onclick="selectDate('${iso}',this)">${label}</button>`;
-  }).join('');
-}
-
-function selectDate(iso, btn) {
-  booking.date = iso; booking.slot = null;
-  document.querySelectorAll('.date-btn').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
-  loadSlots(iso);
-}
-
-async function loadSlots(date) {
-  $('slot-grid').innerHTML = '<div class="loading"><div class="spinner"></div>Loading slots…</div>';
+async function loadSlots() {
+  const date = document.getElementById('apptDate').value;
+  if(!date||!booking.prac) return;
+  booking.date = date;
+  const grid = document.getElementById('slotGrid');
+  grid.innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+  document.getElementById('slotNextBtn').disabled = true;
+  booking.slot = null;
   try {
-    const res = await callMethod('portal_get_slots',{practitioner:booking.prac, date});
-    const slots = res?.message?.slots || generateDefaultSlots();
-    $('slot-grid').innerHTML = slots.map(s=>`<button class="slot-btn${s.taken?' taken':''}" onclick="${s.taken?'':'selectSlot(\"'+s.time+'\",this)'}">${s.time}</button>`).join('');
-  } catch {
-    const slots = generateDefaultSlots();
-    $('slot-grid').innerHTML = slots.map(s=>`<button class="slot-btn" onclick="selectSlot('${s.time}',this)">${s.time}</button>`).join('');
+    const slots = await api('portal_get_slots', { practitioner: booking.prac, date });
+    if(!slots?.length) { grid.innerHTML=`<div style="color:var(--text-muted);font-size:13px;padding:12px;">No available slots for this date</div>`; return; }
+    // API returns plain time strings e.g. ["09:00", "09:30", ...]
+    grid.innerHTML = slots.map(s=>`
+      <div class="slot" onclick="selectSlot(this,'${s}')">${s}</div>
+    `).join('');
+  } catch(e) {
+    // Generate mock slots as fallback
+    const times = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30'];
+    grid.innerHTML = times.map(t=>`<div class="slot" onclick="selectSlot(this,'${t}')">${t}</div>`).join('');
   }
 }
 
-function generateDefaultSlots() {
-  const slots = [];
-  for (let h=9; h<=17; h++) {
-    ['00','30'].forEach(m=>{ if (h<17||m==='00') slots.push({time:`${String(h).padStart(2,'0')}:${m}`,taken:false}); });
-  }
-  return slots;
-}
-
-function selectSlot(time, btn) {
+function selectSlot(el, time) {
+  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
   booking.slot = time;
-  document.querySelectorAll('.slot-btn').forEach(b=>b.classList.remove('selected'));
-  btn.classList.add('selected');
+  document.getElementById('slotNextBtn').disabled = false;
 }
 
-function goStep(n) {
-  if (n===2 && !booking.dept) { alert('Please select a department.'); return; }
-  if (n===3 && !booking.prac) { alert('Please select a practitioner.'); return; }
-  if (n===4) {
-    if (!booking.date) { alert('Please select a date.'); return; }
-    if (!booking.slot) { alert('Please select a time slot.'); return; }
-    // Fill confirm
-    $('confirm-patient').textContent = state.patient?.patient_name || state.user;
-    $('confirm-dept').textContent = booking.deptName;
-    $('confirm-prac').textContent = booking.pracName;
-    $('confirm-date').textContent = fmt(booking.date);
-    $('confirm-time').textContent = booking.slot;
+function gotoBookStep(n) {
+  if(n===4) {
+    booking.type = document.getElementById('apptType').value;
+    document.getElementById('confirmDetails').innerHTML = [
+      {label:'Patient', val: patientDoc?.patient_name||'—'},
+      {label:'Department', val: booking.deptName},
+      {label:'Doctor', val: booking.pracName},
+      {label:'Date', val: booking.date},
+      {label:'Time', val: booking.slot},
+      {label:'Type', val: booking.type},
+    ].map(f=>`<div>
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);margin-bottom:3px;">${f.label}</div>
+      <div style="font-size:13px;font-weight:500;color:var(--text-primary);">${f.val||'—'}</div>
+    </div>`).join('');
   }
-  // Update stepper
-  for (let i=1; i<=4; i++) {
-    const sn = $(`sn-${i}`);
-    if (i<n) { sn.className='step-num done'; sn.textContent='✓'; }
-    else if (i===n) { sn.className='step-num active'; sn.textContent=i; }
-    else { sn.className='step-num pending'; sn.textContent=i; }
-    if (i<4) $(`sl-${i}`).className='step-line'+(i<n?' done':'');
-  }
-
-  document.querySelectorAll('.booking-step').forEach(s=>s.classList.remove('active'));
-  $(`book-step-${n}`)?.classList.add('active');
-  currentStep = n;
-
-  if (n===2) loadPracs(booking.dept);
-  if (n===3) buildDateButtons();
+  [1,2,3,4].forEach(i=>{
+    document.getElementById('bStep'+i).style.display=i===n?'block':'none';
+    const se=document.getElementById('stepEl'+i);
+    se.className='step'+(i<n?' done':i===n?' active':'');
+  });
+  currentStep=n;
 }
 
 async function confirmBooking() {
+  const btn = document.getElementById('confirmBookBtn');
+  const alert = document.getElementById('bookingAlert');
+  btn.textContent = 'Booking...'; btn.disabled = true;
   try {
-    const payload = {
-      patient: state.patient?.name,
+    // Server script reads patient from session - just send booking details
+    await api('portal_book_appointment', {
       practitioner: booking.prac,
-      appointment_date: booking.date,
-      appointment_time: booking.slot,
+      date: booking.date,
+      time: booking.slot,
+      appointment_type: booking.type,
       department: booking.dept
-    };
-    const res = await callMethod('portal_book_appointment', payload);
-    const apptName = res?.message?.appointment || res?.message?.name;
-    if (apptName) {
-      $('success-detail').textContent = `Appointment ID: ${apptName} · ${fmt(booking.date)} at ${booking.slot} with ${booking.pracName}`;
-    } else {
-      // Fallback: direct API create
-      const r2 = await fetch(`${BASE}/api/resource/Patient Appointment`,{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({...payload, doctype:'Patient Appointment'})});
-      const d2 = await r2.json();
-      if (d2.data?.name) $('success-detail').textContent = `Appointment ID: ${d2.data.name}`;
-    }
-    document.querySelectorAll('.booking-step').forEach(s=>s.classList.remove('active'));
-    $('book-success').style.display='block';
-  } catch(e) { alert('Booking failed: '+e.message); }
+    });
+    alert.innerHTML = `<div class="alert alert-success">✓ Appointment booked successfully for ${booking.date} at ${booking.slot}</div>`;
+    btn.textContent = '✓ Booked!';
+    setTimeout(()=>{ showSection('myAppts'); }, 2000);
+  } catch(e) {
+    alert.innerHTML = `<div class="alert alert-error">⚠ Booking failed: ${e.message||'Please try again'}</div>`;
+    btn.textContent='✓ Confirm Booking'; btn.disabled=false;
+  }
 }
 
-function resetBooking() {
-  booking = {dept:null,deptName:null,prac:null,pracName:null,date:null,slot:null};
-  $('book-success').style.display='none';
-  goStep(1);
-  loadDepts();
+// ─── MY APPOINTMENTS ───────────────────────────────────────
+async function loadAppts() {
+  const tbody = document.getElementById('apptsTbody');
+  try {
+    if(!patientDoc) { tbody.innerHTML=errRow(7,'Please log in'); return; }
+    const appts = await api('patient_my_appointments');
+    if(!appts?.length) { tbody.innerHTML=emptyRow(7,'No appointments found'); return; }
+    tbody.innerHTML = appts.map(a=>`<tr>
+      <td class="primary">${a.appointment_date}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;">${a.appointment_time||'—'}</td>
+      <td>${a.practitioner||'—'}</td>
+      <td>${a.department||'—'}</td>
+      <td>${a.appointment_type||'—'}</td>
+      <td><span class="pill ${pillClass(a.status)}">${a.status}</span></td>
+      <td><a href="/healthcare/patient-appointment/${a.name}" target="_blank" class="btn btn-ghost" style="font-size:12px;padding:4px 10px;">View</a></td>
+    </tr>`).join('');
+  } catch(e) { tbody.innerHTML=errRow(7,e.message); }
 }
 
-// ─── APPOINTMENTS ───
-async function loadAppointments() {
-  if (!state.patient) { $('list-upcoming').innerHTML=empty('Patient profile not found.'); $('list-past').innerHTML=empty(); return; }
-  const today = new Date().toISOString().split('T')[0];
-  const [upcoming, past] = await Promise.all([
-    api('Patient Appointment',{filters:[['patient','=',state.patient.name],['appointment_date','>=',today]],fields:['name','appointment_date','appointment_time','practitioner','status','department'],order_by:'appointment_date asc',limit:20}),
-    api('Patient Appointment',{filters:[['patient','=',state.patient.name],['appointment_date','<',today]],fields:['name','appointment_date','appointment_time','practitioner','status','department'],order_by:'appointment_date desc',limit:20})
-  ]);
-
-  $('list-upcoming').innerHTML = upcoming?.length ? upcoming.map(a=>`
-    <div class="data-row">
-      <div class="row-main"><div class="row-title">${a.practitioner||'—'} · ${a.department||'—'}</div><div class="row-sub">${fmt(a.appointment_date)} at ${a.appointment_time||'—'}</div></div>
-      <div class="row-meta"><span class="badge ${badgeClass(a.status)}">${a.status||'—'}</span></div>
-    </div>`).join('') : empty('No upcoming appointments.');
-
-  $('list-past').innerHTML = past?.length ? past.map(a=>`
-    <div class="data-row">
-      <div class="row-main"><div class="row-title">${a.practitioner||'—'} · ${a.department||'—'}</div><div class="row-sub">${fmt(a.appointment_date)}</div></div>
-      <div class="row-meta"><span class="badge ${badgeClass(a.status)}">${a.status||'—'}</span></div>
-    </div>`).join('') : empty('No past appointments.');
+// ─── MY BILLS ───────────────────────────────────────
+async function loadBills() {
+  const tbody = document.getElementById('billsTbody');
+  try {
+    if(!patientDoc) { tbody.innerHTML=errRow(6,'Please log in'); return; }
+    const invoices = await api('patient_my_invoices');
+    if(!invoices?.length) { tbody.innerHTML=emptyRow(6,'No bills found'); return; }
+    tbody.innerHTML = invoices.map(inv=>`<tr>
+      <td class="primary" style="font-family:'DM Mono',monospace;font-size:12px;">${inv.name}</td>
+      <td>${inv.posting_date||'—'}</td>
+      <td>₹${Number(inv.grand_total||0).toLocaleString()}</td>
+      <td style="color:${parseFloat(inv.outstanding_amount)>0?'var(--warning)':'var(--success)'}">₹${Number(inv.outstanding_amount||0).toLocaleString()}</td>
+      <td><span class="pill ${pillClass(inv.status)}">${inv.status}</span></td>
+      <td><a href="/printview?doctype=Sales+Invoice&name=${inv.name}&format=Standard" target="_blank" class="btn btn-ghost" style="font-size:12px;padding:4px 10px;">🖨 Print</a></td>
+    </tr>`).join('');
+  } catch(e) { tbody.innerHTML=errRow(6,e.message); }
 }
 
-// ─── BILLING ───
-async function loadBilling() {
-  const filters = state.patient ? [['patient','=',state.patient.name]] : [];
-  const data = await api('Sales Invoice',{filters,fields:['name','posting_date','grand_total','outstanding_amount','status'],order_by:'posting_date desc',limit:30});
-  $('list-invoices').innerHTML = data?.length ? data.map(inv=>`
-    <div class="data-row" onclick="window.open('${BASE}/app/sales-invoice/${inv.name}','_blank')">
-      <div class="row-main"><div class="row-title">${inv.name}</div><div class="row-sub">Date: ${fmt(inv.posting_date)} · Outstanding: ₹${Number(inv.outstanding_amount||0).toLocaleString('en-IN')}</div></div>
-      <div class="row-meta"><span class="badge ${badgeClass(inv.status)}">${inv.status||'—'}</span><span style="font-weight:700;color:var(--blue-light);font-family:'JetBrains Mono',monospace">₹${Number(inv.grand_total||0).toLocaleString('en-IN')}</span></div>
-    </div>`).join('') : empty('No invoices found.');
+// ─── MEDICAL HISTORY ───────────────────────────────────────
+async function loadHistory() {
+  const el = document.getElementById('historyContent');
+  if(!patientDoc) { el.innerHTML=emptyState('Please log in'); return; }
+  el.innerHTML=`<div class="loading"><div class="spinner"></div> Loading your medical history...</div>`;
+  try {
+    const encounters = await getList('Patient Encounter',
+      ['name','encounter_date','practitioner','diagnosis','encounter_type'],
+      [['patient','=',patientDoc.name]], 100, 'encounter_date desc');
+    if(!encounters.length) { el.innerHTML=emptyState('No medical records found'); return; }
+    const icons = {'OPD':'🩺','IPD':'🏥','Emergency':'🚨',default:'📋'};
+    el.innerHTML = `<div style="position:relative; padding-left:50px;">
+      <div style="position:absolute;left:18px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,var(--blue-500),transparent);"></div>
+      ${encounters.map(e=>`
+        <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px;margin-left:-50px;">
+          <div style="width:38px;height:38px;border-radius:50%;background:rgba(26,86,219,.2);border:2px solid var(--blue-400);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;z-index:1;">${icons[e.encounter_type]||icons.default}</div>
+          <div style="flex:1;background:rgba(26,86,219,.06);border:1px solid var(--card-border);border-radius:10px;padding:12px 14px;">
+            <div style="font-size:11px;color:var(--accent);font-family:'DM Mono',monospace;margin-bottom:3px;">${e.encounter_date}</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">${e.encounter_type||'Consultation'} — ${e.name}</div>
+            ${e.practitioner?`<div style="font-size:12px;color:var(--text-muted);margin-top:3px;">Dr. ${e.practitioner}</div>`:''}
+            ${e.diagnosis?`<div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">Dx: ${e.diagnosis}</div>`:''}
+          </div>
+        </div>`).join('')}
+    </div>`;
+  } catch(e) { el.innerHTML=`<div class="alert alert-error">⚠ ${e.message}</div>`; }
 }
 
-// ─── INIT ───
-$('login-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
-$('reg-pass').addEventListener('keydown', e=>{ if(e.key==='Enter') doRegister(); });
-initSession();
+// ─── REGISTRATION FEE ───────────────────────────────────────
+async function payRegistrationFee() {
+  try {
+    const fee = await api('get_registration_fee');
+    document.getElementById('modalFeeAmt').textContent = `₹ ${fee||0}`;
+  } catch(e){}
+  document.getElementById('payModal').classList.add('open');
+}
+
+async function submitRegPayment() {
+  const alertArea = document.getElementById('payAlertArea');
+  try {
+    const result = await api('create_registration_invoice', {
+      patient: patientDoc?.name,
+      payment_mode: document.getElementById('payMode').value
+    });
+    alertArea.innerHTML=`<div class="alert alert-success">✓ Registration complete! Account activated.</div>`;
+    isRegistered = true;
+    document.getElementById('regGate').style.display='none';
+    document.getElementById('regBadge').textContent='✓ Active Patient';
+    document.getElementById('regBadge').className='reg-badge reg-active';
+    setTimeout(()=>closeModal('payModal'), 1500);
+  } catch(e) { alertArea.innerHTML=`<div class="alert alert-error">⚠ ${e.message}</div>`; }
+}
+
+// ─── UTILS ───────────────────────────────────────
+function pillClass(s) {
+  s=(s||'').toLowerCase();
+  if(['open','active','paid'].some(v=>s.includes(v))) return 'pill-green';
+  if(['draft','pending','scheduled'].some(v=>s.includes(v))) return 'pill-yellow';
+  if(['cancel'].some(v=>s.includes(v))) return 'pill-red';
+  return 'pill-blue';
+}
+function errRow(cols,msg) { return `<tr><td colspan="${cols}"><div class="alert alert-error">⚠ ${msg}</div></td></tr>`; }
+function emptyRow(cols,msg) { return `<tr><td colspan="${cols}"><div class="empty-state"><div class="icon">📭</div><p>${msg}</p></div></td></tr>`; }
+function emptyState(msg) { return `<div class="empty-state"><div class="icon">📭</div><p>${msg}</p></div>`; }
+function escJs(s) { return (s||'').replace(/'/g,"\\'"); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open');}));
+async function logout() {
+  try {
+    // Use frappe's proper logout endpoint
+    await fetch(`${BASE}/api/method/frappe.auth.logout`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Frappe-CSRF-Token': getCsrf()
+      },
+      body: JSON.stringify({})
+    });
+  } catch(e) { /* ignore errors, redirect anyway */ }
+  // Clear any local storage keys
+  localStorage.clear();
+  // Hard redirect to login page
+  window.location.replace('/login');
+}
+
+init();
 </script>
 </body>
 </html>

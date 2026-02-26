@@ -3,1413 +3,1572 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Doctor Portal | Sneha Health</title>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<title>Doctor Portal — Rena Rehabilitation Centre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --navy: #05152e;
-  --navy-2: #0a2144;
-  --navy-3: #0f2d5c;
-  --blue: #1565c0;
-  --blue-bright: #1e88e5;
-  --blue-light: #42a5f5;
-  --cyan: #00b4d8;
-  --cyan-light: #48cae4;
-  --teal: #00897b;
-  --surface: #0d1f3c;
-  --surface-2: #112547;
-  --card: #132a52;
-  --card-2: #163060;
-  --border: rgba(30,136,229,0.18);
-  --border-bright: rgba(66,165,245,0.35);
-  --text: #e8f0fe;
-  --text-2: #90a8d0;
-  --text-3: #5a7aaa;
-  --green: #00c853;
-  --amber: #ffab00;
-  --red: #ff1744;
-  --purple: #7c4dff;
-  --sidebar-w: 268px;
-  --radius: 14px;
-  --radius-sm: 8px;
+  --navy-900: #050d1a;
+  --navy-800: #0a1628;
+  --navy-700: #0d1f3c;
+  --navy-600: #112850;
+  --blue-500: #1a56db;
+  --blue-400: #3b82f6;
+  --blue-300: #60a5fa;
+  --blue-200: #93c5fd;
+  --blue-100: #dbeafe;
+  --steel: #1e3a5f;
+  --steel-light: #2d5282;
+  --accent: #0ea5e9;
+  --accent-glow: rgba(14,165,233,0.3);
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --text-primary: #f0f6ff;
+  --text-secondary: #94b8d8;
+  --text-muted: #5a7fa8;
+  --card-bg: rgba(13,31,60,0.7);
+  --card-border: rgba(59,130,246,0.15);
+  --sidebar-w: 260px;
 }
-
-* { margin:0; padding:0; box-sizing:border-box; }
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  font-family: 'Sora', sans-serif;
-  background: var(--navy);
-  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  background: var(--navy-900);
+  color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
 }
-
-/* ── Scrollbar ── */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 4px; }
-
-/* ── OVERLAY ── */
-.overlay {
-  position: fixed; inset: 0; z-index: 9999;
-  background: linear-gradient(135deg, #020c1e 0%, #051535 50%, #071a3e 100%);
-  display: flex; align-items: center; justify-content: center;
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(26,86,219,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(14,165,233,0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
 }
 
-.overlay-card {
-  background: var(--card);
-  border: 1px solid var(--border-bright);
-  border-radius: 24px;
-  padding: 2.5rem 2rem;
-  width: 100%; max-width: 420px;
-  box-shadow: 0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(66,165,245,0.08);
-  text-align: center;
-}
-
-.overlay-logo {
-  width: 64px; height: 64px;
-  background: linear-gradient(135deg, var(--blue), var(--cyan));
-  border-radius: 18px;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 1.5rem;
-  box-shadow: 0 8px 32px rgba(21,101,192,0.5);
-}
-
-.overlay-logo svg { width: 28px; height: 28px; }
-
-.overlay-card h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; }
-.overlay-card p { color: var(--text-2); font-size: 0.875rem; }
-
-.login-form { margin-top: 1.75rem; text-align: left; }
-.login-form label { font-size: 0.75rem; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 0.4rem; }
-.login-form input {
-  width: 100%; padding: 0.75rem 1rem;
-  background: var(--navy-3); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); color: var(--text);
-  font-family: inherit; font-size: 0.9rem;
-  margin-bottom: 1rem; transition: border-color 0.2s;
-}
-.login-form input:focus { outline: none; border-color: var(--blue-bright); }
-
-.btn-primary {
-  width: 100%; padding: 0.85rem;
-  background: linear-gradient(135deg, var(--blue) 0%, var(--blue-bright) 100%);
-  color: #fff; border: none; border-radius: var(--radius-sm);
-  font-family: inherit; font-size: 0.9rem; font-weight: 600;
-  cursor: pointer; transition: all 0.2s;
-  box-shadow: 0 4px 16px rgba(21,101,192,0.4);
-}
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(21,101,192,0.5); }
-
-.diag { margin-top: 1.5rem; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 0.5rem 0.75rem; max-height: 80px; overflow-y: auto; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-3); text-align: left; }
-
-.picker-list { max-height: 180px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-top: 1rem; }
-.picker-item { padding: 0.75rem 1rem; cursor: pointer; border-bottom: 1px solid var(--border); font-size: 0.85rem; transition: background 0.15s; }
-.picker-item:hover { background: var(--navy-3); color: var(--blue-light); }
-.picker-item:last-child { border-bottom: none; }
-.picker-item .pid { font-size: 0.72rem; color: var(--text-3); font-family: monospace; }
-
-.hidden { display: none !important; }
-
-/* ── APP SHELL ── */
-.app-shell { display: flex; min-height: 100vh; }
-
-/* ── SIDEBAR ── */
+/* SIDEBAR */
 .sidebar {
+  position: fixed;
+  top: 0; left: 0;
   width: var(--sidebar-w);
-  background: linear-gradient(180deg, var(--navy-2) 0%, var(--navy) 100%);
-  border-right: 1px solid var(--border);
-  display: flex; flex-direction: column;
-  position: fixed; height: 100vh; z-index: 100;
+  height: 100vh;
+  background: linear-gradient(180deg, var(--navy-800) 0%, var(--navy-900) 100%);
+  border-right: 1px solid var(--card-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
   overflow-y: auto;
 }
-
-.sidebar-header {
-  padding: 1.5rem 1.25rem;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; gap: 0.75rem;
+.sidebar-brand {
+  padding: 24px 20px 20px;
+  border-bottom: 1px solid var(--card-border);
 }
-
-.logo-icon {
-  width: 40px; height: 40px;
-  background: linear-gradient(135deg, var(--blue), var(--cyan));
+.brand-logo {
+  width: 42px; height: 42px;
+  background: linear-gradient(135deg, var(--blue-500), var(--accent));
   border-radius: 12px;
   display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(21,101,192,0.4);
+  font-size: 20px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 16px var(--accent-glow);
 }
-
-.logo-icon svg { width: 20px; height: 20px; }
-
-.logo-text { font-size: 1rem; font-weight: 700; color: var(--text); }
-.logo-sub { font-size: 0.7rem; color: var(--text-3); }
-
-.sidebar-nav { flex: 1; padding: 1rem 0.75rem; }
-
-.nav-group-label {
-  font-size: 0.65rem; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.12em; color: var(--text-3);
-  padding: 1rem 0.75rem 0.4rem; margin-top: 0.25rem;
+.brand-name {
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
 }
-
-.nav-item {
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 0.65rem 0.875rem;
+.brand-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.doctor-info {
+  padding: 16px 20px;
+  background: rgba(26,86,219,0.08);
+  margin: 12px;
   border-radius: 10px;
-  cursor: pointer; transition: all 0.18s;
-  color: var(--text-2); font-weight: 500; font-size: 0.875rem;
-  margin-bottom: 2px; position: relative;
+  border: 1px solid var(--card-border);
 }
-
-.nav-item:hover { background: rgba(30,136,229,0.12); color: var(--blue-light); }
-
-.nav-item.active {
-  background: linear-gradient(135deg, rgba(21,101,192,0.35), rgba(0,180,216,0.15));
-  color: #fff;
-  box-shadow: inset 0 0 0 1px rgba(66,165,245,0.2);
-}
-
-.nav-item.active::before {
-  content: '';
-  position: absolute; left: 0; top: 20%; height: 60%; width: 3px;
-  background: linear-gradient(var(--blue-bright), var(--cyan));
-  border-radius: 0 2px 2px 0;
-}
-
-.nav-icon { font-size: 1rem; width: 1.25rem; text-align: center; flex-shrink: 0; }
-
-.nav-locked { opacity: 0.4; cursor: not-allowed; }
-.nav-locked:hover { background: transparent; color: var(--text-2); }
-
-.sidebar-footer {
-  padding: 1rem 0.875rem;
-  border-top: 1px solid var(--border);
-}
-
-.user-card {
-  display: flex; align-items: center; gap: 0.75rem;
-  background: var(--surface-2); border-radius: 12px;
-  padding: 0.75rem; margin-bottom: 0.75rem;
-  border: 1px solid var(--border);
-}
-
-.avatar {
+.doctor-avatar {
   width: 38px; height: 38px;
-  background: linear-gradient(135deg, var(--blue), var(--cyan));
-  border-radius: 10px;
+  background: linear-gradient(135deg, var(--steel), var(--blue-500));
+  border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 1rem; flex-shrink: 0;
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+.doctor-name {
+  font-family: 'Sora', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.doctor-role {
+  font-size: 11px;
+  color: var(--accent);
+  display: flex; align-items: center; gap: 4px;
+  margin-top: 2px;
+}
+.nav-section {
+  padding: 8px 12px 4px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 16px 9px 20px;
+  margin: 1px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  transition: all 0.18s ease;
+  text-decoration: none;
+}
+.nav-item:hover { background: rgba(59,130,246,0.1); color: var(--text-primary); }
+.nav-item.active { background: rgba(26,86,219,0.2); color: var(--blue-300); border-left: 2px solid var(--blue-400); }
+.nav-item .icon { font-size: 16px; width: 20px; text-align: center; }
+.nav-badge {
+  margin-left: auto;
+  background: var(--blue-500);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-family: 'DM Mono', monospace;
+}
+.sidebar-footer {
+  margin-top: auto;
+  padding: 12px 8px;
+  border-top: 1px solid var(--card-border);
 }
 
-.user-name { font-weight: 600; font-size: 0.85rem; }
-.user-role { font-size: 0.7rem; color: var(--text-3); }
-
-.btn-logout {
-  width: 100%; padding: 0.55rem;
-  background: transparent; border: 1px solid rgba(255,23,68,0.25);
-  border-radius: 8px; color: var(--red); font-family: inherit;
-  font-size: 0.8rem; font-weight: 500; cursor: pointer;
-  transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+/* MAIN CONTENT */
+.main {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
 }
-.btn-logout:hover { background: rgba(255,23,68,0.1); border-color: var(--red); }
+.topbar {
+  position: sticky;
+  top: 0;
+  background: rgba(5,13,26,0.92);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--card-border);
+  padding: 0 28px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 90;
+}
+.page-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.18s ease;
+  font-family: 'DM Sans', sans-serif;
+}
+.btn-primary {
+  background: var(--blue-500);
+  color: white;
+}
+.btn-primary:hover { background: var(--blue-400); transform: translateY(-1px); }
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--card-border);
+}
+.btn-ghost:hover { background: rgba(59,130,246,0.1); color: var(--text-primary); }
 
-/* ── MAIN ── */
-.main-content { margin-left: var(--sidebar-w); flex: 1; }
-
-.top-header {
-  height: 64px;
-  background: rgba(10,33,68,0.95);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-  padding: 0 2rem;
-  display: flex; align-items: center; justify-content: space-between;
-  position: sticky; top: 0; z-index: 90;
+.content {
+  padding: 24px 28px;
 }
 
-.page-title { font-size: 1.35rem; font-weight: 700; color: var(--text); }
-
-.header-right { display: flex; align-items: center; gap: 1rem; }
-
-.date-chip {
-  padding: 0.35rem 0.875rem;
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 20px; font-size: 0.78rem; color: var(--text-2);
-  font-family: 'JetBrains Mono', monospace;
-}
-
-.prac-banner {
-  margin: 1.5rem 2rem 0;
-  padding: 0.875rem 1.25rem;
-  background: rgba(255,171,0,0.1);
-  border: 1px solid rgba(255,171,0,0.3);
-  border-radius: var(--radius-sm);
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 1rem;
-}
-.prac-banner p { font-size: 0.85rem; color: var(--amber); }
-.prac-banner button {
-  padding: 0.35rem 0.875rem;
-  background: var(--amber); color: #000;
-  border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.78rem; white-space: nowrap;
-}
-
-.content-body { padding: 1.75rem 2rem; }
-
-/* ── SECTIONS ── */
-.section { display: none; animation: fadeUp 0.28s ease-out; }
+/* SECTION MANAGEMENT */
+.section { display: none; }
 .section.active { display: block; }
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ── STATS GRID ── */
+/* STAT CARDS */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.25rem; margin-bottom: 1.75rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
 }
-
 .stat-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 1.25rem;
-  display: flex; align-items: center; gap: 1rem;
-  transition: all 0.2s; cursor: default;
-  position: relative; overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(26,86,219,0.15); }
 .stat-card::before {
   content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 2px;
-  background: var(--accent-color, var(--blue));
-  border-radius: var(--radius) var(--radius) 0 0;
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue-500), var(--accent));
+  opacity: 0.6;
 }
-
-.stat-card:hover { transform: translateY(-2px); border-color: var(--border-bright); }
-
-.stat-card.blue { --accent-color: var(--blue-bright); }
-.stat-card.cyan { --accent-color: var(--cyan); }
-.stat-card.green { --accent-color: var(--green); }
-.stat-card.amber { --accent-color: var(--amber); }
-.stat-card.purple { --accent-color: var(--purple); }
-
 .stat-icon {
-  width: 46px; height: 46px;
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1.3rem;
-  background: rgba(30,136,229,0.12);
-  flex-shrink: 0;
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+.stat-value {
+  font-family: 'Sora', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  letter-spacing: 0.02em;
+}
+.stat-change {
+  font-size: 11px;
+  color: var(--success);
+  margin-top: 6px;
 }
 
-.stat-label { font-size: 0.75rem; color: var(--text-2); font-weight: 500; margin-bottom: 0.25rem; }
-.stat-value { font-size: 1.75rem; font-weight: 800; color: var(--text); font-family: 'JetBrains Mono', monospace; }
-
-/* ── CARDS ── */
+/* TABLES & CARDS */
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden; margin-bottom: 1.5rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
 }
-
 .card-header {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
-
-.card-title { font-size: 1rem; font-weight: 700; }
-
-.card-body { padding: 1.25rem; }
-
-.dashboard-grid {
-  display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem;
+.card-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
 }
-
-/* ── DATA ROWS ── */
-.data-row {
-  padding: 0.875rem 1rem;
-  background: var(--surface-2); border-radius: 10px;
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 0.6rem; cursor: pointer; transition: all 0.18s;
-  position: relative; overflow: hidden;
+.card-body { padding: 0; }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  padding: 10px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  background: rgba(26,86,219,0.06);
+  border-bottom: 1px solid var(--card-border);
 }
-
-.data-row::before {
-  content: '';
-  position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
-  background: var(--blue); border-radius: 2px 0 0 2px;
-  opacity: 0; transition: opacity 0.18s;
+.data-table td {
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid rgba(59,130,246,0.06);
+  transition: background 0.15s;
 }
-
-.data-row:hover { border-color: var(--border-bright); background: var(--card-2); transform: translateX(3px); }
-.data-row:hover::before { opacity: 1; }
-
-.row-info b { display: block; font-size: 0.9rem; margin-bottom: 0.2rem; }
-.row-info span { font-size: 0.78rem; color: var(--text-2); }
-.row-arrow { font-size: 0.75rem; color: var(--text-3); transition: color 0.18s; }
-.data-row:hover .row-arrow { color: var(--blue-light); }
-
-/* ── BADGES ── */
-.badge {
-  padding: 3px 10px; border-radius: 20px;
-  font-size: 0.7rem; font-weight: 700; white-space: nowrap;
-  display: flex; align-items: center; gap: 3px;
+.data-table tr:hover td { background: rgba(59,130,246,0.05); }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table .patient-name { color: var(--text-primary); font-weight: 500; }
+.visit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: rgba(14,165,233,0.15);
+  border: 1px solid rgba(14,165,233,0.3);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  font-family: 'DM Mono', monospace;
 }
-.badge-success { background: rgba(0,200,83,0.12); color: var(--green); border: 1px solid rgba(0,200,83,0.2); }
-.badge-warn { background: rgba(255,171,0,0.12); color: var(--amber); border: 1px solid rgba(255,171,0,0.2); }
-.badge-error { background: rgba(255,23,68,0.12); color: var(--red); border: 1px solid rgba(255,23,68,0.2); }
-.badge-info { background: rgba(30,136,229,0.12); color: var(--blue-light); border: 1px solid rgba(30,136,229,0.2); }
-.badge-cyan { background: rgba(0,180,216,0.12); color: var(--cyan-light); border: 1px solid rgba(0,180,216,0.2); }
-
-/* ── QUICK ACTIONS ── */
-.actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
-
-.action-btn {
-  display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
-  padding: 1rem 0.75rem;
-  background: var(--surface-2); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); cursor: pointer;
-  transition: all 0.2s; color: var(--text-2); font-family: inherit; font-size: 0.78rem; font-weight: 500;
-}
-.action-btn:hover { background: rgba(30,136,229,0.15); border-color: var(--blue); color: var(--blue-light); transform: translateY(-2px); }
-.action-btn .icon { font-size: 1.4rem; }
-
-/* ── PROFILE ── */
-.profile-header {
-  background: linear-gradient(135deg, var(--blue) 0%, var(--navy-3) 50%, var(--teal) 100%);
-  padding: 2rem 2.5rem;
-  border-radius: var(--radius);
-  display: flex; gap: 1.5rem; align-items: center;
-  margin-bottom: 1.5rem;
-  position: relative; overflow: hidden;
-}
-
-.profile-header::before {
-  content: '';
-  position: absolute; top: -50%; right: -10%;
-  width: 300px; height: 300px;
-  background: rgba(255,255,255,0.04);
-  border-radius: 50%;
-}
-
-.avatar-lg {
-  width: 88px; height: 88px;
-  border-radius: 18px;
-  background: rgba(255,255,255,0.15);
-  border: 2px solid rgba(255,255,255,0.25);
-  font-size: 2.2rem;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; flex-shrink: 0;
-  backdrop-filter: blur(8px);
-}
-
-.profile-info h2 { font-size: 1.6rem; font-weight: 800; margin-bottom: 0.25rem; }
-.profile-info p { opacity: 0.85; font-size: 0.9rem; }
-
-.profile-grid {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;
-}
-
-.info-cell label {
-  display: block; font-size: 0.68rem; font-weight: 700;
-  text-transform: uppercase; color: var(--text-3); letter-spacing: 0.08em;
-  margin-bottom: 0.35rem;
-}
-.info-cell span { font-size: 0.95rem; font-weight: 500; color: var(--text); }
-
-/* ── PATIENT REPORT MODAL ── */
-.modal-overlay {
-  position: fixed; inset: 0; z-index: 9000;
-  background: rgba(2,12,30,0.85); backdrop-filter: blur(8px);
-  display: none; align-items: center; justify-content: center; padding: 1rem;
-}
-.modal-overlay.open { display: flex; animation: fadeUp 0.2s; }
-
-.modal-box {
-  background: var(--card);
-  border: 1px solid var(--border-bright);
+.status-pill {
+  display: inline-block;
+  padding: 3px 9px;
   border-radius: 20px;
-  width: 100%; max-width: 800px; max-height: 90vh;
-  display: flex; flex-direction: column;
-  box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+  font-size: 11px;
+  font-weight: 500;
 }
+.status-active { background: rgba(16,185,129,0.15); color: var(--success); }
+.status-pending { background: rgba(245,158,11,0.15); color: var(--warning); }
+.status-completed { background: rgba(59,130,246,0.15); color: var(--blue-300); }
+.status-cancelled { background: rgba(239,68,68,0.15); color: var(--danger); }
 
-.modal-head {
-  padding: 1.25rem 1.75rem;
-  border-bottom: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: space-between;
+.clickable-row { cursor: pointer; }
+.action-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 13px;
+  transition: all 0.15s;
 }
-.modal-head h3 { font-size: 1.1rem; font-weight: 700; }
-.modal-close {
-  width: 32px; height: 32px; border-radius: 8px;
-  background: var(--surface); border: none; color: var(--text-2);
-  font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
-}
-.modal-body { padding: 1.5rem 1.75rem; overflow-y: auto; flex: 1; }
+.action-btn:hover { background: rgba(59,130,246,0.15); color: var(--blue-300); }
 
-.patient-visits-timeline { display: flex; flex-direction: column; gap: 1rem; }
-.visit-entry {
-  background: var(--surface-2); border: 1px solid var(--border);
-  border-radius: var(--radius-sm); padding: 1rem 1.25rem;
+/* GRID LAYOUT */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.mb-4 { margin-bottom: 16px; }
+.mb-6 { margin-bottom: 24px; }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(5,13,26,0.85);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--navy-700);
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  width: 700px;
+  max-width: 95vw;
+  max-height: 88vh;
+  overflow-y: auto;
   position: relative;
 }
-.visit-entry::before {
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.modal-title {
+  font-family: 'Sora', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+.modal-close {
+  background: none; border: none;
+  color: var(--text-muted);
+  font-size: 20px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+.modal-close:hover { background: rgba(239,68,68,0.15); color: var(--danger); }
+.modal-body { padding: 24px; }
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--card-border);
+  margin-bottom: 20px;
+}
+.tab-btn {
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.tab-btn:hover { color: var(--text-primary); }
+.tab-btn.active { color: var(--blue-300); border-bottom-color: var(--blue-400); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+/* DEMOGRAPHICS GRID */
+.demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.demo-field {
+  background: rgba(26,86,219,0.06);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 10px 14px;
+}
+.demo-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 3px; }
+.demo-value { font-size: 13px; color: var(--text-primary); font-weight: 500; }
+
+/* MEDICAL HISTORY TIMELINE */
+.timeline { position: relative; }
+.timeline::before {
   content: '';
-  position: absolute; left: -1px; top: 0; bottom: 0; width: 3px;
-  background: linear-gradient(var(--blue-bright), var(--cyan));
-  border-radius: 2px;
+  position: absolute;
+  left: 18px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--blue-500), transparent);
 }
-.visit-num { font-size: 0.68rem; font-weight: 700; color: var(--blue-light); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
-.visit-date { font-size: 0.82rem; color: var(--text-3); font-family: monospace; }
-
-/* ── PATIENT DEMOGRAPHICS ── */
-.demo-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.875rem; margin-bottom: 1.25rem; }
-.demo-cell { background: var(--surface-2); border-radius: 8px; padding: 0.75rem; border: 1px solid var(--border); }
-.demo-cell label { font-size: 0.65rem; text-transform: uppercase; color: var(--text-3); letter-spacing: 0.08em; display: block; margin-bottom: 0.25rem; }
-.demo-cell span { font-size: 0.88rem; font-weight: 600; color: var(--text); }
-
-/* ── COUNT BADGE ── */
-.count-badge {
-  background: rgba(0,180,216,0.15); color: var(--cyan-light);
-  border: 1px solid rgba(0,180,216,0.25);
-  padding: 2px 10px; border-radius: 20px;
-  font-size: 0.72rem; font-weight: 700;
-  font-family: 'JetBrains Mono', monospace;
+.timeline-item {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 18px;
+  position: relative;
+}
+.timeline-dot {
+  flex-shrink: 0;
+  width: 38px; height: 38px;
+  background: rgba(26,86,219,0.2);
+  border: 2px solid var(--blue-400);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  z-index: 1;
+}
+.timeline-content {
+  flex: 1;
+  background: rgba(26,86,219,0.06);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 12px 14px;
+}
+.timeline-date { font-size: 11px; color: var(--accent); font-family: 'DM Mono', monospace; margin-bottom: 4px; }
+.timeline-title { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.timeline-detail { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+.timeline-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+.tag {
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(59,130,246,0.12);
+  border: 1px solid rgba(59,130,246,0.2);
+  color: var(--blue-200);
 }
 
-/* ── VISIT COUNT ── */
-.visit-count-badge {
-  display: inline-flex; align-items: center; gap: 0.3rem;
-  background: rgba(124,77,255,0.15); color: #b39ddb;
-  border: 1px solid rgba(124,77,255,0.25);
-  padding: 2px 8px; border-radius: 12px;
-  font-size: 0.68rem; font-family: 'JetBrains Mono', monospace; font-weight: 600;
+/* LOADING */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+  color: var(--text-muted);
+  font-size: 13px;
+  gap: 8px;
 }
-
-/* ── BTN SECONDARY ── */
-.btn-sm {
-  padding: 0.4rem 0.875rem;
-  background: rgba(30,136,229,0.15); color: var(--blue-light);
-  border: 1px solid rgba(30,136,229,0.25);
-  border-radius: 6px; font-family: inherit; font-size: 0.78rem; font-weight: 600;
-  cursor: pointer; transition: all 0.2s;
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid var(--card-border);
+  border-top-color: var(--blue-400);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
-.btn-sm:hover { background: var(--blue); color: #fff; }
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.btn-sm.outline {
-  background: transparent; color: var(--blue-light);
-  border: 1px solid rgba(30,136,229,0.3);
+/* FORM */
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group.full { grid-column: 1 / -1; }
+.form-label { font-size: 11px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--text-muted); }
+.form-input, .form-select, .form-textarea {
+  background: rgba(26,86,219,0.06);
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  padding: 9px 12px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  transition: border-color 0.15s;
+  outline: none;
+  width: 100%;
 }
-.btn-sm.outline:hover { background: rgba(30,136,229,0.15); }
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--blue-400);
+  background: rgba(26,86,219,0.1);
+}
+.form-select option { background: var(--navy-700); }
+.form-textarea { resize: vertical; min-height: 80px; }
 
+/* EMPTY STATE */
 .empty-state {
-  padding: 3rem; text-align: center; color: var(--text-3); font-size: 0.9rem;
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-muted);
 }
-.empty-state .emoji { font-size: 2.5rem; display: block; margin-bottom: 0.75rem; }
+.empty-state .icon { font-size: 40px; margin-bottom: 12px; opacity: 0.5; }
+.empty-state p { font-size: 13px; }
 
-.section-actions { display: flex; gap: 0.5rem; }
+/* ALERTS */
+.alert {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.alert-info { background: rgba(14,165,233,0.12); border: 1px solid rgba(14,165,233,0.25); color: var(--accent); }
+.alert-success { background: rgba(16,185,129,0.12); border: 1px solid rgba(16,185,129,0.25); color: var(--success); }
+.alert-error { background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25); color: var(--danger); }
 
-.link-btn {
-  background: none; border: none; color: var(--blue-light);
-  font-family: inherit; font-size: 0.85rem; cursor: pointer;
-  text-decoration: underline; padding: 0;
+/* PRACTITIONER LINK */
+.prac-link-box {
+  background: rgba(245,158,11,0.08);
+  border: 1px solid rgba(245,158,11,0.25);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.prac-link-box .icon { font-size: 20px; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--steel); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--steel-light); }
+
+/* RESPONSIVE */
+@media(max-width: 900px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { transform: translateX(-260px); transition: transform 0.3s; }
+  .main { margin-left: 0; }
+  .stats-grid { grid-template-columns: repeat(2,1fr); }
 }
 
-/* ── SERVICE REQ HIGHLIGHTED ── */
-.sr-highlight {
-  background: rgba(0,180,216,0.08); border-color: rgba(0,180,216,0.2);
-}
+/* ANIMATIONS */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.section.active { animation: fadeIn 0.3s ease; }
 
-@media (max-width: 1100px) {
-  .dashboard-grid { grid-template-columns: 1fr; }
+/* HR SECTION */
+.hr-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px; }
+.hr-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
 }
-
-@media (max-width: 900px) {
-  .sidebar { width: 60px; }
-  .sidebar .logo-text, .sidebar .logo-sub, .sidebar .nav-item span, .sidebar .nav-group-label, .sidebar .user-name, .sidebar .user-role, .sidebar .btn-logout span { display: none; }
-  .sidebar .nav-item { justify-content: center; padding: 0.65rem 0; }
-  .main-content { margin-left: 60px; }
-  .profile-grid { grid-template-columns: 1fr; }
-  .demo-grid { grid-template-columns: 1fr 1fr; }
-}
+.hr-card:hover { transform: translateY(-2px); border-color: var(--blue-400); }
+.hr-card-icon { font-size: 24px; margin-bottom: 8px; }
+.hr-card-title { font-family: 'Sora', sans-serif; font-size: 13px; font-weight: 600; }
+.hr-card-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
 </style>
 </head>
 <body>
 
-<!-- ── ACCESS OVERLAY ── -->
-<div id="access-overlay" class="overlay">
-  <div class="overlay-card">
-    <div class="overlay-logo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
-    </div>
-    <h2 id="overlay-title">Sneha Health</h2>
-    <p id="overlay-status">Verifying your session…</p>
-
-    <div id="manual-picker" class="hidden" style="margin-top:1.5rem;text-align:left;">
-      <p style="font-size:0.8rem;color:var(--text-2);margin-bottom:0.5rem;">Select your practitioner profile:</p>
-      <div id="picker-list" class="picker-list"></div>
-    </div>
-
-    <div id="login-form-view" class="login-form hidden">
-      <div id="login-error" style="color:var(--red);font-size:0.8rem;margin-bottom:0.75rem;text-align:center;display:none;"></div>
-      <label>Email</label><input type="text" id="login-user" placeholder="doctor@snehahealth.com">
-      <label>Password</label><input type="password" id="login-pass">
-      <button class="btn-primary" onclick="handleLogin()">Sign In →</button>
-    </div>
-
-    <div class="diag" id="diag-log"></div>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-logo">🏥</div>
+    <div class="brand-name">Rena Rehabilitation</div>
+    <div class="brand-sub">Doctor Portal</div>
   </div>
-</div>
 
-<!-- ── PATIENT REPORT MODAL ── -->
-<div class="modal-overlay" id="patient-modal">
-  <div class="modal-box">
-    <div class="modal-head">
-      <h3>🩺 Patient Report</h3>
-      <button class="modal-close" onclick="closePatientModal()">✕</button>
+  <div class="doctor-info" id="sidebarDoctorInfo">
+    <div class="doctor-avatar">👨‍⚕️</div>
+    <div class="doctor-name" id="sidebarDoctorName">Loading...</div>
+    <div class="doctor-role">
+      <span style="width:6px;height:6px;border-radius:50%;background:var(--success);display:inline-block;"></span>
+      Practitioner
     </div>
-    <div class="modal-body" id="patient-modal-body">Loading…</div>
   </div>
-</div>
 
-<!-- ── APP SHELL ── -->
-<div id="app-shell" class="app-shell hidden">
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" width="20" height="20"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+  <div class="nav-section">Clinical</div>
+  <div class="nav-item active" onclick="showSection('dashboard')">
+    <span class="icon">📊</span> Dashboard
+  </div>
+  <div class="nav-item" onclick="showSection('patients')">
+    <span class="icon">👥</span> My Patients
+    <span class="nav-badge" id="patientCountBadge">0</span>
+  </div>
+  <div class="nav-item" onclick="showSection('encounters')">
+    <span class="icon">📋</span> Encounters
+  </div>
+  <div class="nav-item" onclick="showSection('serviceReq')">
+    <span class="icon">🔬</span> Service Requests
+  </div>
+  <div class="nav-item" onclick="showSection('therapy')">
+    <span class="icon">🧠</span> Therapy Plans
+  </div>
+
+  <div class="nav-section">Account</div>
+  <div class="nav-item" onclick="showSection('profile')">
+    <span class="icon">👤</span> My Profile
+  </div>
+
+  <div class="nav-section">HR</div>
+  <div class="nav-item" onclick="showSection('hr')">
+    <span class="icon">📁</span> HR Portal
+  </div>
+
+  <div class="sidebar-footer">
+    <div class="nav-item" onclick="logout()" style="color:var(--danger);">
+      <span class="icon">🚪</span> Logout
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="page-title" id="pageTitle">Dashboard</div>
+    <div class="topbar-actions">
+      <div id="topbarAlert"></div>
+      <button class="btn btn-ghost" onclick="refreshCurrentSection()">↻ Refresh</button>
+      <button class="btn btn-primary" onclick="showSection('encounters')">+ New Encounter</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- PRACTITIONER LINK SETUP -->
+    <div id="pracLinkSetup" style="display:none;" class="mb-6">
+      <div class="prac-link-box">
+        <div class="icon">⚠️</div>
+        <div style="flex:1">
+          <div style="font-weight:600; font-size:13px;">Link Your Practitioner Account</div>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:3px;">Select your practitioner profile to enable full dashboard features.</div>
+        </div>
+        <select class="form-select" id="pracLinkSelect" style="width:220px" onchange="linkPractitioner(this.value)">
+          <option value="">— Select Practitioner —</option>
+        </select>
       </div>
+    </div>
+
+    <!-- DASHBOARD SECTION -->
+    <div id="s_dashboard" class="section active">
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card">
+          <div class="stat-icon">📅</div>
+          <div class="stat-value" id="statToday">—</div>
+          <div class="stat-label">Today's Appointments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-value" id="statCompleted">—</div>
+          <div class="stat-label">Completed Today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-value" id="statPatients">—</div>
+          <div class="stat-label">Total Patients</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🔬</div>
+          <div class="stat-value" id="statServiceReq">—</div>
+          <div class="stat-label">Pending Service Requests</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">📅 Today's Appointments</span>
+          </div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead><tr><th>Patient</th><th>Time</th><th>Status</th></tr></thead>
+              <tbody id="todayAppTbody"><tr><td colspan="3"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">🔬 Recent Service Requests</span>
+            <button class="btn btn-ghost" style="font-size:12px;" onclick="showSection('serviceReq')">View All</button>
+          </div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead><tr><th>Patient</th><th>Template Type</th><th>Referred By</th><th>Status</th></tr></thead>
+              <tbody id="dashServiceReqTbody"><tr><td colspan="4"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PATIENTS SECTION -->
+    <div id="s_patients" class="section">
+      <div class="mb-4" style="display:flex; justify-content:space-between; align-items:center;gap:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="font-size:13px; color:var(--text-muted);">Click a patient to view demographics & medical history</div>
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;cursor:pointer;color:var(--text-secondary);">
+            <input type="checkbox" id="myPatientsToggle" onchange="loadPatients(this.checked)" style="accent-color:var(--blue-400);">
+            My patients only
+          </label>
+        </div>
+        <input type="text" class="form-input" placeholder="🔍 Search patients..." oninput="filterPatients(this.value)" style="width:240px;">
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Patient</th>
+                <th>Gender</th>
+                <th>DOB / Age</th>
+                <th>Contact</th>
+                <th>Visits</th>
+                <th>Last Visit</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="patientsTbody"><tr><td colspan="7"><div class="loading"><div class="spinner"></div> Loading patients...</div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENCOUNTERS SECTION -->
+    <div id="s_encounters" class="section">
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📋 Patient Encounters</span>
+        </div>
+        <div class="card-body">
+          <table class="data-table">
+            <thead><tr><th>Encounter ID</th><th>Patient</th><th>Date</th><th>Practitioner</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="encountersTbody"><tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SERVICE REQUESTS SECTION -->
+    <div id="s_serviceReq" class="section">
+      <div class="mb-4" style="display:flex; justify-content:flex-end;">
+        <button class="btn btn-primary" onclick="openNewServiceReqModal()">+ New Service Request</button>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title">🔬 Service Requests</span></div>
+        <div class="card-body">
+          <table class="data-table">
+            <thead><tr><th>ID</th><th>Patient</th><th>Template Type</th><th>Ordered By</th><th>Referred Practitioner</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="serviceReqTbody"><tr><td colspan="7"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- THERAPY SECTION -->
+    <div id="s_therapy" class="section">
+      <div class="grid-2 mb-4">
+        <div class="card">
+          <div class="card-header"><span class="card-title">🧠 Therapy Plans</span></div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead><tr><th>Plan</th><th>Patient</th><th>Start</th><th>Sessions</th><th>Status</th></tr></thead>
+              <tbody id="therapyPlansTbody"><tr><td colspan="5"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">📝 Therapy Sessions</span></div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead><tr><th>Session</th><th>Patient</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody id="therapySessionsTbody"><tr><td colspan="4"><div class="loading"><div class="spinner"></div></div></td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE SECTION -->
+    <div id="s_profile" class="section">
+      <div class="card">
+        <div class="card-header"><span class="card-title">👤 My Profile</span></div>
+        <div class="card-body" id="profileBody">
+          <div class="loading"><div class="spinner"></div> Loading...</div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px;">
+        <div class="card-header"><span class="card-title">🔗 Practitioner Link</span></div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;">If your practitioner profile isn't auto-detected, select it manually:</p>
+          <select class="form-select" id="profilePracSelect" style="max-width:320px;" onchange="linkPractitioner(this.value)">
+            <option value="">— Select Practitioner —</option>
+          </select>
+          <div id="profileLinkStatus" style="margin-top:8px;font-size:12px;color:var(--success);"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HR SECTION -->
+    <div id="s_hr" class="section">
+      <div class="hr-cards">
+        <div class="hr-card" onclick="loadAttendance()">
+          <div class="hr-card-icon">🕐</div>
+          <div class="hr-card-title">Attendance</div>
+          <div class="hr-card-sub">Check in / check out records</div>
+        </div>
+        <div class="hr-card" onclick="loadLeave()">
+          <div class="hr-card-icon">🌴</div>
+          <div class="hr-card-title">Leave</div>
+          <div class="hr-card-sub">Leave balance & applications</div>
+        </div>
+        <div class="hr-card" onclick="loadPayroll()">
+          <div class="hr-card-icon">💰</div>
+          <div class="hr-card-title">Payroll</div>
+          <div class="hr-card-sub">Salary slips & history</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><span class="card-title" id="hrCardTitle">Select a section above</span></div>
+        <div class="card-body" id="hrCardBody">
+          <div class="empty-state"><div class="icon">📁</div><p>Select Attendance, Leave, or Payroll</p></div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<!-- PATIENT DETAIL MODAL -->
+<div class="modal-overlay" id="patientModal">
+  <div class="modal" style="width:750px;">
+    <div class="modal-header">
       <div>
-        <div class="logo-text">Sneha Health</div>
-        <div class="logo-sub">Doctor Portal</div>
+        <div class="modal-title" id="patientModalTitle">Patient Details</div>
+        <div style="font-size:12px; color:var(--text-muted); margin-top:3px;" id="patientModalSub"></div>
       </div>
+      <button class="modal-close" onclick="closeModal('patientModal')">✕</button>
     </div>
+    <div class="modal-body">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(this,'ptDemos')">Demographics</button>
+        <button class="tab-btn" onclick="switchTab(this,'ptHistory')">Medical History</button>
+        <button class="tab-btn" onclick="switchTab(this,'ptReports')">Reports & Files</button>
+      </div>
 
-    <nav class="sidebar-nav">
-      <div class="nav-item active" data-section="dashboard"><span class="nav-icon">🏠</span><span>Dashboard</span></div>
-      <div class="nav-item" data-section="profile"><span class="nav-icon">👤</span><span>My Profile</span></div>
-
-      <div class="nav-group-label">Clinical</div>
-      <div class="nav-item" data-section="patients"><span class="nav-icon">🧑‍⚕️</span><span>My Patients</span></div>
-      <div class="nav-item" data-section="encounters"><span class="nav-icon">📋</span><span>Encounters</span></div>
-      <div class="nav-item" data-section="servicereq"><span class="nav-icon">📝</span><span>Service Requests</span></div>
-      <div class="nav-item" data-section="therapy"><span class="nav-icon">🏃</span><span>Therapy Plans</span></div>
-
-      <div class="nav-group-label">HR</div>
-      <div class="nav-item" data-section="attendance"><span class="nav-icon">🕒</span><span>Attendance</span></div>
-      <div class="nav-item" data-section="leave"><span class="nav-icon">🌴</span><span>Leave</span></div>
-      <div class="nav-item" data-section="payroll"><span class="nav-icon">💰</span><span>Payroll</span></div>
-    </nav>
-
-    <div class="sidebar-footer">
-      <div class="user-card">
-        <div class="avatar" id="nav-avatar">?</div>
-        <div>
-          <div class="user-name" id="nav-name">Loading…</div>
-          <div class="user-role" id="nav-role">Practitioner</div>
+      <div id="ptDemos" class="tab-panel active">
+        <div class="demo-grid" id="demoGrid">
+          <div class="loading"><div class="spinner"></div> Loading...</div>
         </div>
       </div>
-      <button class="btn-logout" id="btn-logout">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        <span>Sign Out</span>
-      </button>
-    </div>
-  </aside>
 
-  <main class="main-content">
-    <header class="top-header">
-      <h2 class="page-title" id="page-title">Dashboard</h2>
-      <div class="header-right">
-        <div class="date-chip" id="date-chip">—</div>
-        <button class="btn-sm" onclick="window.open(BASE+'/app', '_blank')">Open ERPNext ↗</button>
+      <div id="ptHistory" class="tab-panel">
+        <div id="historyTimeline">
+          <div class="loading"><div class="spinner"></div> Loading history...</div>
+        </div>
       </div>
-    </header>
 
-    <div id="prac-warning-banner" class="prac-banner hidden">
-      <p>⚠ Practitioner profile not linked — clinical sections are locked.</p>
-      <button onclick="showPicker()">Link Now</button>
+      <div id="ptReports" class="tab-panel">
+        <div id="reportsPanel">
+          <div class="loading"><div class="spinner"></div> Loading reports...</div>
+        </div>
+      </div>
     </div>
+  </div>
+</div>
 
-    <div class="content-body">
-
-      <!-- DASHBOARD -->
-      <section id="section-dashboard" class="section active">
-        <div class="stats-grid">
-          <div class="stat-card blue">
-            <div class="stat-icon">📅</div>
-            <div><div class="stat-label">Today's Appointments</div><div class="stat-value" id="stat-appts">—</div></div>
-          </div>
-          <div class="stat-card green">
-            <div class="stat-icon">✅</div>
-            <div><div class="stat-label">Completed</div><div class="stat-value" id="stat-done">—</div></div>
-          </div>
-          <div class="stat-card amber">
-            <div class="stat-icon">🕒</div>
-            <div><div class="stat-label">Attendance</div><div class="stat-value" id="stat-att">—</div></div>
-          </div>
-          <div class="stat-card cyan">
-            <div class="stat-icon">👥</div>
-            <div><div class="stat-label">Total Patients</div><div class="stat-value" id="stat-patients">—</div></div>
-          </div>
-          <div class="stat-card purple">
-            <div class="stat-icon">📝</div>
-            <div><div class="stat-label">Service Requests</div><div class="stat-value" id="stat-sr">—</div></div>
-          </div>
+<!-- SERVICE REQUEST MODAL -->
+<div class="modal-overlay" id="serviceReqModal">
+  <div class="modal" style="width:580px;">
+    <div class="modal-header">
+      <div class="modal-title">New Service Request</div>
+      <button class="modal-close" onclick="closeModal('serviceReqModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="srAlertArea"></div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">Patient *</label>
+          <input class="form-input" id="srPatient" placeholder="Patient name/ID">
         </div>
-        <div class="dashboard-grid">
-          <div class="card">
-            <div class="card-header">
-              <h3 class="card-title">Today's Schedule</h3>
-              <div class="badge badge-info" id="today-label">—</div>
-            </div>
-            <div class="card-body" id="list-schedule">
-              <div class="empty-state"><span class="emoji">📅</span>Loading schedule…</div>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-header"><h3 class="card-title">Quick Actions</h3></div>
-            <div class="card-body">
-              <div class="actions-grid">
-                <button class="action-btn" onclick="openERP('/app/patient-appointment/new')"><span class="icon">📅</span>New Appt</button>
-                <button class="action-btn" onclick="openERP('/app/patient-encounter/new')"><span class="icon">📋</span>Encounter</button>
-                <button class="action-btn" onclick="openERP('/app/service-request/new')"><span class="icon">📝</span>Svc Request</button>
-                <button class="action-btn" onclick="openERP('/app/leave-application/new')"><span class="icon">🌴</span>Leave</button>
-              </div>
-            </div>
-          </div>
+        <div class="form-group">
+          <label class="form-label">Order Template Type *</label>
+          <select class="form-select" id="srTemplateType">
+            <option value="">— Select —</option>
+            <option>Lab Test</option>
+            <option>Radiology</option>
+            <option>Clinical Procedure</option>
+            <option>Therapy</option>
+          </select>
         </div>
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Recent Service Requests</h3>
-            <button class="btn-sm" onclick="switchSection('servicereq')">View All</button>
-          </div>
-          <div class="card-body" id="list-dash-sr">
-            <div class="empty-state"><span class="emoji">📝</span>Loading…</div>
-          </div>
+        <div class="form-group">
+          <label class="form-label">Ordered By Practitioner</label>
+          <input class="form-input" id="srOrderedBy" readonly style="cursor:not-allowed; opacity:0.7;">
         </div>
-      </section>
-
-      <!-- PROFILE -->
-      <section id="section-profile" class="section">
-        <div id="profile-container"><div class="empty-state">Loading…</div></div>
-      </section>
-
-      <!-- MY PATIENTS -->
-      <section id="section-patients" class="section">
-        <div class="card">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:0.75rem;">
-              <h3 class="card-title">My Patients</h3>
-              <span class="count-badge" id="count-patients">0</span>
-            </div>
-            <button class="btn-sm" onclick="openERP('/app/patient/new')">+ New Patient</button>
-          </div>
-          <div class="card-body" id="list-patients">
-            <div class="empty-state"><span class="emoji">🧑‍⚕️</span>Loading…</div>
-          </div>
+        <div class="form-group">
+          <label class="form-label">Referred Practitioner</label>
+          <input class="form-input" id="srReferredBy" placeholder="Referred by...">
         </div>
-      </section>
-
-      <!-- ENCOUNTERS -->
-      <section id="section-encounters" class="section">
-        <div class="card">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:0.75rem;">
-              <h3 class="card-title">Patient Encounters</h3>
-              <span class="count-badge" id="count-encounters">0</span>
-            </div>
-            <button class="btn-sm" onclick="openERP('/app/patient-encounter/new')">+ New</button>
-          </div>
-          <div class="card-body" id="list-encounters">
-            <div class="empty-state"><span class="emoji">📋</span>Loading…</div>
-          </div>
+        <div class="form-group full">
+          <label class="form-label">Notes</label>
+          <textarea class="form-textarea" id="srNotes" placeholder="Clinical notes..."></textarea>
         </div>
-      </section>
-
-      <!-- SERVICE REQUESTS -->
-      <section id="section-servicereq" class="section">
-        <div class="card">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:0.75rem;">
-              <h3 class="card-title">Service Requests</h3>
-              <span class="count-badge" id="count-sr">0</span>
-            </div>
-            <div class="section-actions">
-              <button class="btn-sm" onclick="openERP('/app/service-request/new')">+ New Request</button>
-            </div>
-          </div>
-          <div class="card-body" id="list-servicereq">
-            <div class="empty-state"><span class="emoji">📝</span>Loading…</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- THERAPY -->
-      <section id="section-therapy" class="section">
-        <div class="card">
-          <div class="card-header">
-            <div style="display:flex;align-items:center;gap:0.75rem;">
-              <h3 class="card-title">Therapy Plans & Sessions</h3>
-              <span class="count-badge" id="count-therapy">0</span>
-            </div>
-            <div class="section-actions">
-              <button class="btn-sm outline" onclick="openERP('/app/therapy-plan/new')">+ Plan</button>
-              <button class="btn-sm" onclick="openERP('/app/therapy-session/new')">+ Session</button>
-            </div>
-          </div>
-          <div class="card-body" id="list-therapy">
-            <div class="empty-state"><span class="emoji">🏃</span>Loading…</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ATTENDANCE -->
-      <section id="section-attendance" class="section">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Attendance Record</h3>
-            <button class="btn-sm" onclick="openERP('/app/attendance/new')">+ Mark</button>
-          </div>
-          <div class="card-body" id="list-attendance"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-      <!-- LEAVE -->
-      <section id="section-leave" class="section">
-        <div class="card">
-          <div class="card-header">
-            <h3 class="card-title">Leave Applications</h3>
-            <button class="btn-sm" onclick="openERP('/app/leave-application/new')">+ Apply</button>
-          </div>
-          <div class="card-body" id="list-leave"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-      <!-- PAYROLL -->
-      <section id="section-payroll" class="section">
-        <div class="card">
-          <div class="card-header"><h3 class="card-title">Salary Slips</h3></div>
-          <div class="card-body" id="list-payroll"><div class="empty-state">Loading…</div></div>
-        </div>
-      </section>
-
-    </div><!-- /content-body -->
-  </main>
+      </div>
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:16px;">
+        <button class="btn btn-ghost" onclick="closeModal('serviceReqModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitServiceRequest()">Submit Request</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-/* ─────────────────────────────────────────────
-   CONFIGURATION
-───────────────────────────────────────────── */
-const BASE = window.location.origin;
-const HC_FIELDS = ['name', 'practitioner_name', 'designation', 'department', 'employee', 'user_id'];
+const BASE = '';
+let currentUser = null;
+let practitionerName = null;
+let practitionerDoc = null;
+let employeeName = null;
+let allPatients = [];
 
-let state = {
-  user: null,
-  practitioner: null,
-  employee: null,
-  activeSection: 'dashboard'
-};
-
-/* ─────────────────────────────────────────────
-   UTILITIES
-───────────────────────────────────────────── */
-function log(msg, type = 'info') {
-  const el = document.getElementById('diag-log');
-  if (el) {
-    const d = document.createElement('div');
-    d.style.color = type === 'error' ? '#ff6b6b' : type === 'success' ? '#69db7c' : '#748ffc';
-    d.textContent = `${type === 'error' ? '✗' : '✓'} ${msg}`;
-    el.appendChild(d); el.scrollTop = el.scrollHeight;
-  }
-}
-
-function badgeClass(status) {
-  if (!status) return 'badge-info';
-  const s = status.toLowerCase();
-  if (['completed','present','approved','active','closed','submitted','paid'].some(x => s.includes(x))) return 'badge-success';
-  if (['cancelled','rejected','absent'].some(x => s.includes(x))) return 'badge-error';
-  if (['pending','open','draft','waiting','scheduled'].some(x => s.includes(x))) return 'badge-warn';
-  return 'badge-info';
-}
-
-function fmt(str) {
-  if (!str) return '—';
-  if (str.match(/^\d{4}-\d{2}-\d{2}/)) {
-    const d = new Date(str);
-    return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
-  }
-  return str;
-}
-
-function openERP(path) { window.open(BASE + path, '_blank'); }
-
-function empty(msg = 'No records found.') {
-  return `<div class="empty-state"><span class="emoji">📭</span>${msg}</div>`;
-}
-
-/* ─────────────────────────────────────────────
-   API
-───────────────────────────────────────────── */
-async function api(resource, params = {}) {
-  const url = new URL(`${BASE}/api/resource/${encodeURIComponent(resource)}`);
-  if (params.filters) url.searchParams.set('filters', JSON.stringify(params.filters));
-  if (params.fields) url.searchParams.set('fields', JSON.stringify(params.fields));
-  if (params.limit) url.searchParams.set('limit', params.limit);
-  if (params.order_by) url.searchParams.set('order_by', params.order_by);
-  try {
-    const r = await fetch(url, { credentials: 'include' });
-    if (r.ok) return (await r.json())?.data || [];
-    return null;
-  } catch (e) { return null; }
-}
-
-/* ─────────────────────────────────────────────
-   SESSION & DISCOVERY
-───────────────────────────────────────────── */
-async function initSession() {
-  log('Initializing session…');
-  try {
-    const r = await fetch('/api/method/frappe.auth.get_logged_user');
-    const user = (await r.json())?.message;
-    if (!user || user === 'Guest') { showLoginUI(); return; }
-    state.user = user;
-    log(`Session: ${user}`, 'success');
-    await runDiscovery();
-  } catch (e) { showLoginUI(); }
-}
-
-async function runDiscovery() {
-  log('Discovering profiles…');
-
-  // Employee
-  const emp = await api('Employee', {
-    filters: [['user_id', '=', state.user]],
-    fields: ['name', 'employee_name', 'designation', 'department', 'cell_number', 'personal_email']
+async function api(method, args={}) {
+  const res = await fetch(`${BASE}/api/method/${method}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'X-Frappe-CSRF-Token': getCsrf() },
+    body: JSON.stringify(args)
   });
-  if (emp?.length) { state.employee = emp[0]; log(`Employee: ${emp[0].name}`, 'success'); }
-
-  // Practitioner — try multiple strategies
-  let pRes = null;
-
-  pRes = await api('Healthcare Practitioner', { filters: [['user_id', '=', state.user]], fields: HC_FIELDS });
-  if (!pRes?.length && state.employee)
-    pRes = await api('Healthcare Practitioner', { filters: [['employee', '=', state.employee.name]], fields: HC_FIELDS });
-  if (!pRes?.length) {
-    const q = (state.employee?.employee_name || state.user).split(' ')[0];
-    pRes = await api('Healthcare Practitioner', { filters: [['practitioner_name', 'like', `%${q}%`]], fields: HC_FIELDS });
-  }
-  const savedId = localStorage.getItem('dr_prac_id');
-  if (!pRes?.length && savedId)
-    pRes = await api('Healthcare Practitioner', { filters: [['name', '=', savedId]], fields: HC_FIELDS });
-
-  if (pRes?.length) {
-    state.practitioner = pRes[0];
-    localStorage.setItem('dr_prac_id', pRes[0].name);
-    log(`Practitioner: ${pRes[0].practitioner_name}`, 'success');
-  } else {
-    log('Practitioner not found — manual link needed.', 'error');
-    showPicker();
-  }
-
-  launchApp();
+  const data = await res.json();
+  if (data.exc) throw new Error(data.exc);
+  return data.message ?? data;
 }
 
-function showLoginUI() {
-  document.getElementById('overlay-title').textContent = 'Doctor Login';
-  document.getElementById('overlay-status').textContent = '';
-  document.getElementById('login-form-view').classList.remove('hidden');
+async function getDoc(doctype, name) {
+  const res = await fetch(`${BASE}/api/resource/${encodeURIComponent(doctype)}/${encodeURIComponent(name)}`);
+  const d = await res.json();
+  return d.data;
 }
 
-async function handleLogin() {
-  const usr = document.getElementById('login-user').value;
-  const pwd = document.getElementById('login-pass').value;
-  const errEl = document.getElementById('login-error');
+async function getList(doctype, fields=['name'], filters=[], limit=50, orderBy='modified desc') {
+  const params = new URLSearchParams({
+    doctype,
+    fields: JSON.stringify(fields),
+    filters: JSON.stringify(filters),
+    limit_page_length: limit,
+    order_by: orderBy
+  });
+  const res = await fetch(`${BASE}/api/resource/${encodeURIComponent(doctype)}?${params}`, { headers: { 'X-Frappe-CSRF-Token': getCsrf() } });
+  const d = await res.json();
+  return d.data || [];
+}
+
+function getCsrf() {
+  if (typeof frappe !== 'undefined' && frappe.csrf_token) return frappe.csrf_token;
+  return (document.cookie.match(/csrftoken=([^;]+)/) || [])[1] || '';
+}
+
+async function init() {
+  // Auth check
   try {
-    const r = await fetch('/api/method/login', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ usr, pwd })
+    const whoami = await api('frappe.auth.get_logged_user');
+    currentUser = typeof whoami === 'string' ? whoami : whoami?.message;
+    if (!currentUser || currentUser === 'Guest') {
+      window.location.replace('/login');
+      return;
+    }
+    document.getElementById('sidebarDoctorName').textContent = currentUser || 'Doctor';
+  } catch(e) {
+    window.location.replace('/login');
+    return;
+  }
+
+  // Try to auto-find practitioner linked to current user
+  try {
+    const prac = await getList('Healthcare Practitioner', ['name','practitioner_name','employee','department'], [['user_id','=',currentUser]], 1);
+    if (prac.length) {
+      practitionerName = prac[0].name;
+      practitionerDoc = prac[0];
+      employeeName = prac[0].employee;
+      localStorage.setItem('rrc_practitioner', practitionerName);
+      document.getElementById('sidebarDoctorName').textContent = prac[0].practitioner_name || currentUser;
+      document.getElementById('pracLinkSetup').style.display = 'none';
+    } else {
+      // Fallback to saved or manual link
+      const saved = localStorage.getItem('rrc_practitioner');
+      if (saved) {
+        practitionerName = saved;
+        await loadPractitionerInfo();
+      } else {
+        await offerPractitionerLink();
+      }
+    }
+  } catch(e) {
+    const saved = localStorage.getItem('rrc_practitioner');
+    if (saved) { practitionerName = saved; await loadPractitionerInfo(); }
+    else await offerPractitionerLink();
+  }
+
+  loadDashboard();
+}
+
+async function loadPractitionerInfo() {
+  try {
+    const p = await getDoc('Healthcare Practitioner', practitionerName);
+    practitionerDoc = p;
+    document.getElementById('sidebarDoctorName').textContent = p.practitioner_name || practitionerName;
+    document.getElementById('pracLinkSetup').style.display = 'none';
+    // also link employee
+    if (p.employee) employeeName = p.employee;
+  } catch(e) {}
+}
+
+async function offerPractitionerLink() {
+  try {
+    const list = await getList('Healthcare Practitioner', ['name','practitioner_name','department'], [], 100);
+    if (!list.length) return;
+    const sel = document.getElementById('pracLinkSelect');
+    list.forEach(p => {
+      const o = document.createElement('option');
+      o.value = p.name;
+      o.textContent = `${p.practitioner_name} (${p.name})`;
+      sel.appendChild(o);
     });
-    if (r.ok) window.location.reload();
-    else { errEl.textContent = 'Invalid credentials.'; errEl.style.display = 'block'; }
-  } catch (e) { errEl.textContent = 'Connection error.'; errEl.style.display = 'block'; }
+    document.getElementById('pracLinkSetup').style.display = 'block';
+  } catch(e) {}
 }
 
-async function showPicker() {
-  const pickerEl = document.getElementById('manual-picker');
-  pickerEl.classList.remove('hidden');
-  const listEl = document.getElementById('picker-list');
-  listEl.innerHTML = '<div class="picker-item" style="color:var(--text-3)">Loading…</div>';
-  const all = await api('Healthcare Practitioner', { fields: ['name', 'practitioner_name', 'department'], limit: 200 });
-  if (all?.length) {
-    listEl.innerHTML = all.map(p => `
-      <div class="picker-item" onclick="linkPrac('${p.name}')">
-        ${p.practitioner_name || p.name}
-        <div class="pid">${p.name} · ${p.department || '—'}</div>
-      </div>`).join('');
-  } else {
-    listEl.innerHTML = '<div class="picker-item" style="color:var(--text-3);font-size:0.8rem;">No practitioners found. Check permissions.</div>';
-  }
+function linkPractitioner(val) {
+  if (!val) return;
+  practitionerName = val;
+  localStorage.setItem('rrc_practitioner', val);
+  document.getElementById('profileLinkStatus').textContent = '✓ Practitioner linked: ' + val;
+  loadPractitionerInfo();
+  loadDashboard();
 }
 
-function linkPrac(id) {
-  localStorage.setItem('dr_prac_id', id);
-  window.location.reload();
+// ─── PROFILE ───────────────────────────────────────
+async function loadProfile() {
+  const el = document.getElementById('profileBody');
+  el.innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+  try {
+    const rows = [];
+    rows.push(['👤 Logged in as', currentUser || '—']);
+    if (practitionerDoc) {
+      rows.push(['🩺 Practitioner ID', practitionerDoc.name || '—']);
+      rows.push(['📛 Name', practitionerDoc.practitioner_name || '—']);
+      rows.push(['🏥 Department', practitionerDoc.department || '—']);
+      rows.push(['👤 Gender', practitionerDoc.gender || '—']);
+      rows.push(['📞 Mobile', practitionerDoc.mobile || '—']);
+      rows.push(['✉ Email', practitionerDoc.email || currentUser || '—']);
+      if (practitionerDoc.employee) rows.push(['🆔 Employee', practitionerDoc.employee]);
+    } else {
+      rows.push(['⚠ Status', 'Practitioner profile not linked']);
+    }
+    el.innerHTML = `<table class="data-table"><tbody>${rows.map(r=>`<tr>
+      <td style="font-size:12px;color:var(--text-muted);width:160px;">${r[0]}</td>
+      <td style="font-size:13px;font-weight:500;">${r[1]}</td>
+    </tr>`).join('')}</tbody></table>`;
+    // Also populate profile prac select
+    try {
+      const list = await getList('Healthcare Practitioner',['name','practitioner_name'],[],100);
+      const sel = document.getElementById('profilePracSelect');
+      sel.innerHTML = '<option value="">— Select Practitioner —</option>';
+      list.forEach(p => { const o=document.createElement('option');o.value=p.name;o.textContent=`${p.practitioner_name||p.name} (${p.name})`;sel.appendChild(o); });
+      if (practitionerName) sel.value = practitionerName;
+    } catch(e) {}
+  } catch(e) { el.innerHTML = `<div class="alert alert-error">⚠ ${e.message}</div>`; }
 }
 
-/* ─────────────────────────────────────────────
-   APP LAUNCH
-───────────────────────────────────────────── */
-function launchApp() {
-  document.getElementById('access-overlay').classList.add('hidden');
-  document.getElementById('app-shell').classList.remove('hidden');
+// ─── NAVIGATION ───────────────────────────────────────
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('s_' + id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event?.currentTarget?.classList.add('active');
 
-  const name = state.practitioner?.practitioner_name || state.employee?.employee_name || state.user;
-  const role = state.practitioner?.department || state.employee?.designation || 'Practitioner';
-
-  document.getElementById('nav-name').textContent = name;
-  document.getElementById('nav-role').textContent = role;
-  document.getElementById('nav-avatar').textContent = name.charAt(0).toUpperCase();
-  document.getElementById('date-chip').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
-  document.getElementById('today-label').textContent = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'long' });
-
-  if (!state.practitioner) document.getElementById('prac-warning-banner').classList.remove('hidden');
-
-  initNav();
-  switchSection('dashboard');
-}
-
-function initNav() {
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.onclick = () => {
-      if (item.classList.contains('nav-locked')) return;
-      const s = item.dataset.section;
-      if (s) switchSection(s);
-    };
-  });
-  document.getElementById('btn-logout').onclick = () => {
-    localStorage.removeItem('dr_prac_id');
-    fetch('/api/method/logout', { method: 'POST' }).finally(() => window.location.reload());
-  };
-}
-
-function switchSection(id) {
-  state.activeSection = id;
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.section === id));
-  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === `section-${id}`));
   const titles = {
-    dashboard: 'Dashboard', profile: 'My Profile', patients: 'My Patients',
-    encounters: 'Patient Encounters', servicereq: 'Service Requests',
-    therapy: 'Therapy Plans', attendance: 'Attendance', leave: 'Leave', payroll: 'Payroll'
+    dashboard: 'Dashboard', patients: 'My Patients', encounters: 'Patient Encounters',
+    serviceReq: 'Service Requests', therapy: 'Therapy', hr: 'HR Portal', profile: 'My Profile'
   };
-  document.getElementById('page-title').textContent = titles[id] || id;
-  loadSection(id);
+  document.getElementById('pageTitle').textContent = titles[id] || id;
+
+  const loaders = {
+    patients: loadPatients, encounters: loadEncounters,
+    serviceReq: loadServiceRequests, therapy: loadTherapy, profile: loadProfile
+  };
+  if (loaders[id]) loaders[id]();
 }
 
-/* ─────────────────────────────────────────────
-   LOADERS
-───────────────────────────────────────────── */
-async function loadSection(id) {
-  if (id === 'dashboard') { loadDashboard(); return; }
-  if (id === 'profile') { loadProfile(); return; }
-
-  const bodyEl = document.getElementById(`list-${id}`);
-  const p = state.practitioner?.name;
-  const e = state.employee?.name;
-
-  // ── MY PATIENTS ──
-  if (id === 'patients') {
-    if (!p) { bodyEl.innerHTML = empty('Practitioner not linked.'); return; }
-    bodyEl.innerHTML = '<div class="empty-state">Loading…</div>';
-    const appts = await api('Patient Appointment', {
-      filters: [['practitioner', '=', p]],
-      fields: ['patient', 'patient_name', 'appointment_date', 'status'],
-      limit: 500
-    });
-    if (!appts?.length) { bodyEl.innerHTML = empty('No patients found.'); return; }
-
-    // Unique patients with visit count
-    const patMap = {};
-    appts.forEach(a => {
-      if (!patMap[a.patient]) patMap[a.patient] = { name: a.patient, patient_name: a.patient_name, visits: 0, last_date: a.appointment_date };
-      patMap[a.patient].visits++;
-      if (a.appointment_date > patMap[a.patient].last_date) patMap[a.patient].last_date = a.appointment_date;
-    });
-    const unique = Object.values(patMap).sort((a, b) => b.last_date.localeCompare(a.last_date));
-    document.getElementById('count-patients').textContent = unique.length;
-
-    bodyEl.innerHTML = unique.map(pt => `
-      <div class="data-row" onclick="openPatientReport('${pt.name}', '${(pt.patient_name||'').replace(/'/g,"\\'")}')">
-        <div class="row-info">
-          <b>${pt.patient_name || pt.name}</b>
-          <span>Last visit: ${fmt(pt.last_date)}</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:0.5rem;">
-          <span class="visit-count-badge">👁 ${pt.visits} visit${pt.visits !== 1 ? 's' : ''}</span>
-          <span class="row-arrow">↗</span>
-        </div>
-      </div>`).join('');
-    return;
-  }
-
-  // ── ENCOUNTERS ──
-  if (id === 'encounters') {
-    if (!p) { bodyEl.innerHTML = empty('Practitioner not linked.'); return; }
-    bodyEl.innerHTML = '<div class="empty-state">Loading…</div>';
-    const data = await api('Patient Encounter', {
-      filters: [['practitioner', '=', p]],
-      fields: ['name', 'patient', 'patient_name', 'encounter_date', 'status'],
-      order_by: 'encounter_date desc', limit: 100
-    });
-    if (!data?.length) { bodyEl.innerHTML = empty('No encounters found.'); return; }
-    document.getElementById('count-encounters').textContent = data.length;
-    bodyEl.innerHTML = data.map(i => `
-      <div class="data-row" onclick="openERP('/app/patient-encounter/${i.name}')">
-        <div class="row-info">
-          <b>${i.patient_name || i.patient || '—'}</b>
-          <span>${fmt(i.encounter_date)} · ${i.name}</span>
-        </div>
-        <div style="display:flex;gap:0.5rem;align-items:center;">
-          <span class="badge ${badgeClass(i.status)}">${i.status || 'Draft'}</span>
-          <span class="row-arrow">↗</span>
-        </div>
-      </div>`).join('');
-    return;
-  }
-
-  // ── SERVICE REQUESTS ──
-  if (id === 'servicereq') {
-    if (!p) { bodyEl.innerHTML = empty('Practitioner not linked.'); return; }
-    bodyEl.innerHTML = '<div class="empty-state">Loading…</div>';
-    let data = await api('Service Request', {
-      filters: [['ordered_by', '=', p]],
-      fields: ['name', 'patient', 'status', 'order_date', 'patient_care_type', 'ordered_by', 'template_dt'],
-      order_by: 'creation desc', limit: 100
-    });
-    if (!data?.length) {
-      data = await api('Service Request', {
-        filters: [['practitioner', '=', p]],
-        fields: ['name', 'patient', 'status', 'order_date', 'patient_care_type', 'ordered_by', 'template_dt'],
-        order_by: 'creation desc', limit: 100
-      });
-    }
-    if (!data?.length) { bodyEl.innerHTML = empty('No service requests found.'); return; }
-    document.getElementById('count-sr').textContent = data.length;
-    bodyEl.innerHTML = data.map(i => `
-      <div class="data-row sr-highlight" onclick="openERP('/app/service-request/${i.name}')">
-        <div class="row-info">
-          <b>${i.patient || i.name}</b>
-          <span>
-            ${i.patient_care_type || 'Service Request'} · ${fmt(i.order_date)}
-            ${i.template_dt ? `· <span style="color:var(--cyan-light);font-family:monospace;font-size:0.72rem;">${i.template_dt}</span>` : ''}
-          </span>
-        </div>
-        <div style="display:flex;gap:0.5rem;align-items:center;">
-          <span class="badge ${badgeClass(i.status)}">${i.status || 'Pending'}</span>
-          <span class="row-arrow">↗</span>
-        </div>
-      </div>`).join('');
-    return;
-  }
-
-  // ── THERAPY ──
-  if (id === 'therapy') {
-    if (!p) { bodyEl.innerHTML = empty('Practitioner not linked.'); return; }
-    bodyEl.innerHTML = '<div class="empty-state">Loading…</div>';
-    const [plans, sessions] = await Promise.all([
-      api('Therapy Plan', { filters: [['practitioner', '=', p]], fields: ['name', 'patient', 'patient_name', 'status', 'start_date', 'total_sessions', 'sessions_completed'], limit: 100, order_by: 'creation desc' }),
-      api('Therapy Session', { filters: [['practitioner', '=', p]], fields: ['name', 'patient', 'patient_name', 'status', 'start_date', 'therapy_type'], limit: 100, order_by: 'creation desc' })
-    ]);
-    const total = (plans?.length || 0) + (sessions?.length || 0);
-    document.getElementById('count-therapy').textContent = total;
-
-    let html = '';
-    if (plans?.length) {
-      html += `<div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;color:var(--blue-light);margin-bottom:0.75rem;letter-spacing:1px;">📋 THERAPY PLANS</div>`;
-      html += plans.map(i => `
-        <div class="data-row" onclick="openERP('/app/therapy-plan/${i.name}')">
-          <div class="row-info">
-            <b>${i.patient_name || i.patient || i.name}</b>
-            <span>Sessions: ${i.sessions_completed || 0}/${i.total_sessions || '?'} · Start: ${fmt(i.start_date)}</span>
-          </div>
-          <div style="display:flex;gap:0.5rem;align-items:center;">
-            <span class="badge ${badgeClass(i.status)}">${i.status || 'Active'}</span>
-            <span class="row-arrow">↗</span>
-          </div>
-        </div>`).join('');
-    }
-    if (sessions?.length) {
-      html += `<div style="font-size:0.7rem;font-weight:700;text-transform:uppercase;color:var(--cyan-light);margin:1.25rem 0 0.75rem;letter-spacing:1px;">🏃 THERAPY SESSIONS</div>`;
-      html += sessions.map(i => `
-        <div class="data-row" onclick="openERP('/app/therapy-session/${i.name}')">
-          <div class="row-info">
-            <b>${i.patient_name || i.patient || i.name}</b>
-            <span>${i.therapy_type || 'Session'} · ${fmt(i.start_date)}</span>
-          </div>
-          <div style="display:flex;gap:0.5rem;align-items:center;">
-            <span class="badge ${badgeClass(i.status)}">${i.status || 'Scheduled'}</span>
-            <span class="row-arrow">↗</span>
-          </div>
-        </div>`).join('');
-    }
-    bodyEl.innerHTML = html || empty('No therapy data found.');
-    return;
-  }
-
-  // ── ATTENDANCE ──
-  if (id === 'attendance') {
-    if (!e) { bodyEl.innerHTML = empty('Employee not linked.'); return; }
-    const data = await api('Attendance', {
-      filters: [['employee', '=', e]],
-      fields: ['name', 'attendance_date', 'status', 'in_time', 'out_time'],
-      limit: 60, order_by: 'attendance_date desc'
-    });
-    if (!data?.length) { bodyEl.innerHTML = empty('No attendance records.'); return; }
-    bodyEl.innerHTML = data.map(i => `
-      <div class="data-row" onclick="openERP('/app/attendance/${i.name}')">
-        <div class="row-info">
-          <b>${fmt(i.attendance_date)}</b>
-          <span>${i.in_time ? '🟢 ' + i.in_time.substring(0,5) : ''} ${i.out_time ? ' · 🔴 ' + i.out_time.substring(0,5) : ''}</span>
-        </div>
-        <div style="display:flex;gap:0.5rem;align-items:center;">
-          <span class="badge ${badgeClass(i.status)}">${i.status || '—'}</span>
-          <span class="row-arrow">↗</span>
-        </div>
-      </div>`).join('');
-    return;
-  }
-
-  // ── LEAVE ──
-  if (id === 'leave') {
-    if (!e) { bodyEl.innerHTML = empty('Employee not linked.'); return; }
-    const data = await api('Leave Application', {
-      filters: [['employee', '=', e]],
-      fields: ['name', 'leave_type', 'from_date', 'to_date', 'status', 'total_leave_days'],
-      limit: 30, order_by: 'from_date desc'
-    });
-    if (!data?.length) { bodyEl.innerHTML = empty('No leave applications.'); return; }
-    bodyEl.innerHTML = data.map(i => `
-      <div class="data-row" onclick="openERP('/app/leave-application/${i.name}')">
-        <div class="row-info">
-          <b>${i.leave_type}</b>
-          <span>${fmt(i.from_date)} → ${fmt(i.to_date)} · ${i.total_leave_days || '?'} day(s)</span>
-        </div>
-        <div style="display:flex;gap:0.5rem;align-items:center;">
-          <span class="badge ${badgeClass(i.status)}">${i.status}</span>
-          <span class="row-arrow">↗</span>
-        </div>
-      </div>`).join('');
-    return;
-  }
-
-  // ── PAYROLL ──
-  if (id === 'payroll') {
-    if (!e) { bodyEl.innerHTML = empty('Employee not linked.'); return; }
-    const data = await api('Salary Slip', {
-      filters: [['employee', '=', e]],
-      fields: ['name', 'start_date', 'end_date', 'net_pay', 'currency', 'status'],
-      limit: 24, order_by: 'start_date desc'
-    });
-    if (!data?.length) { bodyEl.innerHTML = empty('No salary slips.'); return; }
-    bodyEl.innerHTML = data.map(i => `
-      <div class="data-row" onclick="window.open('${BASE}/printview?doctype=Salary%20Slip&name=${encodeURIComponent(i.name)}&format=Salary%20Slip', '_blank')">
-        <div class="row-info">
-          <b>${fmt(i.start_date)} – ${fmt(i.end_date)}</b>
-          <span>Net Pay: ${i.currency || '₹'} ${Number(i.net_pay || 0).toLocaleString('en-IN')}</span>
-        </div>
-        <div style="display:flex;gap:0.5rem;align-items:center;">
-          <span class="badge ${badgeClass(i.status)}">${i.status || 'View'}</span>
-          <span class="row-arrow">↗</span>
-        </div>
-      </div>`).join('');
-    return;
-  }
+function refreshCurrentSection() {
+  const active = document.querySelector('.section.active');
+  if (!active) return;
+  const id = active.id.replace('s_','');
+  const loaders = {
+    dashboard: loadDashboard, patients: loadPatients, encounters: loadEncounters,
+    serviceReq: loadServiceRequests, therapy: loadTherapy
+  };
+  if (loaders[id]) loaders[id]();
 }
 
-/* ─────────────────────────────────────────────
-   DASHBOARD
-───────────────────────────────────────────── */
+// ─── DASHBOARD ───────────────────────────────────────
 async function loadDashboard() {
-  const today = new Date().toISOString().split('T')[0];
-  const p = state.practitioner?.name;
-  const e = state.employee?.name;
-
-  // Appointments
-  if (p) {
-    const appts = await api('Patient Appointment', {
-      filters: [['practitioner', '=', p], ['appointment_date', '=', today]],
-      fields: ['name', 'patient_name', 'appointment_time', 'status'],
-      order_by: 'appointment_time asc'
-    });
-    document.getElementById('stat-appts').textContent = appts?.length || 0;
-    document.getElementById('stat-done').textContent = appts?.filter(a => ['Closed', 'Completed'].includes(a.status)).length || 0;
-
-    const listEl = document.getElementById('list-schedule');
-    if (appts?.length) {
-      listEl.innerHTML = appts.map(a => `
-        <div class="data-row" onclick="openERP('/app/patient-appointment/${a.name}')">
-          <div class="row-info">
-            <b>${a.patient_name}</b>
-            <span>⏰ ${a.appointment_time || '—'}</span>
-          </div>
-          <div style="display:flex;gap:0.5rem;align-items:center;">
-            <span class="badge ${badgeClass(a.status)}">${a.status}</span>
-            <span class="row-arrow">↗</span>
-          </div>
-        </div>`).join('');
-    } else { listEl.innerHTML = empty('No appointments today.'); }
-
-    // Total patients
-    const allAppts = await api('Patient Appointment', { filters: [['practitioner', '=', p]], fields: ['patient'], limit: 1000 });
-    const uniquePats = new Set(allAppts?.map(a => a.patient) || []);
-    document.getElementById('stat-patients').textContent = uniquePats.size;
-
-    // Service requests count
-    const srData = await api('Service Request', { filters: [['ordered_by', '=', p]], fields: ['name', 'patient', 'status', 'order_date', 'patient_care_type', 'template_dt'], limit: 100 });
-    document.getElementById('stat-sr').textContent = srData?.length || 0;
-    const dashSrEl = document.getElementById('list-dash-sr');
-    if (srData?.length) {
-      dashSrEl.innerHTML = srData.slice(0, 5).map(i => `
-        <div class="data-row sr-highlight" onclick="openERP('/app/service-request/${i.name}')">
-          <div class="row-info">
-            <b>${i.patient || i.name}</b>
-            <span>${i.patient_care_type || 'Service Request'} ${i.template_dt ? '· ' + i.template_dt : ''} · ${fmt(i.order_date)}</span>
-          </div>
-          <div style="display:flex;gap:0.5rem;align-items:center;">
-            <span class="badge ${badgeClass(i.status)}">${i.status || 'Pending'}</span>
-            <span class="row-arrow">↗</span>
-          </div>
-        </div>`).join('');
-    } else { dashSrEl.innerHTML = empty('No service requests.'); }
-  }
-
-  // Attendance
-  if (e) {
-    const att = await api('Attendance', {
-      filters: [['employee', '=', e], ['attendance_date', '=', today]],
-      fields: ['status']
-    });
-    document.getElementById('stat-att').textContent = att?.[0]?.status || 'Not Marked';
-  }
+  loadTodayAppointments();
+  loadDashServiceRequests();
+  loadStats();
 }
 
-/* ─────────────────────────────────────────────
-   PROFILE
-───────────────────────────────────────────── */
-function loadProfile() {
-  const c = document.getElementById('profile-container');
-  const p = state.practitioner;
-  const e = state.employee;
-  const name = p?.practitioner_name || e?.employee_name || state.user;
-
-  c.innerHTML = `
-    <div class="profile-header">
-      <div class="avatar-lg">${name.charAt(0).toUpperCase()}</div>
-      <div class="profile-info">
-        <h2>${name}</h2>
-        <p>${p?.department || e?.designation || 'Healthcare Practitioner'}</p>
-        ${!p ? `<button onclick="showPicker()" style="margin-top:0.75rem;padding:0.4rem 1rem;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:6px;color:white;cursor:pointer;font-size:0.8rem;">🔗 Link Practitioner</button>` : ''}
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-header"><h3 class="card-title">Profile Details</h3></div>
-      <div class="card-body">
-        <div class="profile-grid">
-          <div class="info-cell"><label>Practitioner ID</label><span>${p?.name || '—'}</span></div>
-          <div class="info-cell"><label>Employee ID</label><span>${e?.name || '—'}</span></div>
-          <div class="info-cell"><label>Department</label><span>${p?.department || e?.department || '—'}</span></div>
-          <div class="info-cell"><label>Email</label><span>${e?.personal_email || state.user}</span></div>
-          <div class="info-cell"><label>Designation</label><span>${e?.designation || p?.designation || '—'}</span></div>
-          <div class="info-cell"><label>Mobile</label><span>${e?.cell_number || '—'}</span></div>
-        </div>
-      </div>
-    </div>`;
+async function loadStats() {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const [appts, patients, serviceReqs] = await Promise.all([
+      getList('Patient Appointment', ['name','status'], practitionerName ? [['practitioner','=',practitionerName],['appointment_date','=',today]] : [['appointment_date','=',today]], 200),
+      getList('Patient', ['name'], [], 500),
+      getList('Service Request', ['name','status'], [['status','in',['Pending','Draft']]], 200)
+    ]);
+    document.getElementById('statToday').textContent = appts.length;
+    document.getElementById('statCompleted').textContent = appts.filter(a=>a.status==='Closed').length;
+    document.getElementById('statPatients').textContent = patients.length;
+    document.getElementById('statServiceReq').textContent = serviceReqs.length;
+    document.getElementById('patientCountBadge').textContent = patients.length;
+  } catch(e) {}
 }
 
-/* ─────────────────────────────────────────────
-   PATIENT REPORT MODAL
-───────────────────────────────────────────── */
-async function openPatientReport(patId, patName) {
-  document.getElementById('patient-modal').classList.add('open');
-  const body = document.getElementById('patient-modal-body');
-  body.innerHTML = '<div class="empty-state">Loading patient data…</div>';
+async function loadTodayAppointments() {
+  const tbody = document.getElementById('todayAppTbody');
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const filters = [['appointment_date','=',today]];
+    if (practitionerName) filters.push(['practitioner','=',practitionerName]);
+    const appts = await getList('Patient Appointment',
+      ['name','patient_name','appointment_time','status','patient'], filters, 30);
+    if (!appts.length) { tbody.innerHTML = `<tr><td colspan="3"><div class="empty-state"><div class="icon">📅</div><p>No appointments today</p></div></td></tr>`; return; }
+    tbody.innerHTML = appts.map(a => `
+      <tr>
+        <td class="patient-name">${a.patient_name}</td>
+        <td style="font-family:'DM Mono',monospace; font-size:12px;">${a.appointment_time || '—'}</td>
+        <td><span class="status-pill ${statusClass(a.status)}">${a.status}</span></td>
+      </tr>`).join('');
+  } catch(e) { tbody.innerHTML = errRow(3, e); }
+}
 
-  const [patDoc, encounters, appts] = await Promise.all([
-    api('Patient', { filters: [['name', '=', patId]], fields: ['name', 'patient_name', 'sex', 'dob', 'blood_group', 'mobile', 'email', 'status', 'customer'], limit: 1 }),
-    api('Patient Encounter', { filters: [['patient', '=', patId]], fields: ['name', 'encounter_date', 'status', 'diagnosis', 'practitioner'], order_by: 'encounter_date desc', limit: 100 }),
-    api('Patient Appointment', { filters: [['patient', '=', patId]], fields: ['name', 'appointment_date', 'appointment_time', 'status', 'practitioner', 'department'], order_by: 'appointment_date desc', limit: 100 })
-  ]);
+async function loadDashServiceRequests() {
+  const tbody = document.getElementById('dashServiceReqTbody');
+  try {
+    const filters = practitionerName ? [['ordered_by','=',practitionerName]] : [];
+    const reqs = await getList('Service Request',
+      ['name','patient','template_dt','ordered_by','referred_to','status'], filters, 10);
+    if (!reqs.length) { tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state"><p>No service requests</p></div></td></tr>`; return; }
+    tbody.innerHTML = reqs.map(r => `
+      <tr>
+        <td class="patient-name">${r.patient || '—'}</td>
+        <td><span class="tag">${r.template_dt||'—'}</span></td>
+        <td>${r.referred_to || r.ordered_by || '—'}</td>
+        <td><span class="status-pill ${statusClass(r.status)}">${r.status||'—'}</span></td>
+      </tr>`).join('');
+  } catch(e) { tbody.innerHTML = errRow(4, e); }
+}
 
-  const pt = patDoc?.[0] || {};
-  const visitCount = appts?.length || 0;
+// ─── PATIENTS ───────────────────────────────────────
+async function loadPatients(myPatientsOnly) {
+  const tbody = document.getElementById('patientsTbody');
+  tbody.innerHTML = `<tr><td colspan="7"><div class="loading"><div class="spinner"></div> Loading...</div></td></tr>`;
+  try {
+    // Show ALL patients by default; if myPatientsOnly flag, filter by practitioner via encounters
+    const patients = await getList('Patient',
+      ['name','patient_name','sex','dob','mobile','patient_age','status'], [], 500, 'patient_name asc');
 
-  let html = `
-    <div class="demo-grid">
-      <div class="demo-cell"><label>Patient Name</label><span>${pt.patient_name || patName || '—'}</span></div>
-      <div class="demo-cell"><label>Gender</label><span>${pt.sex || '—'}</span></div>
-      <div class="demo-cell"><label>Date of Birth</label><span>${fmt(pt.dob) || '—'}</span></div>
-      <div class="demo-cell"><label>Blood Group</label><span>${pt.blood_group || '—'}</span></div>
-      <div class="demo-cell"><label>Mobile</label><span>${pt.mobile || '—'}</span></div>
-      <div class="demo-cell"><label>Email</label><span>${pt.email || '—'}</span></div>
-    </div>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-      <h4 style="font-size:0.95rem;font-weight:700;">Visit History <span class="visit-count-badge" style="margin-left:0.5rem;">👁 ${visitCount} visits</span></h4>
-      <button class="btn-sm" onclick="openERP('/app/patient/${patId}')">Open Full Record ↗</button>
-    </div>`;
+    // Get encounter counts
+    const encounterCounts = {};
+    try {
+      const encFilters = practitionerName && myPatientsOnly ? [['practitioner','=',practitionerName]] : [];
+      const encounters = await getList('Patient Encounter', ['name','patient'], encFilters, 5000);
+      encounters.forEach(e => { encounterCounts[e.patient] = (encounterCounts[e.patient]||0)+1; });
+    } catch(e) {}
 
-  if (encounters?.length) {
-    html += `<div class="patient-visits-timeline">`;
-    encounters.forEach((enc, idx) => {
-      html += `
-        <div class="visit-entry">
-          <div class="visit-num">Visit #${encounters.length - idx} — ${idx === 0 ? '🆕 Latest' : idx === encounters.length - 1 ? '🏥 First Visit' : 'Follow-up'}</div>
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.5rem;">
-            <div class="visit-date">${fmt(enc.encounter_date)}</div>
-            <span class="badge ${badgeClass(enc.status)}">${enc.status || 'Draft'}</span>
+    let list = patients.map(p => ({ ...p, visitCount: encounterCounts[p.name] || 0 }));
+    if (myPatientsOnly && practitionerName) {
+      // filter to only patients who have encounters with this practitioner
+      list = list.filter(p => p.visitCount > 0);
+    }
+
+    allPatients = list;
+    document.getElementById('patientCountBadge').textContent = list.length;
+    renderPatients(list);
+  } catch(e) { tbody.innerHTML = errRow(7, e.message || e); }
+}
+
+function renderPatients(list) {
+  const tbody = document.getElementById('patientsTbody');
+  if (!list.length) { tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state"><div class="icon">👥</div><p>No patients found</p></div></td></tr>`; return; }
+  tbody.innerHTML = list.map(p => `
+    <tr class="clickable-row" onclick="openPatientModal('${p.name}','${escapeJs(p.patient_name)}',${p.visitCount})">
+      <td class="patient-name">${p.patient_name}</td>
+      <td>${p.sex||'—'}</td>
+      <td style="font-family:'DM Mono',monospace; font-size:12px;">${p.dob||p.patient_age||'—'}</td>
+      <td>${p.mobile||'—'}</td>
+      <td><span class="visit-badge">🏥 ${p.visitCount}</span></td>
+      <td id="lastVisit_${p.name}" style="font-size:12px; color:var(--text-muted);">—</td>
+      <td>
+        <button class="action-btn" onclick="event.stopPropagation(); openPatientModal('${p.name}','${escapeJs(p.patient_name)}',${p.visitCount})">👁 View</button>
+      </td>
+    </tr>`).join('');
+
+  // Async load last visit dates
+  list.forEach(async p => {
+    try {
+      const enc = await getList('Patient Encounter', ['encounter_date'], [['patient','=',p.name]], 1, 'encounter_date desc');
+      if (enc.length) document.getElementById(`lastVisit_${p.name}`).textContent = enc[0].encounter_date;
+    } catch(e){}
+  });
+}
+
+function filterPatients(q) {
+  if (!q) { renderPatients(allPatients); return; }
+  const lower = q.toLowerCase();
+  renderPatients(allPatients.filter(p =>
+    (p.patient_name||'').toLowerCase().includes(lower) ||
+    (p.mobile||'').includes(q) ||
+    p.name.toLowerCase().includes(lower)
+  ));
+}
+
+// ─── PATIENT MODAL ───────────────────────────────────
+async function openPatientModal(patientId, patientName, visitCount) {
+  document.getElementById('patientModalTitle').textContent = patientName;
+  document.getElementById('patientModalSub').textContent = `${visitCount} visit${visitCount!==1?'s':''} recorded · ID: ${patientId}`;
+  document.getElementById('patientModal').classList.add('open');
+
+  // Reset tabs
+  document.querySelectorAll('#patientModal .tab-btn').forEach((b,i) => b.classList.toggle('active',i===0));
+  document.querySelectorAll('#patientModal .tab-panel').forEach((p,i) => p.classList.toggle('active',i===0));
+
+  // Load demographics
+  loadPatientDemographics(patientId);
+  // Pre-load history
+  loadPatientHistory(patientId);
+  loadPatientReports(patientId);
+}
+
+async function loadPatientDemographics(patientId) {
+  const grid = document.getElementById('demoGrid');
+  grid.innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+  try {
+    const p = await getDoc('Patient', patientId);
+    const fields = [
+      { label: 'Full Name', value: p.patient_name },
+      { label: 'Patient ID', value: p.name },
+      { label: 'Gender', value: p.sex },
+      { label: 'Date of Birth', value: p.dob || '—' },
+      { label: 'Age', value: p.patient_age || '—' },
+      { label: 'Blood Group', value: p.blood_group || '—' },
+      { label: 'Mobile', value: p.mobile || '—' },
+      { label: 'Email', value: p.email || '—' },
+      { label: 'Address', value: [p.address_line1, p.city, p.state, p.pincode].filter(Boolean).join(', ') || '—' },
+      { label: 'Emergency Contact', value: p.emergency_phone || '—' },
+      { label: 'Insurance', value: p.health_insurance_id || '—' },
+      { label: 'Status', value: p.status || 'Active' },
+    ];
+    grid.innerHTML = fields.map(f => `
+      <div class="demo-field">
+        <div class="demo-label">${f.label}</div>
+        <div class="demo-value">${f.value}</div>
+      </div>`).join('');
+  } catch(e) { grid.innerHTML = `<div class="alert alert-error">⚠ Could not load demographics</div>`; }
+}
+
+async function loadPatientHistory(patientId) {
+  const timeline = document.getElementById('historyTimeline');
+  timeline.innerHTML = `<div class="loading"><div class="spinner"></div> Loading medical history...</div>`;
+  try {
+    const encounters = await getList('Patient Encounter',
+      ['name','encounter_date','practitioner','diagnosis','symptoms','encounter_type'],
+      [['patient','=',patientId]], 50, 'encounter_date desc');
+
+    if (!encounters.length) {
+      timeline.innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>No previous encounters on record</p></div>`;
+      return;
+    }
+
+    const icons = { 'OPD': '🩺', 'IPD': '🏥', 'Emergency': '🚨', default: '📋' };
+    const items = encounters.map(e => {
+      const icon = icons[e.encounter_type] || icons.default;
+      return `
+        <div class="timeline-item">
+          <div class="timeline-dot">${icon}</div>
+          <div class="timeline-content">
+            <div class="timeline-date">${e.encounter_date} · ${e.encounter_type||'Consultation'}</div>
+            <div class="timeline-title">${e.name}</div>
+            ${e.practitioner ? `<div class="timeline-detail">👨‍⚕️ Dr. ${e.practitioner}</div>` : ''}
+            ${e.diagnosis ? `<div class="timeline-detail">Dx: ${e.diagnosis}</div>` : ''}
+            ${e.symptoms ? `<div class="timeline-tags">${e.symptoms.split(',').map(s=>`<span class="tag">${s.trim()}</span>`).join('')}</div>` : ''}
           </div>
-          <button class="btn-sm" onclick="openERP('/app/patient-encounter/${enc.name}')">View Encounter ↗</button>
         </div>`;
-    });
-    html += `</div>`;
-  } else {
-    html += `<div class="empty-state"><span class="emoji">📋</span>No clinical encounters recorded.</div>`;
-  }
-
-  if (appts?.length) {
-    html += `<h4 style="font-size:0.9rem;font-weight:700;margin:1.25rem 0 0.75rem;color:var(--text-2);">Appointment History</h4>
-    <div class="patient-visits-timeline">`;
-    appts.slice(0, 10).forEach((a, idx) => {
-      html += `
-        <div class="visit-entry" style="padding:0.75rem 1rem;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div>
-              <span class="visit-count-badge" style="margin-right:0.5rem;">Appt #${appts.length - idx}</span>
-              <span class="visit-date">${fmt(a.appointment_date)} ${a.appointment_time ? '· ' + a.appointment_time : ''}</span>
-            </div>
-            <span class="badge ${badgeClass(a.status)}">${a.status}</span>
-          </div>
-        </div>`;
-    });
-    html += `</div>`;
-  }
-
-  body.innerHTML = html;
+    }).join('');
+    timeline.innerHTML = `<div class="timeline">${items}</div>`;
+  } catch(e) { timeline.innerHTML = `<div class="alert alert-error">⚠ Could not load history</div>`; }
 }
 
-function closePatientModal() {
-  document.getElementById('patient-modal').classList.remove('open');
+async function loadPatientReports(patientId) {
+  const panel = document.getElementById('reportsPanel');
+  panel.innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+  try {
+    // Try to get attached files
+    const files = await getList('File', ['name','file_name','file_url','modified'],
+      [['attached_to_doctype','=','Patient'],['attached_to_name','=',patientId]], 50);
+
+    if (!files.length) {
+      panel.innerHTML = `<div class="empty-state"><div class="icon">📂</div><p>No uploaded reports found</p></div>`;
+      return;
+    }
+    panel.innerHTML = `<table class="data-table">
+      <thead><tr><th>File Name</th><th>Uploaded</th><th>Action</th></tr></thead>
+      <tbody>${files.map(f => `
+        <tr>
+          <td class="patient-name">📎 ${f.file_name || f.name}</td>
+          <td style="font-size:12px;color:var(--text-muted);">${(f.modified||'').substring(0,10)}</td>
+          <td><a href="${f.file_url}" target="_blank" class="btn btn-ghost" style="font-size:12px; padding:4px 10px;">Open</a></td>
+        </tr>`).join('')}</tbody>
+    </table>`;
+  } catch(e) { panel.innerHTML = `<div class="alert alert-error">⚠ Could not load files</div>`; }
 }
 
-/* ─────────────────────────────────────────────
-   INIT
-───────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', initSession);
+// ─── ENCOUNTERS ───────────────────────────────────────
+async function loadEncounters() {
+  const tbody = document.getElementById('encountersTbody');
+  try {
+    const filters = practitionerName ? [['practitioner','=',practitionerName]] : [];
+    const list = await getList('Patient Encounter',
+      ['name','patient_name','encounter_date','practitioner','appointment_type','status'],
+      filters, 100);
+    if (!list.length) { tbody.innerHTML = emptyRow(6,'No encounters found'); return; }
+    tbody.innerHTML = list.map(e => `
+      <tr>
+        <td class="patient-name" style="font-family:'DM Mono',monospace; font-size:12px;">${e.name}</td>
+        <td>${e.patient_name||'—'}</td>
+        <td>${e.encounter_date||'—'}</td>
+        <td>${e.practitioner||'—'}</td>
+        <td><span class="status-pill ${statusClass(e.status)}">${e.status||'Open'}</span></td>
+        <td><a href="/healthcare/patient-encounter/${e.name}" target="_blank" class="action-btn">Open ↗</a></td>
+      </tr>`).join('');
+  } catch(e) { tbody.innerHTML = errRow(6, e); }
+}
+
+// ─── SERVICE REQUESTS ───────────────────────────────────────
+async function loadServiceRequests() {
+  const tbody = document.getElementById('serviceReqTbody');
+  try {
+    const filters = practitionerName ? [['ordered_by','=',practitionerName]] : [];
+    const list = await getList('Service Request',
+      ['name','patient','template_dt','ordered_by','referred_to','status','transaction_date'],
+      filters, 100);
+    if (!list.length) { tbody.innerHTML = emptyRow(7,'No service requests'); return; }
+    tbody.innerHTML = list.map(r => `
+      <tr>
+        <td class="patient-name" style="font-family:'DM Mono',monospace; font-size:12px;">${r.name}</td>
+        <td>${r.patient||'—'}</td>
+        <td><span class="tag">${r.template_dt||'—'}</span></td>
+        <td>${r.ordered_by||'—'}</td>
+        <td>${r.referred_to||'—'}</td>
+        <td><span class="status-pill ${statusClass(r.status)}">${r.status||'—'}</span></td>
+        <td style="font-size:12px;">${(r.transaction_date||'').substring(0,10)}</td>
+      </tr>`).join('');
+  } catch(e) { tbody.innerHTML = errRow(7, e); }
+}
+
+function openNewServiceReqModal() {
+  document.getElementById('srOrderedBy').value = practitionerDoc?.practitioner_name || practitionerName || '';
+  document.getElementById('srAlertArea').innerHTML = '';
+  document.getElementById('serviceReqModal').classList.add('open');
+}
+
+async function submitServiceRequest() {
+  const patient = document.getElementById('srPatient').value.trim();
+  const templateType = document.getElementById('srTemplateType').value;
+  const alertArea = document.getElementById('srAlertArea');
+  if (!patient) { alertArea.innerHTML = `<div class="alert alert-error">⚠ Patient is required</div>`; return; }
+  if (!templateType) { alertArea.innerHTML = `<div class="alert alert-error">⚠ Template type is required</div>`; return; }
+  try {
+    await api('frappe.client.insert', {
+      doc: {
+        doctype: 'Service Request',
+        patient,
+        template_dt: templateType,
+        ordered_by: practitionerName,
+        notes: document.getElementById('srNotes').value
+      }
+    });
+    alertArea.innerHTML = `<div class="alert alert-success">✓ Service request created successfully</div>`;
+    setTimeout(() => closeModal('serviceReqModal'), 1500);
+    loadServiceRequests();
+    loadDashServiceRequests();
+  } catch(e) { alertArea.innerHTML = `<div class="alert alert-error">⚠ Error: ${e.message}</div>`; }
+}
+
+// ─── THERAPY ───────────────────────────────────────
+async function loadTherapy() {
+  loadTherapyPlans();
+  loadTherapySessions();
+}
+
+async function loadTherapyPlans() {
+  const tbody = document.getElementById('therapyPlansTbody');
+  try {
+    const filters = practitionerName ? [['owner','=',currentUser]] : [];
+    const list = await getList('Therapy Plan',
+      ['name','patient','start_date','total_sessions','status'], [], 50);
+    if (!list.length) { tbody.innerHTML = emptyRow(5,'No therapy plans'); return; }
+    tbody.innerHTML = list.map(t => `
+      <tr>
+        <td class="patient-name" style="font-family:'DM Mono',monospace; font-size:12px;">${t.name}</td>
+        <td>${t.patient||'—'}</td>
+        <td>${t.start_date||'—'}</td>
+        <td style="font-family:'DM Mono',monospace;">${t.total_sessions||0}</td>
+        <td><span class="status-pill ${statusClass(t.status)}">${t.status||'Active'}</span></td>
+      </tr>`).join('');
+  } catch(e) { tbody.innerHTML = errRow(5, e); }
+}
+
+async function loadTherapySessions() {
+  const tbody = document.getElementById('therapySessionsTbody');
+  try {
+    const list = await getList('Therapy Session',
+      ['name','patient','start','custom_session_status'], [], 50);
+    if (!list.length) { tbody.innerHTML = emptyRow(4,'No therapy sessions'); return; }
+    tbody.innerHTML = list.map(s => `
+      <tr>
+        <td class="patient-name" style="font-family:'DM Mono',monospace; font-size:12px;">${s.name}</td>
+        <td>${s.patient||'—'}</td>
+        <td>${(s.start||'').substring(0,10)}</td>
+        <td><span class="status-pill ${statusClass(s.custom_session_status)}">${s.custom_session_status||'Scheduled'}</span></td>
+      </tr>`).join('');
+  } catch(e) { tbody.innerHTML = errRow(4, e); }
+}
+
+// ─── HR ───────────────────────────────────────
+async function loadAttendance() {
+  document.getElementById('hrCardTitle').textContent = '🕐 Attendance Records';
+  document.getElementById('hrCardBody').innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+  try {
+    const filters = employeeName ? [['employee','=',employeeName]] : [];
+    const list = await getList('Attendance', ['name','attendance_date','status','in_time','out_time'], filters, 30, 'attendance_date desc');
+    if (!list.length) { document.getElementById('hrCardBody').innerHTML = emptyState('No attendance records found'); return; }
+    document.getElementById('hrCardBody').innerHTML = `<table class="data-table">
+      <thead><tr><th>Date</th><th>Status</th><th>In Time</th><th>Out Time</th></tr></thead>
+      <tbody>${list.map(a=>`<tr>
+        <td>${a.attendance_date}</td>
+        <td><span class="status-pill ${statusClass(a.status)}">${a.status}</span></td>
+        <td style="font-family:'DM Mono',monospace; font-size:12px;">${a.in_time||'—'}</td>
+        <td style="font-family:'DM Mono',monospace; font-size:12px;">${a.out_time||'—'}</td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch(e) { document.getElementById('hrCardBody').innerHTML = `<div class="alert alert-error">⚠ Could not load attendance</div>`; }
+}
+
+async function loadLeave() {
+  document.getElementById('hrCardTitle').textContent = '🌴 Leave Applications';
+  document.getElementById('hrCardBody').innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+  try {
+    const filters = employeeName ? [['employee','=',employeeName]] : [];
+    const list = await getList('Leave Application', ['name','leave_type','from_date','to_date','status'], filters, 30, 'from_date desc');
+    if (!list.length) { document.getElementById('hrCardBody').innerHTML = emptyState('No leave applications'); return; }
+    document.getElementById('hrCardBody').innerHTML = `<table class="data-table">
+      <thead><tr><th>Type</th><th>From</th><th>To</th><th>Status</th></tr></thead>
+      <tbody>${list.map(l=>`<tr>
+        <td>${l.leave_type||'—'}</td>
+        <td>${l.from_date}</td><td>${l.to_date}</td>
+        <td><span class="status-pill ${statusClass(l.status)}">${l.status}</span></td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch(e) { document.getElementById('hrCardBody').innerHTML = `<div class="alert alert-error">⚠ Could not load leave</div>`; }
+}
+
+async function loadPayroll() {
+  document.getElementById('hrCardTitle').textContent = '💰 Salary Slips';
+  document.getElementById('hrCardBody').innerHTML = `<div class="loading"><div class="spinner"></div></div>`;
+  try {
+    const filters = employeeName ? [['employee','=',employeeName]] : [];
+    const list = await getList('Salary Slip', ['name','start_date','end_date','net_pay','status'], filters, 24, 'start_date desc');
+    if (!list.length) { document.getElementById('hrCardBody').innerHTML = emptyState('No salary slips'); return; }
+    document.getElementById('hrCardBody').innerHTML = `<table class="data-table">
+      <thead><tr><th>Period</th><th>Net Pay</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>${list.map(s=>`<tr>
+        <td>${s.start_date} → ${s.end_date}</td>
+        <td style="font-family:'DM Mono',monospace;">₹${Number(s.net_pay||0).toLocaleString()}</td>
+        <td><span class="status-pill ${statusClass(s.status)}">${s.status}</span></td>
+        <td><a href="/printview?doctype=Salary+Slip&name=${s.name}&format=Standard" target="_blank" class="action-btn">Print</a></td>
+      </tr>`).join('')}</tbody></table>`;
+  } catch(e) { document.getElementById('hrCardBody').innerHTML = `<div class="alert alert-error">⚠ Could not load payroll</div>`; }
+}
+
+// ─── TABS ───────────────────────────────────────
+function switchTab(btn, panelId) {
+  const modal = btn.closest('.modal-body') || btn.closest('.content');
+  modal?.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  modal?.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById(panelId)?.classList.add('active');
+}
+
+// ─── MODAL ───────────────────────────────────────
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m =>
+  m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); })
+);
+
+// ─── UTILS ───────────────────────────────────────
+function statusClass(s) {
+  s = (s||'').toLowerCase();
+  if (['active','open','scheduled','completed','closed','submitted'].some(v=>s.includes(v))) {
+    if (s.includes('complet') || s.includes('closed') || s.includes('submit')) return 'status-completed';
+    if (s.includes('active') || s.includes('open') || s.includes('present')) return 'status-active';
+  }
+  if (['pending','draft'].some(v=>s.includes(v))) return 'status-pending';
+  if (['cancel','inactive'].some(v=>s.includes(v))) return 'status-cancelled';
+  return 'status-active';
+}
+function errRow(cols, e) { return `<tr><td colspan="${cols}"><div class="alert alert-error">⚠ ${e.message||'Error loading data'}</div></td></tr>`; }
+function emptyRow(cols, msg) { return `<tr><td colspan="${cols}"><div class="empty-state"><div class="icon">📭</div><p>${msg}</p></div></td></tr>`; }
+function emptyState(msg) { return `<div class="empty-state"><div class="icon">📭</div><p>${msg}</p></div>`; }
+function escapeJs(s) { return (s||'').replace(/'/g,"\\'").replace(/"/g,'\\"'); }
+
+async function logout() {
+  try {
+    await fetch(`${BASE}/api/method/frappe.auth.logout`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Frappe-CSRF-Token': getCsrf() },
+      body: JSON.stringify({})
+    });
+  } catch(e) {}
+  localStorage.clear();
+  window.location.replace('/login');
+}
+
+init();
 </script>
 </body>
 </html>
