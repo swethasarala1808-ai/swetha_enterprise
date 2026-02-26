@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patient Portal | Sneha Health</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#f8fafc;--surface:#fff;--surface2:#f1f5f9;--border:#e2e8f0;--primary:#6366f1;--primary-dark:#4f46e5;--success:#059669;--danger:#dc2626;--text:#0f172a;--text-muted:#64748b;--radius:10px;--radius-lg:16px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* LOGIN */
+#login-screen{display:flex;min-height:100vh;}
+.login-left{flex:1;background:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px;color:#fff;position:relative;overflow:hidden;}
+.login-left::before{content:'';position:absolute;inset:0;background:url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");pointer-events:none;}
+.login-brand{text-align:center;margin-bottom:48px;}
+.login-brand .emoji{font-size:64px;margin-bottom:16px;display:block;}
+.login-brand h1{font-size:32px;font-weight:700;margin-bottom:8px;}
+.login-brand p{font-size:16px;opacity:0.8;}
+.features{display:flex;flex-direction:column;gap:16px;}
+.feature{display:flex;align-items:center;gap:14px;font-size:15px;}
+.feature-icon{width:40px;height:40px;background:rgba(255,255,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.login-right{width:480px;display:flex;align-items:center;justify-content:center;padding:40px;}
+.login-card{width:100%;max-width:400px;}
+.login-card h2{font-size:28px;font-weight:700;margin-bottom:6px;}
+.login-card .subtitle{color:var(--text-muted);font-size:14px;margin-bottom:32px;}
+.tabs{display:flex;background:var(--surface2);border-radius:var(--radius);padding:4px;margin-bottom:28px;}
+.tab{flex:1;padding:9px;text-align:center;border-radius:7px;font-size:14px;font-weight:600;cursor:pointer;color:var(--text-muted);transition:all 0.2s;}
+.tab.active{background:#fff;color:var(--primary);box-shadow:0 1px 3px rgba(0,0,0,0.1);}
+.form-group{margin-bottom:18px;}
+.form-group label{display:block;font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:6px;}
+.form-group input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:inherit;color:var(--text);background:#fff;transition:border-color 0.2s;}
+.form-group input:focus{outline:none;border-color:var(--primary);}
+.btn-primary{width:100%;padding:13px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius);font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:background 0.2s;}
+.btn-primary:hover{background:var(--primary-dark);}
+.status-msg{margin-top:14px;font-size:13px;text-align:center;min-height:20px;padding:8px;border-radius:var(--radius);}
+.status-msg.error{background:#fef2f2;color:var(--danger);}
+.status-msg.success{background:#f0fdf4;color:var(--success);}
+.status-msg.info{color:var(--text-muted);}
+.divider{text-align:center;color:var(--text-muted);font-size:13px;margin:20px 0;position:relative;}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:var(--border);}
+.divider::before{left:0;} .divider::after{right:0;}
+
+/* APP */
+#app{display:none;}
+.app-header{background:#fff;border-bottom:1px solid var(--border);padding:0 24px;height:60px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.app-logo{display:flex;align-items:center;gap:10px;font-weight:700;font-size:16px;}
+.app-logo .dot{width:28px;height:28px;background:var(--primary);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;}
+.header-nav{display:flex;gap:4px;}
+.hn-item{padding:8px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;color:var(--text-muted);transition:all 0.15s;}
+.hn-item:hover{background:var(--surface2);color:var(--text);}
+.hn-item.active{background:rgba(99,102,241,0.1);color:var(--primary);}
+.header-right{display:flex;align-items:center;gap:10px;}
+.user-chip{display:flex;align-items:center;gap:8px;padding:6px 12px;background:var(--surface2);border-radius:20px;}
+.user-chip .avatar{width:28px;height:28px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;}
+.user-chip .name{font-size:13px;font-weight:600;}
+.btn-sm-logout{padding:7px 14px;background:#fff;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-weight:600;color:var(--danger);cursor:pointer;font-family:inherit;}
+
+.main{max-width:1100px;margin:0 auto;padding:32px 24px;}
+.page{display:none;}
+.page.active{display:block;}
+.page-title{font-size:22px;font-weight:700;margin-bottom:4px;}
+.page-sub{color:var(--text-muted);font-size:14px;margin-bottom:24px;}
+
+/* CARDS */
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.card-title{font-size:14px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:16px;}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px;}
+.stat-card{background:#fff;border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.stat-icon{font-size:28px;margin-bottom:10px;}
+.stat-label{font-size:12px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
+.stat-value{font-size:28px;font-weight:700;margin-top:4px;color:var(--primary);}
+
+/* BOOKING */
+.booking-steps{display:flex;gap:8px;margin-bottom:24px;}
+.step{flex:1;padding:8px;text-align:center;border-radius:var(--radius);font-size:12px;font-weight:600;background:var(--surface2);color:var(--text-muted);}
+.step.active{background:var(--primary);color:#fff;}
+.step.done{background:#dcfce7;color:var(--success);}
+.dept-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+.dept-card{padding:16px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;text-align:center;transition:all 0.2s;background:#fff;}
+.dept-card:hover{border-color:var(--primary);background:rgba(99,102,241,0.03);}
+.dept-card.selected{border-color:var(--primary);background:rgba(99,102,241,0.08);}
+.dept-card .dept-icon{font-size:28px;margin-bottom:8px;}
+.dept-card .dept-name{font-size:13px;font-weight:600;}
+.doc-card{display:flex;align-items:center;gap:14px;padding:14px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:all 0.2s;margin-bottom:10px;}
+.doc-card:hover{border-color:var(--primary);}
+.doc-card.selected{border-color:var(--primary);background:rgba(99,102,241,0.05);}
+.doc-avatar{width:44px;height:44px;background:linear-gradient(135deg,var(--primary),#8b5cf6);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:700;flex-shrink:0;}
+.slot-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
+.slot{padding:10px;border:2px solid var(--border);border-radius:var(--radius);text-align:center;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'DM Mono',monospace;}
+.slot:hover{border-color:var(--primary);}
+.slot.selected{border-color:var(--primary);background:var(--primary);color:#fff;}
+.slot.unavailable{opacity:0.4;cursor:not-allowed;pointer-events:none;}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;font-size:14px;}
+th{padding:10px 14px;text-align:left;font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);}
+td{padding:12px 14px;border-bottom:1px solid var(--border);}
+tr:last-child td{border-bottom:none;}
+
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;}
+.badge-green{background:#dcfce7;color:#15803d;}
+.badge-blue{background:#dbeafe;color:#1d4ed8;}
+.badge-yellow{background:#fef9c3;color:#a16207;}
+.badge-red{background:#fee2e2;color:#b91c1c;}
+.badge-gray{background:#f1f5f9;color:#64748b;}
+
+.btn-outline{padding:8px 16px;border:1.5px solid var(--primary);border-radius:var(--radius);color:var(--primary);background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;}
+.btn-outline:hover{background:rgba(99,102,241,0.05);}
+.btn-back{padding:8px 16px;border:1.5px solid var(--border);border-radius:var(--radius);color:var(--text-muted);background:#fff;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-right:10px;}
+
+.loading{color:var(--text-muted);font-size:13px;padding:30px;text-align:center;}
+.empty{color:var(--text-muted);font-size:13px;padding:40px;text-align:center;}
+.alert{padding:14px 18px;border-radius:var(--radius);font-size:14px;margin-bottom:16px;}
+.alert-success{background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;}
+.alert-info{background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8;}
+.alert-warning{background:#fffbeb;border:1px solid #fde68a;color:#92400e;}
+</style>
+</head>
+<body>
+
+<!-- LOGIN / REGISTER -->
+<div id="login-screen">
+  <div class="login-left">
+    <div class="login-brand">
+      <span class="emoji">🏥</span>
+      <h1>Sneha Health</h1>
+      <p>Rena Rehabilitation Centre</p>
+    </div>
+    <div class="features">
+      <div class="feature"><div class="feature-icon">📅</div><div>Book appointments online with ease</div></div>
+      <div class="feature"><div class="feature-icon">💊</div><div>View prescriptions & medical history</div></div>
+      <div class="feature"><div class="feature-icon">🧾</div><div>Access bills and payment records</div></div>
+      <div class="feature"><div class="feature-icon">💬</div><div>Connect with your care team</div></div>
+    </div>
+  </div>
+  <div class="login-right">
+    <div class="login-card">
+      <h2>Welcome Back</h2>
+      <p class="subtitle">Sign in to your patient account</p>
+      <div class="tabs">
+        <div class="tab active" onclick="switchAuthTab('login',this)">Sign In</div>
+        <div class="tab" onclick="switchAuthTab('register',this)">Register</div>
+      </div>
+
+      <!-- LOGIN FORM -->
+      <div id="login-form">
+        <div class="form-group"><label>Email Address</label><input type="email" id="l-email" placeholder="you@email.com" autofocus></div>
+        <div class="form-group"><label>Password</label><input type="password" id="l-password" placeholder="••••••••"></div>
+        <button class="btn-primary" onclick="doLogin()">Sign In →</button>
+        <div class="status-msg info" id="login-status">✓ Initializing session…</div>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="register-form" style="display:none;">
+        <div class="alert alert-info">📋 Register as a new patient. A password will be emailed to you.</div>
+        <div class="form-group"><label>Full Name</label><input type="text" id="r-name" placeholder="Your full name"></div>
+        <div class="form-group"><label>Email Address</label><input type="email" id="r-email" placeholder="you@email.com"></div>
+        <div class="form-group"><label>Mobile Number</label><input type="tel" id="r-mobile" placeholder="+91 9876543210"></div>
+        <div class="form-group"><label>Date of Birth</label><input type="date" id="r-dob"></div>
+        <div class="form-group"><label>Gender</label>
+          <select id="r-gender" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:inherit;color:var(--text);background:#fff;">
+            <option value="">Select Gender</option><option>Male</option><option>Female</option><option>Other</option>
+          </select>
+        </div>
+        <button class="btn-primary" onclick="doRegister()">Create Account →</button>
+        <div class="status-msg" id="register-status"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header class="app-header">
+    <div class="app-logo"><div class="dot">🏥</div>Sneha Health</div>
+    <div class="header-nav">
+      <div class="hn-item active" onclick="showPage('dashboard',this)">🏠 Home</div>
+      <div class="hn-item" onclick="showPage('book',this)">📅 Book Appointment</div>
+      <div class="hn-item" onclick="showPage('appointments',this)">📋 My Appointments</div>
+      <div class="hn-item" onclick="showPage('bills',this)">🧾 My Bills</div>
+    </div>
+    <div class="header-right">
+      <div class="user-chip">
+        <div class="avatar" id="user-initial">P</div>
+        <div class="name" id="user-name">Patient</div>
+      </div>
+      <button class="btn-sm-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-title" id="welcome-msg">Welcome back 👋</div>
+      <div class="page-sub">Here's your health summary</div>
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-label">Upcoming Appointments</div><div class="stat-value" id="stat-upcoming">—</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">Completed Visits</div><div class="stat-value" id="stat-completed">—</div></div>
+        <div class="stat-card"><div class="stat-icon">🧾</div><div class="stat-label">Pending Bills</div><div class="stat-value" id="stat-bills">—</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Upcoming Appointments</div>
+        <div id="upcoming-appts"><div class="loading">Loading...</div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">Recent Bills</div>
+        <div id="recent-bills"><div class="loading">Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- BOOK APPOINTMENT -->
+    <div class="page" id="page-book">
+      <div class="page-title">Book Appointment</div>
+      <div class="page-sub">Schedule a visit with your doctor</div>
+      <div class="booking-steps">
+        <div class="step active" id="bstep-1">1. Department</div>
+        <div class="step" id="bstep-2">2. Doctor</div>
+        <div class="step" id="bstep-3">3. Date & Slot</div>
+        <div class="step" id="bstep-4">4. Confirm</div>
+      </div>
+      <div id="booking-content"></div>
+    </div>
+
+    <!-- MY APPOINTMENTS -->
+    <div class="page" id="page-appointments">
+      <div class="page-title">My Appointments</div>
+      <div class="page-sub">Your complete appointment history</div>
+      <div class="card">
+        <table><thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Department</th><th>Status</th></tr></thead>
+        <tbody id="appts-tbody"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody></table>
+      </div>
+    </div>
+
+    <!-- BILLS -->
+    <div class="page" id="page-bills">
+      <div class="page-title">My Bills</div>
+      <div class="page-sub">Payment history and outstanding bills</div>
+      <div class="card">
+        <table><thead><tr><th>Invoice No.</th><th>Date</th><th>Amount</th><th>Paid</th><th>Status</th></tr></thead>
+        <tbody id="bills-tbody"><tr><td colspan="5" class="loading">Loading...</td></tr></tbody></table>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+const API='/api/resource', METHOD='/api/method';
+let currentUser=null, patientId=null, bookingState={step:1,dept:null,doctor:null,date:null,slot:null};
+
+// ── AUTH ──────────────────────────────────────────────
+async function init() {
+  try {
+    const r=await fetch(`${METHOD}/frappe.auth.get_logged_user`);
+    const d=await r.json();
+    if(d.message && d.message!=='Guest'){currentUser=d.message;await loadApp();}
+    else{setStatus('login-status','Please sign in to continue.','info');}
+  } catch(e){setStatus('login-status','Connecting to server...','info');}
+}
+
+function switchAuthTab(tab,el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('login-form').style.display=tab==='login'?'block':'none';
+  document.getElementById('register-form').style.display=tab==='register'?'block':'none';
+}
+
+async function doLogin() {
+  const email=document.getElementById('l-email').value.trim();
+  const pwd=document.getElementById('l-password').value;
+  if(!email||!pwd){setStatus('login-status','Enter email and password.','error');return;}
+  setStatus('login-status','Signing in…','info');
+  try {
+    const r=await fetch(`${METHOD}/login`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({usr:email,pwd})});
+    const d=await r.json();
+    if(d.message==='Logged In'){currentUser=email;await loadApp();}
+    else{setStatus('login-status','Invalid email or password.','error');}
+  } catch(e){setStatus('login-status','Connection error. Try again.','error');}
+}
+
+async function doRegister() {
+  const name=document.getElementById('r-name').value.trim();
+  const email=document.getElementById('r-email').value.trim();
+  const mobile=document.getElementById('r-mobile').value.trim();
+  const dob=document.getElementById('r-dob').value;
+  const gender=document.getElementById('r-gender').value;
+  if(!name||!email||!gender){setStatus('register-status','Fill in all required fields.','error');return;}
+  setStatus('register-status','Creating account…','info');
+  try {
+    // Create user account
+    const r=await fetch(`${METHOD}/frappe.client.insert`,{
+      method:'POST',headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token':getCsrf()},
+      body:JSON.stringify({doc:{doctype:'Patient',patient_name:name,email,mobile,dob,sex:gender,status:'Active'}})
+    });
+    const d=await r.json();
+    if(d.message||d.data){setStatus('register-status','Account created! Check your email for login credentials.','success');}
+    else{setStatus('register-status','Registration failed. Email may already be registered.','error');}
+  } catch(e){setStatus('register-status','Error: '+e.message,'error');}
+}
+
+function doLogout() {
+  fetch(`${METHOD}/frappe.handler.logout`,{method:'POST',headers:{'Content-Type':'application/json'}})
+    .finally(()=>{window.location.href=window.location.href.split('?')[0]+'?t='+Date.now();});
+}
+
+async function loadApp() {
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app').style.display='block';
+  await findPatient();
+  loadDashboard();
+}
+
+async function findPatient() {
+  try {
+    const r=await fetch(`${API}/Patient?filters=[["email","=","${currentUser}"]]&fields=["name","patient_name"]&limit=1`);
+    const d=await r.json();
+    if(d.data&&d.data.length>0){
+      patientId=d.data[0].name;
+      const nm=d.data[0].patient_name||currentUser;
+      document.getElementById('user-name').textContent=nm.split(' ')[0];
+      document.getElementById('user-initial').textContent=nm.charAt(0).toUpperCase();
+      document.getElementById('welcome-msg').textContent=`Welcome, ${nm.split(' ')[0]} 👋`;
+    }
+  } catch(e){}
+}
+
+// ── DASHBOARD ─────────────────────────────────────────
+async function loadDashboard() {
+  if(!patientId)return;
+  const today=new Date().toISOString().split('T')[0];
+
+  // Upcoming
+  try {
+    const r=await fetch(`${API}/Patient Appointment?filters=[["patient","=","${patientId}"],["appointment_date",">=","${today}"],["status","in","Open,Scheduled"]]&fields=["name","appointment_date","appointment_time","practitioner_name","department","status"]&order_by=appointment_date asc&limit=10`);
+    const d=await r.json();
+    const appts=d.data||[];
+    document.getElementById('stat-upcoming').textContent=appts.length;
+    const el=document.getElementById('upcoming-appts');
+    el.innerHTML=appts.length?`<table><thead><tr><th>Date</th><th>Time</th><th>Doctor</th><th>Department</th><th>Status</th></tr></thead>
+      <tbody>${appts.map(a=>`<tr><td>${a.appointment_date}</td><td>${a.appointment_time||'—'}</td><td>${a.practitioner_name||'—'}</td><td>${a.department||'—'}</td>
+        <td><span class="badge ${a.status==='Open'?'badge-blue':'badge-green'}">${a.status}</span></td></tr>`).join('')}</tbody></table>`:
+      '<div class="empty">No upcoming appointments.<br><br><button class="btn-outline" onclick="document.querySelector(\'[onclick*=book]\').click()">Book Now</button></div>';
+  } catch(e){document.getElementById('stat-upcoming').textContent='—';}
+
+  // Bills
+  try {
+    const r=await fetch(`${API}/Sales Invoice?filters=[["patient","=","${patientId}"],["docstatus","=",1]]&fields=["name","posting_date","grand_total","outstanding_amount","status"]&order_by=posting_date desc&limit=5`);
+    const d=await r.json();
+    const bills=d.data||[];
+    const pending=bills.filter(b=>b.outstanding_amount>0).length;
+    document.getElementById('stat-bills').textContent=pending;
+    const el=document.getElementById('recent-bills');
+    el.innerHTML=bills.length?`<table><thead><tr><th>Invoice</th><th>Date</th><th>Amount</th><th>Status</th></tr></thead>
+      <tbody>${bills.map(b=>`<tr>
+        <td style="font-family:'DM Mono',monospace;font-size:12px;">${b.name}</td>
+        <td>${b.posting_date}</td>
+        <td style="font-family:'DM Mono',monospace;font-weight:700;">₹${fmt(b.grand_total)}</td>
+        <td><span class="badge ${b.outstanding_amount<=0?'badge-green':'badge-yellow'}">${b.outstanding_amount<=0?'Paid':'Unpaid'}</span></td>
+      </tr>`).join('')}</tbody></table>`:
+      '<div class="empty">No bills found</div>';
+  } catch(e){document.getElementById('stat-bills').textContent='—';}
+
+  // Completed
+  try {
+    const r=await fetch(`${API}/Patient Appointment?filters=[["patient","=","${patientId}"],["status","=","Closed"]]&fields=["name"]&limit=100`);
+    const d=await r.json();
+    document.getElementById('stat-completed').textContent=(d.data||[]).length;
+  } catch(e){document.getElementById('stat-completed').textContent='—';}
+}
+
+// ── NAVIGATION ────────────────────────────────────────
+function showPage(id,el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.hn-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+  if(id==='appointments')loadAppointments();
+  if(id==='bills')loadBills();
+  if(id==='book')startBooking();
+}
+
+// ── MY APPOINTMENTS ───────────────────────────────────
+async function loadAppointments() {
+  const el=document.getElementById('appts-tbody');
+  if(!patientId){el.innerHTML='<tr><td colspan="5" class="empty">Please ensure your email matches a patient record.</td></tr>';return;}
+  try {
+    const r=await fetch(`${API}/Patient Appointment?filters=[["patient","=","${patientId}"]]&fields=["name","appointment_date","appointment_time","practitioner_name","department","status"]&order_by=appointment_date desc&limit=50`);
+    const d=await r.json();
+    const rows=d.data||[];
+    el.innerHTML=rows.length?rows.map(a=>`<tr>
+      <td>${a.appointment_date}</td><td>${a.appointment_time||'—'}</td>
+      <td><strong>${a.practitioner_name||'—'}</strong></td>
+      <td>${a.department||'—'}</td>
+      <td><span class="badge ${statusBadge(a.status)}">${a.status}</span></td>
+    </tr>`).join(''):'<tr><td colspan="5" class="empty">No appointments found</td></tr>';
+  } catch(e){el.innerHTML='<tr><td colspan="5" class="empty">Unable to load appointments</td></tr>';}
+}
+
+// ── BILLS ─────────────────────────────────────────────
+async function loadBills() {
+  const el=document.getElementById('bills-tbody');
+  if(!patientId){el.innerHTML='<tr><td colspan="5" class="empty">Patient not found</td></tr>';return;}
+  try {
+    const r=await fetch(`${API}/Sales Invoice?filters=[["patient","=","${patientId}"],["docstatus","=",1]]&fields=["name","posting_date","grand_total","paid_amount","outstanding_amount","status"]&order_by=posting_date desc&limit=50`);
+    const d=await r.json();
+    const rows=d.data||[];
+    el.innerHTML=rows.length?rows.map(b=>`<tr>
+      <td style="font-family:'DM Mono',monospace;font-size:12px;">${b.name}</td>
+      <td>${b.posting_date}</td>
+      <td style="font-family:'DM Mono',monospace;font-weight:700;">₹${fmt(b.grand_total)}</td>
+      <td style="font-family:'DM Mono',monospace;">₹${fmt(b.paid_amount)}</td>
+      <td><span class="badge ${b.outstanding_amount<=0?'badge-green':'badge-yellow'}">${b.outstanding_amount<=0?'Paid':'₹'+fmt(b.outstanding_amount)+' Due'}</span></td>
+    </tr>`).join(''):'<tr><td colspan="5" class="empty">No bills found</td></tr>';
+  } catch(e){el.innerHTML='<tr><td colspan="5" class="empty">Unable to load bills</td></tr>';}
+}
+
+// ── BOOKING FLOW ──────────────────────────────────────
+function startBooking() {
+  bookingState={step:1,dept:null,doctor:null,date:null,slot:null};
+  renderBookingStep();
+}
+
+async function renderBookingStep() {
+  updateStepIndicators();
+  const el=document.getElementById('booking-content');
+  const s=bookingState;
+  if(s.step===1) {
+    el.innerHTML='<div class="card"><div class="card-title">Select Department</div><div class="dept-grid" id="dept-grid"><div class="loading">Loading departments...</div></div></div>';
+    try {
+      const r=await fetch(`${API}/Medical Department?fields=["name"]&limit=50&order_by=name asc`);
+      const d=await r.json();
+      const depts=d.data||[];
+      const icons={Physiotherapy:'🦴',Psychiatry:'🧠',Pediatrics:'👶',Cardiology:'❤️',Orthopedics:'🦵',Neurology:'🫀',Oncology:'🎗️',General:'🩺',Dental:'🦷',Ophthalmology:'👁️'};
+      document.getElementById('dept-grid').innerHTML=depts.map(dep=>`
+        <div class="dept-card ${s.dept===dep.name?'selected':''}" onclick="selectDept('${dep.name}')">
+          <div class="dept-icon">${icons[dep.name]||'🏥'}</div>
+          <div class="dept-name">${dep.name}</div>
+        </div>`).join('');
+    } catch(e){document.getElementById('dept-grid').innerHTML='<div class="empty">Unable to load departments</div>';}
+  }
+  else if(s.step===2) {
+    el.innerHTML='<div class="card"><button class="btn-back" onclick="goBack()">← Back</button><div class="card-title" style="margin-top:12px;">Select Doctor · '+s.dept+'</div><div id="doc-list"><div class="loading">Loading doctors...</div></div></div>';
+    try {
+      const r=await fetch(`${API}/Healthcare Practitioner?filters=[["department","=","${s.dept}"]]&fields=["name","practitioner_name","department","designation"]&limit=20`);
+      const d=await r.json();
+      const docs=d.data||[];
+      document.getElementById('doc-list').innerHTML=docs.length?docs.map(doc=>`
+        <div class="doc-card ${s.doctor===doc.name?'selected':''}" onclick="selectDoc('${doc.name}','${(doc.practitioner_name||doc.name).replace(/'/g,"\\'")}')">
+          <div class="doc-avatar">${(doc.practitioner_name||doc.name).charAt(0)}</div>
+          <div><div style="font-size:15px;font-weight:700;">${doc.practitioner_name||doc.name}</div><div style="font-size:13px;color:var(--text-muted);">${doc.designation||doc.department||'Practitioner'}</div></div>
+        </div>`).join(''):'<div class="empty">No doctors found for this department</div>';
+    } catch(e){document.getElementById('doc-list').innerHTML='<div class="empty">Unable to load doctors</div>';}
+  }
+  else if(s.step===3) {
+    const today=new Date().toISOString().split('T')[0];
+    el.innerHTML=`<div class="card"><button class="btn-back" onclick="goBack()">← Back</button>
+      <div class="card-title" style="margin-top:12px;">Select Date & Time</div>
+      <div class="form-group"><label>Appointment Date</label><input type="date" id="appt-date" value="${today}" min="${today}" style="padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius);font-size:14px;font-family:inherit;" onchange="loadSlots(this.value)"></div>
+      <div class="card-title">Available Slots</div>
+      <div class="slot-grid" id="slot-grid"><div class="loading">Select a date to see slots...</div></div>
+      <div id="slot-confirm" style="display:none;margin-top:16px;">
+        <button class="btn-primary" onclick="goToConfirm()" style="width:auto;padding:10px 24px;">Continue →</button>
+      </div></div>`;
+    loadSlots(today);
+  }
+  else if(s.step===4) {
+    el.innerHTML=`<div class="card"><button class="btn-back" onclick="goBack()">← Back</button>
+      <div class="card-title" style="margin-top:12px;">Confirm Appointment</div>
+      <div class="alert alert-info" style="margin-bottom:20px;">
+        <div><strong>Department:</strong> ${s.dept}</div>
+        <div><strong>Doctor:</strong> ${s.doctorName}</div>
+        <div><strong>Date:</strong> ${s.date}</div>
+        <div><strong>Time:</strong> ${s.slot}</div>
+      </div>
+      <div id="book-msg"></div>
+      <button class="btn-primary" onclick="confirmBooking()" style="width:auto;padding:12px 32px;">✅ Confirm Booking</button>
+    </div>`;
+  }
+}
+
+function selectDept(dept) {bookingState.dept=dept;bookingState.step=2;renderBookingStep();}
+function selectDoc(id,name) {bookingState.doctor=id;bookingState.doctorName=name;bookingState.step=3;renderBookingStep();}
+function goBack() {bookingState.step--;renderBookingStep();}
+function goToConfirm() {bookingState.step=4;renderBookingStep();}
+
+async function loadSlots(date) {
+  bookingState.date=date;bookingState.slot=null;
+  const el=document.getElementById('slot-grid');
+  const times=['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30'];
+  // Check booked slots
+  try {
+    const r=await fetch(`${API}/Patient Appointment?filters=[["practitioner","=","${bookingState.doctor}"],["appointment_date","=","${date}"],["status","!=","Cancelled"]]&fields=["appointment_time"]&limit=50`);
+    const d=await r.json();
+    const booked=new Set((d.data||[]).map(a=>a.appointment_time));
+    el.innerHTML=times.map(t=>`<div class="slot ${booked.has(t)?'unavailable':''}" onclick="selectSlot('${t}',this)">${t}</div>`).join('');
+  } catch(e){el.innerHTML=times.map(t=>`<div class="slot" onclick="selectSlot('${t}',this)">${t}</div>`).join('');}
+}
+
+function selectSlot(time,el) {
+  document.querySelectorAll('.slot').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+  bookingState.slot=time;
+  document.getElementById('slot-confirm').style.display='block';
+}
+
+async function confirmBooking() {
+  const s=bookingState;
+  const msgEl=document.getElementById('book-msg');
+  msgEl.innerHTML='<div class="alert alert-info">Booking your appointment...</div>';
+  try {
+    const r=await fetch(`${API}/Patient Appointment`,{
+      method:'POST',headers:{'Content-Type':'application/json','X-Frappe-CSRF-Token':getCsrf()},
+      body:JSON.stringify({doctype:'Patient Appointment',patient:patientId,practitioner:s.doctor,department:s.dept,appointment_date:s.date,appointment_time:s.slot})
+    });
+    const d=await r.json();
+    if(d.data){
+      msgEl.innerHTML=`<div class="alert alert-success">✅ Appointment booked! ID: ${d.data.name}</div>`;
+      setTimeout(()=>{showPage('appointments',document.querySelector('[onclick*="appointments"]'));},2000);
+    } else{throw new Error(JSON.stringify(d.exc||d));}
+  } catch(e){msgEl.innerHTML=`<div class="alert" style="background:#fef2f2;border:1px solid #fecaca;color:#b91c1c;">Booking failed: ${e.message}</div>`;}
+}
+
+function updateStepIndicators() {
+  for(let i=1;i<=4;i++){
+    const el=document.getElementById('bstep-'+i);
+    el.className='step'+(i<bookingState.step?' done':i===bookingState.step?' active':'');
+  }
+}
+
+function statusBadge(s){const m={Open:'badge-blue',Scheduled:'badge-blue',Closed:'badge-green',Cancelled:'badge-red'};return m[s]||'badge-gray';}
+function getCsrf(){return document.cookie.split(';').map(c=>c.trim()).find(c=>c.startsWith('csrf_token='))?.split('=')?.[1]||'';}
+function fmt(n){return Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});}
+function setStatus(id,msg,type){const el=document.getElementById(id);el.textContent=msg;el.className='status-msg '+type;}
+
+document.getElementById('l-password').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
+init();
+</script>
+</body>
+</html>
